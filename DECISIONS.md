@@ -140,11 +140,13 @@ La aplicación abrirá en una pantalla de Inicio moderna en lugar de entrar dire
 
 La estructura base del Inicio tendrá:
 
-1. acceso visible a `Continuar leyendo`, usando la última lectura del usuario;
-2. una sección `Lectura del día`;
-3. debajo, accesos claros a las áreas principales como `Biblia`, `Prédicas`, `Buscar` y otras funciones que se aprueben posteriormente.
+1. acceso visible y compacto a `Continuar leyendo`, usando la última lectura del usuario;
+2. una sección compacta `Lectura del día`;
+3. la barra de navegación principal como acceso a `Biblia`, `Prédicas`, `Buscar` y demás áreas, sin duplicar esos accesos dentro del contenido de Inicio.
 
-La pantalla debe mantener la filosofía visual del proyecto: moderna, clara, responsiva, llamativa sin sobrecarga y fácil de entender en móvil, tablet y PC.
+En teléfono, el Inicio debe priorizar que sus elementos esenciales quepan en una sola pantalla en un tamaño de texto normal y en móviles comunes, evitando desplazamiento vertical innecesario. No se recortará contenido ni se bloqueará el scroll cuando sea necesario por pantallas especialmente pequeñas, zoom o accesibilidad.
+
+No usar una portada/hero grande de presentación en el Inicio de uso diario. La pantalla debe mantener la filosofía visual del proyecto: moderna, clara, responsiva, llamativa sin sobrecarga y fácil de entender en móvil, tablet y PC.
 
 ## D-018 — Lectura del día
 Estado: APROBADA
