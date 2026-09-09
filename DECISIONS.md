@@ -98,3 +98,16 @@ Cuando una etapa requiera decisiones del usuario, el asistente debe preguntar de
 Las preguntas deben ser pocas, claras y relevantes, y aparecer cuando sean necesarias para avanzar. Deben centrarse en decisiones con impacto real sobre UX, privacidad, seguridad, costos, sincronización, compatibilidad, prioridades, diseño o comportamiento visible.
 
 No repetir preguntas ya resueltas ni preguntar detalles obvios o de bajo impacto. Las respuestas aprobadas deben documentarse para que chats futuros continúen sin volver a empezar la conversación.
+
+## D-016 — Entregas solo en verde y actualización visible
+Estado: APROBADA
+
+Cuando exista implementación ejecutable, ningún cambio puede presentarse como `Lista para probar` mientras haya fallos conocidos relevantes de build, chequeo de tipos, lint, pruebas, CI, merge o despliegue.
+
+El asistente debe continuar corrigiendo los fallos resolubles dentro del trabajo actual y no silenciar verificaciones solo para obtener verde. Si existe un bloqueo externo real que no puede resolverse desde el entorno disponible, debe informarse claramente y no declarar la versión lista.
+
+Toda versión desplegada deberá ser identificable y la PWA deberá avisar claramente cuando exista una nueva versión. Antes de probar cambios nuevos, el usuario debe actualizar para reducir el riesgo de evaluar una versión antigua por caché.
+
+Excepción: nunca forzar una recarga que pueda interrumpir una sesión de predicación, edición no guardada u otra operación crítica. En ese caso se avisará y la actualización se aplicará en un punto seguro.
+
+Las reglas completas de entrega viven en `RELEASE_RULES.md` y son obligatorias.
