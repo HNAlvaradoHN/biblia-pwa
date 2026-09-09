@@ -43,7 +43,7 @@ Principio central de UX: durante una prédica la aplicación debe prácticamente
 ### Referencias bíblicas inteligentes
 Las referencias no deben existir únicamente como texto visible. Deben tener estructura interna, por ejemplo libro, capítulo, versículo inicial y final.
 
-Esto permitirá abrir, consultar, proyectar, copiar, compartir y cambiar traducción en el futuro.
+Esto permitirá abrir, consultar, copiar, compartir y cambiar traducción en el futuro. La proyección a pantalla externa queda como posibilidad futura opcional.
 
 La detección automática de texto como `Juan 3:16` puede añadirse después del editor básico si complica el MVP.
 
@@ -51,8 +51,8 @@ La detección automática de texto como `Juan 3:16` puede añadirse después del
 Al tocar una referencia durante una prédica:
 - Vista rápida del pasaje sin abandonar la prédica.
 - Abrir en Biblia para leer contexto.
-- Mostrar en pantalla.
 - Copiar/compartir.
+- Mostrar en pantalla solo si esa función se aprueba e implementa posteriormente.
 
 Al regresar desde la Biblia, debe volver exactamente al punto previo de la prédica. No depender únicamente del botón Atrás del navegador.
 
@@ -64,15 +64,21 @@ Debe priorizar:
 - referencias fáciles de tocar;
 - evitar edición accidental;
 - conservar estado y posición;
-- intentar mantener la pantalla activa cuando la plataforma lo permita;
-- mostrar discretamente el estado de la pantalla externa.
+- intentar mantener la pantalla activa cuando la plataforma lo permita.
 
-### Pantalla de congregación
-- No duplicar la pantalla privada del pastor.
-- La TV/proyector abre una página independiente en navegador.
-- Solo muestra contenido público, por ejemplo referencia, texto bíblico y traducción.
-- El dispositivo del pastor controla mostrar, cambiar y ocultar.
-- Debe intentar funcionar en navegadores modernos de Smart TV sin depender de Samsung, LG, Chromecast u otra marca concreta.
+La pantalla externa no es requisito del Modo Predicación.
+
+### Pantalla de congregación — OPCIONAL / FUTURA
+Esta función se conserva como idea, pero no forma parte del MVP ni del camino principal actual.
+
+Si el usuario decide implementarla al final:
+- no duplicará la pantalla privada del pastor;
+- la TV/proyector tendrá una vista independiente;
+- solo mostrará contenido público;
+- el pastor podrá mostrar, cambiar y ocultar versículos;
+- se intentará mantener independencia de marcas concretas de Smart TV.
+
+No invertir tiempo en esta función hasta que el usuario la confirme expresamente más adelante.
 
 ### Vinculación y sincronización personal
 Objetivo: que las prédicas, notas, favoritos y otros datos personales puedan estar disponibles en varios dispositivos aunque el dispositivo original esté apagado.
@@ -108,9 +114,9 @@ Los datos bíblicos y los datos personales deben mantenerse separados para que a
 3. Editor de prédicas.
 4. Referencias inteligentes, vista rápida y regreso exacto.
 5. Modo Predicación.
-6. Pantalla externa y conexión.
-7. Sincronización/multidispositivo y mejoras, ajustando el orden si el usuario prioriza sincronización antes.
-8. Futuro: APK, múltiples traducciones, herramientas bíblicas avanzadas, etc.
+6. Sincronización/multidispositivo y mejoras de uso, ajustando el orden según prioridad del usuario.
+7. Mejoras del editor, incluyendo escritura con lápiz/stylus si el usuario la aprueba.
+8. Futuro opcional: pantalla de congregación, APK, múltiples traducciones, herramientas bíblicas avanzadas, etc.
 
 ## MVP funcional
 
@@ -121,26 +127,25 @@ Debe demostrar primero:
 
 Después:
 4. Modo Predicación.
-5. Pantalla externa.
+5. Sincronización y mejoras del editor según prioridad.
+
+La pantalla externa no forma parte del MVP actual.
 
 ## Criterio de calidad
 
 Para cada función preguntar: ¿puede un pastor hacer esto mientras está hablando frente a una congregación sin distraerse?
 
-Ejemplo deseado: `Referencia → Mostrar`, no una cadena de múltiples menús.
-
 ## Lo que se debe evitar
 
 - Interfaz complicada.
 - Perder la posición de lectura o prédica.
-- Mostrar notas privadas en TV.
-- Depender exclusivamente de duplicación de pantalla o Chromecast.
 - Obligar Internet para leer la Biblia.
 - Cuentas obligatorias desde el comienzo.
 - Sobrediseñar el MVP.
 - Mezclar módulos sin necesidad.
 - Dependencias de nube innecesarias.
 - Rehacer una app Android separada sin una razón fuerte.
+- Construir la pantalla de congregación antes de que el usuario decida que realmente la necesita.
 
 ## Decisiones técnicas todavía abiertas
 
@@ -149,7 +154,8 @@ Ejemplo deseado: `Referencia → Mostrar`, no una cadena de múltiples menús.
 - Formato/fuente definitiva del corpus bíblico.
 - Editor definitivo.
 - Diseño técnico definitivo de sincronización con Drive.
-- Tecnología definitiva de tiempo real para pantalla de congregación.
+- Soporte definitivo de escritura manual con stylus.
+- Si se implementará o no la pantalla de congregación.
 - Diseño visual definitivo.
 
 No cerrar estas decisiones solo por costumbre o popularidad; comparar simplicidad, mantenimiento, rendimiento, offline, privacidad y compatibilidad futura.
