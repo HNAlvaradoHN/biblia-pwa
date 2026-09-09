@@ -4,6 +4,8 @@
 
 Crear una Biblia PWA para uso personal y ministerial, especialmente cómoda para preparar y presentar prédicas desde teléfono, tablet o computadora.
 
+La aplicación podrá distribuirse públicamente en el futuro para que otras personas la instalen y utilicen; por eso el contenido bíblico, títulos editoriales y demás recursos incluidos deben poder usarse legalmente en una distribución pública.
+
 Principio central de UX: durante una prédica la aplicación debe prácticamente desaparecer. Las acciones importantes deben requerir uno o pocos toques y nunca hacer perder la posición del pastor.
 
 ## Plataforma
@@ -19,6 +21,8 @@ Principio central de UX: durante una prédica la aplicación debe prácticamente
 - Traducción principal deseada: Reina-Valera 1960 (RVR60).
 - No asumir que un dataset encontrado en GitHub puede redistribuirse legalmente.
 - Antes de incorporar un corpus completo al repositorio o distribuir la app públicamente, revisar procedencia y permisos/licencia.
+- Lo mismo aplica a títulos, encabezados y otros elementos editoriales de una edición bíblica.
+- Mientras no exista una fuente autorizada para el contenido definitivo, el desarrollo puede usar datos ficticios, muestras limitadas o una fuente legal de prueba.
 - La arquitectura debe permitir cambiar o añadir traducciones sin romper prédicas ni referencias.
 
 ## Áreas principales
@@ -32,6 +36,7 @@ Principio central de UX: durante una prédica la aplicación debe prácticamente
 
 ### Biblia
 - Libros, capítulos y versículos.
+- Títulos/encabezados temáticos de secciones bíblicas cuando la fuente autorizada los incluya.
 - Navegación rápida.
 - Búsqueda.
 - Historial y última lectura.
@@ -168,6 +173,7 @@ Para cada función preguntar: ¿puede un pastor hacer esto mientras está hablan
 - Rehacer una app Android separada sin una razón fuerte.
 - Construir la pantalla de congregación antes de que el usuario decida que realmente la necesita.
 - Adelantar decisiones detalladas de personalización antes de llegar a su fase.
+- Incorporar contenido bíblico o editorial cuya redistribución pública no esté verificada.
 
 ## Decisiones técnicas todavía abiertas
 
