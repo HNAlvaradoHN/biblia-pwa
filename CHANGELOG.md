@@ -58,7 +58,7 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 ## 2026-09-09 — Entrada a la sección Biblia
 
 - Aprobado que `Biblia` tenga una pantalla propia que combine `Continuar leyendo`, selector de libros/capítulos y búsqueda rápida de libros.
-- Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer manualmente toda la lista.
+- Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer toda la lista.
 - Esta búsqueda rápida estará orientada a localizar libros; la búsqueda de palabras/frases bíblicas se mantendrá como función separada para evitar confusión.
 - Al elegir un libro, se mostrará una cuadrícula de capítulos y se destacará el último capítulo leído de ese libro para facilitar retomar la lectura.
 
@@ -124,3 +124,16 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Se conserva desplazamiento cuando sea necesario por pantallas muy pequeñas, zoom o accesibilidad; no se recorta contenido.
 - Eliminados los estilos huérfanos de la portada y de los accesos retirados.
 - El build de este ajuste queda identificado como `0.1.1`.
+
+## 2026-09-09 — Inicio visual y barra glass 0.1.2
+
+- Aprobada una dirección tipo glass para la navegación inferior, con transparencia y desenfoque controlados para que futuros fondos/temas puedan percibirse detrás sin perder legibilidad.
+- El estado activo usa un tono suave derivado del color del tema y queda preparado para adaptarse a futuros fondos sin rehacer la barra.
+- Sustituidos símbolos tipográficos de navegación por iconos SVG consistentes para `Inicio`, `Biblia`, `Prédicas` y `Buscar`.
+- Añadido al Inicio un encabezado compacto con fecha/contexto para evitar sensación de vacío sin volver a añadir accesos duplicados.
+- `Continuar leyendo` gana jerarquía visual con icono y tarjeta translúcida compacta.
+- `Lectura del día` queda como pieza protagonista con superficie glass suave y mantiene `Compartir` / `Leer pasaje completo`.
+- Añadidos ajustes para pantallas móviles bajas: primero se reducen textos secundarios y espacios antes de necesitar desplazamiento.
+- El scroll no se bloquea para conservar accesibilidad, zoom y compatibilidad con pantallas excepcionalmente pequeñas.
+- El selector de fondos de pantalla todavía no se implementa; esta versión únicamente prepara el sistema visual para convivir con él más adelante.
+- El build queda identificado como `0.1.2`.

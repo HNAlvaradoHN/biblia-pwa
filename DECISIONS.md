@@ -262,3 +262,12 @@ La aplicación debe verse actual, clara, atractiva y fácil de entender desde su
 La experiencia debe adaptarse de forma real a teléfono, tablet y computadora, mantener buena legibilidad y objetivos táctiles cómodos, y evitar sobrecarga de controles o efectos.
 
 La dirección detallada vive en `UI_RULES.md`. Esta regla no obliga a implementar ahora todos los temas, fondos o personalizaciones futuras; exige que la base visual ya sea moderna, coherente y preparada para evolucionar limpiamente.
+
+## D-026 — Navegación glass compatible con temas y fondos
+Estado: APROBADA
+
+La barra de navegación inferior usará una dirección visual tipo `glass`: superficie translúcida, desenfoque y contraste suficientes para dejar percibir parcialmente el fondo sin perder legibilidad.
+
+La sección activa debe distinguirse con un tono suave derivado del tema visual actual. La arquitectura de estilos debe permitir que, cuando se implementen fondos de pantalla o temas personalizados, ese tono pueda adaptarse al fondo/tema sin rehacer la navegación.
+
+El efecto glass no debe ser tan transparente que perjudique lectura, accesibilidad o claridad de iconos y etiquetas. Los fondos de pantalla personalizados siguen perteneciendo a su fase futura; esta decisión solo prepara la navegación para convivir correctamente con ellos.
