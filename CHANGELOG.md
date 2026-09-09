@@ -103,3 +103,13 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Añadido `package-lock.json` reproducible y CI permanente con `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
 - Durante bootstrap se detectaron y corrigieron antes del merge una incompatibilidad Vite/PWA y un error de TypeScript; el ciclo final de bootstrap quedó en verde.
 - Prédicas, búsqueda de texto bíblico, sincronización y personalizaciones avanzadas siguen fuera de este cambio para respetar el alcance de Fase 1.
+
+## 2026-09-09 — Preparación y primer intento de entrega 0.1.0
+
+- Integrada la base ejecutable a `main` mediante PR #1 después de CI verde; `main` volvió a quedar verde tras el merge.
+- Integrada mediante PR #2 la retención del `dist/` verificado de `main` y el fallback SPA necesario para rutas internas de un host estático.
+- El commit `7fdf73867de2d12c88fad62e8675de5fadce6b20` pasó `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
+- GitHub Actions conservó el artefacto exacto `biblia-pwa-dist` con digest `sha256:2219827e137032cd028d66bd9830e6b9ecbc86e71dc7b32edb0c2139a53c5481`.
+- Se creó un despliegue de producción en Vercel usando ese artefacto exacto para evitar reconstrucciones distintas al build aprobado por CI.
+- La verificación publicada quedó bloqueada porque el conector de lectura de Vercel no tiene autorización para el scope/equipo donde se creó el despliegue; las consultas devuelven `403 Forbidden`.
+- De acuerdo con `RELEASE_RULES.md`, la versión NO se declara todavía `Lista para probar` hasta resolver la autorización y verificar la aplicación publicada.
