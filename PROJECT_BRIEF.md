@@ -23,6 +23,13 @@ Principio central de UX: durante una prédica la aplicación debe prácticamente
 
 ## Áreas principales
 
+### Inicio
+- La aplicación abre en una pantalla de Inicio moderna.
+- `Continuar leyendo` usa la última lectura del usuario.
+- `Lectura del día` muestra un solo versículo destacado.
+- El versículo diario permite `Compartir` y `Leer pasaje completo`.
+- Debajo aparecen accesos claros a áreas principales como `Biblia`, `Prédicas` y `Buscar`.
+
 ### Biblia
 - Libros, capítulos y versículos.
 - Navegación rápida.
@@ -33,6 +40,19 @@ Principio central de UX: durante una prédica la aplicación debe prácticamente
 - Notas bíblicas.
 - Copiar y compartir.
 - Preferencias de lectura.
+- Debe contemplar al menos dos modos de visualización: versículos corridos y versículos separados.
+- Debe admitir personalizaciones de lectura y apariencia que se definirán en su fase.
+
+### Compartir versículos
+- Compartir versículos forma parte de la dirección del producto.
+- Se desea permitir diseños con imágenes o fondos visuales.
+- El flujo exacto, plantillas, controles y alcance se definirán cuando llegue la fase correspondiente.
+
+### Apariencia y temas
+- La app debe ser moderna, clara, responsiva y fácil de usar.
+- Día/noche no serán necesariamente los únicos temas.
+- Se desea contemplar más temas, fondos o estilos visuales y personalizaciones futuras.
+- Los detalles se decidirán de forma gradual para no sobrediseñar el MVP.
 
 ### Prédicas
 - Mis prédicas.
@@ -111,12 +131,13 @@ Los datos bíblicos y los datos personales deben mantenerse separados para que a
 
 1. Base bíblica: proyecto, PWA, datos bíblicos, navegación y offline.
 2. Lector: búsqueda, favoritos, resaltados, notas, compartir, historial y preferencias.
-3. Editor de prédicas.
-4. Referencias inteligentes, vista rápida y regreso exacto.
-5. Modo Predicación.
-6. Sincronización/multidispositivo y mejoras de uso, ajustando el orden según prioridad del usuario.
-7. Mejoras del editor, incluyendo escritura con lápiz/stylus si el usuario la aprueba.
-8. Futuro opcional: pantalla de congregación, APK, múltiples traducciones, herramientas bíblicas avanzadas, etc.
+3. Personalización del lector/compartir: modos de lectura, temas, fondos y opciones visuales, sin adelantar detalles antes de tiempo.
+4. Editor de prédicas.
+5. Referencias inteligentes, vista rápida y regreso exacto.
+6. Modo Predicación.
+7. Sincronización/multidispositivo y mejoras de uso, ajustando el orden según prioridad del usuario.
+8. Mejoras del editor, incluyendo escritura con lápiz/stylus si el usuario la aprueba.
+9. Futuro opcional: pantalla de congregación, APK, múltiples traducciones, herramientas bíblicas avanzadas, etc.
 
 ## MVP funcional
 
@@ -146,6 +167,7 @@ Para cada función preguntar: ¿puede un pastor hacer esto mientras está hablan
 - Dependencias de nube innecesarias.
 - Rehacer una app Android separada sin una razón fuerte.
 - Construir la pantalla de congregación antes de que el usuario decida que realmente la necesita.
+- Adelantar decisiones detalladas de personalización antes de llegar a su fase.
 
 ## Decisiones técnicas todavía abiertas
 
@@ -157,5 +179,6 @@ Para cada función preguntar: ¿puede un pastor hacer esto mientras está hablan
 - Soporte definitivo de escritura manual con stylus.
 - Si se implementará o no la pantalla de congregación.
 - Diseño visual definitivo.
+- Implementación técnica de temas, fondos y compartir imágenes.
 
 No cerrar estas decisiones solo por costumbre o popularidad; comparar simplicidad, mantenimiento, rendimiento, offline, privacidad y compatibilidad futura.
