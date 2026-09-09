@@ -41,3 +41,9 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - La PWA deberá avisar cuando exista una nueva versión y pedir actualizar antes de probar cambios nuevos.
 - No se forzará una recarga durante predicación, edición no guardada u otra operación crítica; la actualización se aplicará en un punto seguro.
 - `AGENTS.md` exige leer `RELEASE_RULES.md` antes de que un chat pueda tomar identidad y trabajar.
+
+## 2026-09-09 — Estructura de pantalla de Inicio
+
+- Aprobado que la aplicación abra en una pantalla de Inicio, no directamente en el lector bíblico.
+- El Inicio tendrá `Continuar leyendo`, una sección `Lectura del día` y accesos claros a `Biblia`, `Prédicas`, `Buscar` y otras funciones aprobadas.
+- El comportamiento exacto de `Lectura del día` queda pendiente de definición antes de implementación.
