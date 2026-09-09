@@ -137,3 +137,20 @@ Antes de considerar finalizado un cambio de interfaz:
 ## 11. Regla de profesionalismo
 
 El resultado final debe quedar como si el diseño nuevo hubiera sido el diseño correcto desde el principio: limpio, coherente y sin restos visibles o técnicos de versiones descartadas.
+
+## 12. Dirección visual obligatoria
+
+La aplicación debe sentirse actual desde su primera versión ejecutable. No construir deliberadamente una interfaz vieja, genérica o descuidada con la idea de “arreglarla después”.
+
+La dirección visual obligatoria es:
+
+- moderna y contemporánea, evitando patrones visuales que hagan sentir la aplicación anticuada;
+- clara y fácil de entender sin capacitación;
+- atractiva y con identidad, pero sin sobrecarga de efectos, adornos o controles;
+- responsiva de forma real en teléfono, tablet y computadora;
+- cómoda para uso táctil, con objetivos de toque suficientes y controles importantes fáciles de alcanzar;
+- legible durante lectura prolongada, con jerarquía visual clara y espacios que ayuden a concentrarse;
+- coherente entre tamaños de pantalla, adaptando el layout en lugar de simplemente encoger una vista de escritorio;
+- preparada para personalización futura mediante tokens/componentes, sin implementar por anticipado todos los temas o fondos todavía.
+
+Una pantalla puede ser provisional por alcance funcional, pero no debe ser provisional por descuido visual. Incluso las primeras entregas deben respetar esta dirección básica.
