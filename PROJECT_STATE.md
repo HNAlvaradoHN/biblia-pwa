@@ -27,6 +27,8 @@ Todavía no existe implementación de la aplicación.
 - Google Drive seleccionado como dirección preferida a investigar para sincronización personal sin exigir que otro dispositivo permanezca encendido.
 - Pantalla de congregación movida al final como función opcional; no forma parte del MVP ni debe implementarse sin confirmación posterior del usuario.
 - Pantalla de inicio aprobada: `Continuar leyendo`, `Lectura del día` y accesos principales como `Biblia`, `Prédicas` y `Buscar`.
+- `Lectura del día` definida como un solo versículo con acciones `Compartir` y `Leer pasaje completo`.
+- Dirección de personalización futura registrada: vista de versículos corridos/separados, compartir versículos, fondos visuales, temas adicionales y más opciones de apariencia/lectura.
 
 ## Objetivo activo
 
@@ -37,7 +39,17 @@ No comenzar implementación ni saltar a otros módulos hasta cerrar este objetiv
 ## En evaluación
 
 - Permitir en el editor combinar texto escrito con teclado y bloques de escritura/dibujo con lápiz o stylus en teléfono/tablet. Esta idea todavía no está aprobada como requisito definitivo.
-- Definir qué significa exactamente `Lectura del día` en la pantalla de Inicio: versículo único, pasaje corto u otra modalidad.
+
+## Decisiones de producto futuras ya registradas, pero no abiertas todavía
+
+- Diseño exacto de los modos de lectura `versículos corridos` y `versículos separados`.
+- Diseño y flujo de compartir versículos.
+- Uso de imágenes/fondos en contenido compartido.
+- Fondos o estilos visuales dentro de la aplicación.
+- Temas adicionales además de día/noche.
+- Personalizaciones de lectura y apariencia.
+
+No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspondiente.
 
 ## Decisiones técnicas aún abiertas
 
