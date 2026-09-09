@@ -19,13 +19,17 @@ Todavía no existe implementación de la aplicación.
 - Repositorio privado creado.
 - Sistema de continuidad entre chats definido mediante `AGENTS.md`.
 - Reglas de cero basura, privacidad y documentación establecidas.
+- Reglas estrictas de interfaz y cambios visuales establecidas en `UI_RULES.md`.
+- Desarrollo secuencial definido: un objetivo activo a la vez, con cierre, prueba, limpieza y documentación antes de avanzar.
 - Concepto de vinculación por código aceptado.
 - Google Drive seleccionado como dirección preferida a investigar para sincronización personal sin exigir que otro dispositivo permanezca encendido.
 - Pantalla de congregación movida al final como función opcional; no forma parte del MVP ni debe implementarse sin confirmación posterior del usuario.
 
-## En curso
+## Objetivo activo
 
-- Cerrar arquitectura técnica de la primera versión.
+Cerrar arquitectura técnica de la primera versión.
+
+No comenzar implementación ni saltar a otros módulos hasta cerrar este objetivo o hasta que el usuario cambie explícitamente la prioridad.
 
 ## En evaluación
 
@@ -40,7 +44,7 @@ Todavía no existe implementación de la aplicación.
 - Diseño final de sincronización con Google Drive.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
 
-## Siguiente paso recomendado
+## Siguiente paso
 
 Definir el stack técnico mínimo para Fase 1 y, una vez aprobado, crear la estructura inicial de la PWA sin añadir módulos futuros innecesarios.
 
@@ -60,3 +64,5 @@ Pendiente:
 ## Regla de actualización
 
 Este archivo describe únicamente el estado REAL. No marcar una función como terminada porque esté planeada o diseñada; solo cuando exista y haya sido verificada.
+
+Debe existir un solo objetivo activo principal. Cuando se complete, mover el siguiente paso a objetivo activo antes de iniciar trabajo nuevo.
