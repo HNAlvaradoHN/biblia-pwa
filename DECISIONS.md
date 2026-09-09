@@ -69,10 +69,31 @@ Estado: APROBADA
 
 RVR60 es la traducción principal deseada. No incorporar ni redistribuir un dataset completo encontrado en Internet sin verificar procedencia y permisos adecuados.
 
-## D-012 — Stack técnico
-Estado: ABIERTO
+## D-012 — Stack técnico mínimo de Fase 1
+Estado: APROBADA
 
-React/Vite, Dexie/IndexedDB, Tiptap, Zustand y otras herramientas han sido consideradas, pero todavía no deben tratarse como selección definitiva hasta cerrar la arquitectura con el usuario.
+La base técnica de Fase 1 será:
+
+- React + TypeScript;
+- Vite como herramienta de desarrollo y build;
+- React Router en modo declarativo/sencillo para navegación;
+- IndexedDB como almacenamiento local del navegador;
+- Dexie como capa de acceso a IndexedDB para datos personales y estado local que requiera persistencia estructurada;
+- `vite-plugin-pwa`/Workbox para instalación, funcionamiento offline, caché y aviso de actualización;
+- ESLint y chequeo de TypeScript;
+- pruebas automatizadas mínimas con herramientas compatibles con Vite/React cuando exista comportamiento que justificar probar;
+- GitHub Actions para verificaciones automáticas antes de considerar una entrega en verde.
+
+Reglas de alcance:
+
+- no añadir Zustand en Fase 1 mientras el estado de React y módulos simples sean suficientes;
+- no añadir Tiptap hasta la fase del editor de prédicas;
+- no añadir backend, Supabase, Firebase u otra base de datos remota para la lectura bíblica inicial;
+- mantener el corpus bíblico detrás de una estructura/proveedor reemplazable para poder usar datos de prueba legales ahora y sustituirlos por una fuente autorizada después sin romper referencias;
+- mantener contenido bíblico y datos personales separados;
+- el proveedor final de despliegue queda abierto hasta preparar la primera entrega ejecutable, porque no afecta la estructura base y debe evaluarse según costo, simplicidad y disponibilidad del momento.
+
+Esta selección se considera decisión técnica interna delegada al asistente, coherente con las prioridades aprobadas de simplicidad, offline, mantenimiento y facilidad de modificación.
 
 ## D-013 — Interfaz modular y reemplazo limpio
 Estado: APROBADA
