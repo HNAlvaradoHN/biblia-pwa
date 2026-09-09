@@ -208,3 +208,12 @@ Al cerrar el lector capítulo por capítulo:
 - el indicador temporal no debe mover el texto ni hacer perder la posición.
 
 El diseño exacto del indicador de retorno y de los controles del lector capítulo por capítulo se definirá en la fase visual correspondiente.
+
+## D-023 — Títulos y encabezados bíblicos
+Estado: APROBADA
+
+El lector no debe presentar la Biblia como una sucesión plana de versículos. Debe mostrar también los títulos, encabezados o temas de sección correspondientes, como en una Biblia impresa o digital normal.
+
+Estos encabezados deben formar parte de la estructura de contenido del lector y verse claramente diferenciados del texto bíblico sin confundirse con números de versículo.
+
+Como los títulos de sección pueden ser contenido editorial propio de una edición concreta, no se inventarán ni se copiarán de una fuente no autorizada. La fuente bíblica definitiva deberá incluirlos legalmente o proporcionar una forma autorizada y confiable de incorporarlos.
