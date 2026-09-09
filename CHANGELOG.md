@@ -54,3 +54,9 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Compartir versículos formará parte del producto, incluyendo la posibilidad de usar imágenes o fondos visuales.
 - Se desea contemplar fondos/estilos dentro de la aplicación, temas adicionales además de día/noche y más personalizaciones de lectura/apariencia.
 - Los detalles de estas funciones no se decidirán ahora; se preguntarán y documentarán cuando llegue la fase correspondiente.
+
+## 2026-09-09 — Entrada a la sección Biblia
+
+- Aprobado que `Biblia` tenga una pantalla propia que combine `Continuar leyendo`, selector de libros/capítulos y búsqueda rápida de libros.
+- Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer toda la lista.
+- Esta búsqueda rápida estará orientada a localizar libros; la búsqueda de palabras/frases bíblicas se mantendrá como función separada para evitar confusión.
