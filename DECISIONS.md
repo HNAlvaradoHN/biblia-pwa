@@ -89,3 +89,12 @@ Estado: APROBADA
 El desarrollo debe avanzar de forma secuencial y documentada. `PROJECT_STATE.md` define el objetivo activo y el siguiente paso.
 
 No saltar entre módulos o introducir funciones no relacionadas antes de cerrar, probar, limpiar y documentar el objetivo actual, salvo que el usuario cambie explícitamente la prioridad.
+
+## D-015 — Preguntas de producto con fundamento
+Estado: APROBADA
+
+Cuando una etapa requiera decisiones del usuario, el asistente debe preguntar desde la perspectiva de producto/experiencia, no trasladarle decisiones técnicas internas que puede resolver por su cuenta.
+
+Las preguntas deben ser pocas, claras y relevantes, y aparecer cuando sean necesarias para avanzar. Deben centrarse en decisiones con impacto real sobre UX, privacidad, seguridad, costos, sincronización, compatibilidad, prioridades, diseño o comportamiento visible.
+
+No repetir preguntas ya resueltas ni preguntar detalles obvios o de bajo impacto. Las respuestas aprobadas deben documentarse para que chats futuros continúen sin volver a empezar la conversación.
