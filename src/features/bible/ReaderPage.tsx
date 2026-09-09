@@ -19,18 +19,19 @@ export function ReaderPage() {
   useEffect(() => {
     if (!book || chapters.length === 0) return
 
+    const activeBook = book
     let cancelled = false
     const firstChapter = chapters[0]
     const firstVerse = firstChapter.sections.flatMap((section) => section.verses)[0]
     const firstAnchorId = firstVerse
-      ? `verse-${book.id}-${firstChapter.number}-${firstVerse.number}`
+      ? `verse-${activeBook.id}-${firstChapter.number}-${firstVerse.number}`
       : undefined
 
     void getLastReading().then((lastReading) => {
       if (cancelled) return
 
       if (
-        lastReading?.bookId === book.id &&
+        lastReading?.bookId === activeBook.id &&
         lastReading.chapter === requestedChapter &&
         lastReading.anchorId
       ) {
@@ -43,7 +44,7 @@ export function ReaderPage() {
       }
 
       void saveLastReading({
-        bookId: book.id,
+        bookId: activeBook.id,
         chapter: firstChapter.number,
         anchorId: firstAnchorId,
       })
@@ -72,7 +73,7 @@ export function ReaderPage() {
       if (!Number.isFinite(visibleChapter)) return
 
       void saveLastReading({
-        bookId: book.id,
+        bookId: activeBook.id,
         chapter: visibleChapter,
         anchorId: nearest.id,
       })
