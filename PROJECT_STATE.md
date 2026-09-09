@@ -26,6 +26,7 @@ Todavía no existe implementación de la aplicación.
 - Concepto de vinculación por código aceptado.
 - Google Drive seleccionado como dirección preferida a investigar para sincronización personal sin exigir que otro dispositivo permanezca encendido.
 - Pantalla de congregación movida al final como función opcional; no forma parte del MVP ni debe implementarse sin confirmación posterior del usuario.
+- Pantalla de inicio aprobada: `Continuar leyendo`, `Lectura del día` y accesos principales como `Biblia`, `Prédicas` y `Buscar`.
 
 ## Objetivo activo
 
@@ -36,6 +37,7 @@ No comenzar implementación ni saltar a otros módulos hasta cerrar este objetiv
 ## En evaluación
 
 - Permitir en el editor combinar texto escrito con teclado y bloques de escritura/dibujo con lápiz o stylus en teléfono/tablet. Esta idea todavía no está aprobada como requisito definitivo.
+- Definir qué significa exactamente `Lectura del día` en la pantalla de Inicio: versículo único, pasaje corto u otra modalidad.
 
 ## Decisiones técnicas aún abiertas
 
@@ -49,7 +51,7 @@ No comenzar implementación ni saltar a otros módulos hasta cerrar este objetiv
 
 ## Siguiente paso
 
-Definir el stack técnico mínimo para Fase 1 y, una vez aprobado, crear la estructura inicial de la PWA sin añadir módulos futuros innecesarios.
+Cerrar las decisiones de producto necesarias para la experiencia base de la primera versión y luego definir el stack técnico mínimo para Fase 1.
 
 ## Fase 1 pendiente
 
