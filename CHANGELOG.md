@@ -58,7 +58,7 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 ## 2026-09-09 — Entrada a la sección Biblia
 
 - Aprobado que `Biblia` tenga una pantalla propia que combine `Continuar leyendo`, selector de libros/capítulos y búsqueda rápida de libros.
-- Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer toda la lista.
+- Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer manualmente toda la lista.
 - Esta búsqueda rápida estará orientada a localizar libros; la búsqueda de palabras/frases bíblicas se mantendrá como función separada para evitar confusión.
 - Al elegir un libro, se mostrará una cuadrícula de capítulos y se destacará el último capítulo leído de ese libro para facilitar retomar la lectura.
 
@@ -111,5 +111,16 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - El commit `7fdf73867de2d12c88fad62e8675de5fadce6b20` pasó `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
 - GitHub Actions conservó el artefacto exacto `biblia-pwa-dist` con digest `sha256:2219827e137032cd028d66bd9830e6b9ecbc86e71dc7b32edb0c2139a53c5481`.
 - Se creó un despliegue de producción en Vercel usando ese artefacto exacto para evitar reconstrucciones distintas al build aprobado por CI.
-- La verificación publicada quedó bloqueada porque el conector de lectura de Vercel no tiene autorización para el scope/equipo donde se creó el despliegue; las consultas devuelven `403 Forbidden`.
-- De acuerdo con `RELEASE_RULES.md`, la versión NO se declara todavía `Lista para probar` hasta resolver la autorización y verificar la aplicación publicada.
+- La verificación automática publicada quedó inicialmente bloqueada porque el conector de lectura de Vercel no tenía acceso al scope/equipo donde se creó el despliegue.
+- Posteriormente el usuario pudo abrir el enlace público en su dispositivo, confirmando que la aplicación publicada cargaba y permitiendo iniciar revisión visual real.
+
+## 2026-09-09 — Inicio móvil compacto 0.1.1
+
+- Revisada la primera publicación real en un teléfono y detectado que Inicio ocupaba demasiado espacio vertical.
+- Eliminada la portada/hero grande del Inicio de uso diario.
+- Eliminada la sección de accesos `Biblia`, `Prédicas` y `Buscar` dentro de Inicio porque duplicaba la barra de navegación inferior.
+- Inicio queda centrado en `Continuar leyendo` y `Lectura del día`.
+- Compactados en móvil el encabezado, tarjetas, botones y barra inferior para priorizar que el contenido esencial quepa en una sola pantalla en móviles comunes y tamaño de texto normal.
+- Se conserva desplazamiento cuando sea necesario por pantallas muy pequeñas, zoom o accesibilidad; no se recorta contenido.
+- Eliminados los estilos huérfanos de la portada y de los accesos retirados.
+- El build de este ajuste queda identificado como `0.1.1`.

@@ -36,23 +36,10 @@ export function HomePage() {
 
   return (
     <div className="page home-page">
-      <section className="hero-card">
-        <div>
-          <p className="eyebrow">Tu espacio de lectura</p>
-          <h1>Una Biblia rápida, clara y lista para trabajar offline.</h1>
-          <p className="muted">
-            Esta primera versión usa contenido ficticio para probar la aplicación sin incorporar una traducción con derechos no verificados.
-          </p>
-        </div>
-      </section>
+      <h1 className="sr-only">Inicio</h1>
 
-      <section className="section-block">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Retomar</p>
-            <h2>Continuar leyendo</h2>
-          </div>
-        </div>
+      <section className="section-block home-continue">
+        <p className="eyebrow">Continuar leyendo</p>
 
         {lastReading ? (
           <Link className="continue-card" to={`/biblia/${lastReading.bookId}/${lastReading.chapter}`}>
@@ -73,7 +60,7 @@ export function HomePage() {
         )}
       </section>
 
-      <section className="section-block daily-card">
+      <section className="section-block daily-card home-daily-card">
         <div className="section-heading">
           <div>
             <p className="eyebrow">Lectura del día</p>
@@ -91,32 +78,6 @@ export function HomePage() {
           </Link>
         </div>
         {shareMessage ? <p className="inline-message" role="status">{shareMessage}</p> : null}
-      </section>
-
-      <section className="section-block">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Accesos</p>
-            <h2>¿Qué querés hacer?</h2>
-          </div>
-        </div>
-        <div className="quick-grid">
-          <Link className="quick-card" to="/biblia">
-            <span className="quick-icon" aria-hidden="true">▤</span>
-            <strong>Biblia</strong>
-            <small>Libros, capítulos y lectura.</small>
-          </Link>
-          <Link className="quick-card" to="/predicas">
-            <span className="quick-icon" aria-hidden="true">✎</span>
-            <strong>Prédicas</strong>
-            <small>Se habilitará en su fase.</small>
-          </Link>
-          <Link className="quick-card" to="/buscar">
-            <span className="quick-icon" aria-hidden="true">⌕</span>
-            <strong>Buscar</strong>
-            <small>Búsqueda bíblica en la siguiente etapa.</small>
-          </Link>
-        </div>
       </section>
     </div>
   )

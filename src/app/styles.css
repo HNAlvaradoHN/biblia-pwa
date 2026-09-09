@@ -61,6 +61,18 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .app-shell {
   min-height: 100vh;
   padding-bottom: calc(88px + env(safe-area-inset-bottom));
@@ -142,12 +154,19 @@ input:focus-visible {
   gap: 22px;
 }
 
+.home-page {
+  gap: 18px;
+}
+
+.home-continue {
+  gap: 9px;
+}
+
 .page-intro {
   padding: 8px 2px 0;
 }
 
 .page-intro h1,
-.hero-card h1,
 .placeholder-card h1 {
   margin: 6px 0 10px;
   max-width: 780px;
@@ -159,7 +178,6 @@ input:focus-visible {
   letter-spacing: -0.035em;
 }
 
-.hero-card,
 .placeholder-card,
 .daily-card,
 .content-notice {
@@ -167,24 +185,6 @@ input:focus-visible {
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--surface) 96%, transparent);
   box-shadow: var(--shadow);
-}
-
-.hero-card {
-  position: relative;
-  overflow: hidden;
-  padding: clamp(24px, 6vw, 48px);
-}
-
-.hero-card::after {
-  content: "";
-  position: absolute;
-  right: -80px;
-  bottom: -110px;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(23, 58, 42, 0.12), transparent 66%);
-  pointer-events: none;
 }
 
 .eyebrow {
@@ -247,7 +247,6 @@ input:focus-visible {
 
 .continue-card:hover,
 .book-row:hover,
-.quick-card:hover,
 .chapter-tile:hover {
   transform: translateY(-2px);
   border-color: rgba(184, 136, 69, 0.55);
@@ -319,40 +318,6 @@ input:focus-visible {
   color: var(--brand);
   font-size: 0.85rem;
   font-weight: 700;
-}
-
-.quick-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.quick-card {
-  display: grid;
-  gap: 8px;
-  min-height: 150px;
-  padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--surface-strong);
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
-}
-
-.quick-card small {
-  color: var(--muted);
-  line-height: 1.45;
-}
-
-.quick-icon {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border-radius: 13px;
-  background: var(--brand-soft);
-  color: var(--brand);
-  font-size: 1.2rem;
-  font-weight: 900;
 }
 
 .search-box {
@@ -655,26 +620,101 @@ input:focus-visible {
 }
 
 @media (max-width: 680px) {
+  .app-shell {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+
   .app-content {
-    padding: 18px 14px 40px;
+    padding: 12px 14px 24px;
   }
 
   .topbar {
-    min-height: 66px;
-    padding: 10px 14px;
+    min-height: 58px;
+    padding: 8px 12px;
+  }
+
+  .brand {
+    gap: 9px;
   }
 
   .brand-mark {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    font-size: 1.1rem;
   }
 
-  .quick-grid {
-    grid-template-columns: 1fr;
+  .brand small {
+    display: none;
   }
 
-  .quick-card {
-    min-height: 112px;
+  .version-badge,
+  .demo-chip {
+    min-height: 26px;
+    padding: 0 8px;
+    font-size: 0.68rem;
+  }
+
+  .home-page {
+    gap: 12px;
+  }
+
+  .home-continue {
+    gap: 7px;
+  }
+
+  .home-continue .eyebrow {
+    padding-inline: 2px;
+    font-size: 0.68rem;
+  }
+
+  .home-page .continue-card {
+    min-height: 68px;
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+
+  .home-page .continue-card strong {
+    font-size: 0.98rem;
+  }
+
+  .home-daily-card {
+    gap: 9px;
+    padding: 15px 16px 16px;
+    border-radius: 20px;
+  }
+
+  .home-daily-card .section-heading {
+    align-items: center;
+  }
+
+  .home-daily-card .section-heading h2 {
+    margin-top: 2px;
+    font-size: 1.12rem;
+  }
+
+  .home-daily-card .eyebrow {
+    font-size: 0.68rem;
+  }
+
+  .home-daily-card blockquote {
+    margin: 1px 0;
+    font-size: clamp(1.06rem, 4.6vw, 1.22rem);
+    line-height: 1.38;
+  }
+
+  .home-daily-card .action-row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  .home-daily-card .button {
+    min-height: 40px;
+    padding: 0 10px;
+    border-radius: 12px;
+    font-size: 0.84rem;
   }
 
   .section-heading {
@@ -686,11 +726,33 @@ input:focus-visible {
   }
 
   .reader-toolbar {
-    top: 67px;
+    top: 59px;
   }
 
   .chapter-section {
     padding-inline: 20px;
+  }
+
+  .bottom-nav {
+    right: 10px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: 10px;
+    min-height: 60px;
+    padding: 5px;
+    border-radius: 20px;
+  }
+
+  .nav-item {
+    min-height: 48px;
+    border-radius: 15px;
+  }
+
+  .nav-item > span {
+    font-size: 1.05rem;
+  }
+
+  .nav-item small {
+    font-size: 0.64rem;
   }
 
   .update-banner {
