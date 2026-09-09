@@ -111,3 +111,18 @@ Toda versión desplegada deberá ser identificable y la PWA deberá avisar clara
 Excepción: nunca forzar una recarga que pueda interrumpir una sesión de predicación, edición no guardada u otra operación crítica. En ese caso se avisará y la actualización se aplicará en un punto seguro.
 
 Las reglas completas de entrega viven en `RELEASE_RULES.md` y son obligatorias.
+
+## D-017 — Pantalla de inicio
+Estado: APROBADA
+
+La aplicación abrirá en una pantalla de Inicio moderna en lugar de entrar directamente al lector bíblico.
+
+La estructura base del Inicio tendrá:
+
+1. acceso visible a `Continuar leyendo`, usando la última lectura del usuario;
+2. una sección `Lectura del día`;
+3. debajo, accesos claros a las áreas principales como `Biblia`, `Prédicas`, `Buscar` y otras funciones que se aprueben posteriormente.
+
+La pantalla debe mantener la filosofía visual del proyecto: moderna, clara, responsiva, llamativa sin sobrecarga y fácil de entender en móvil, tablet y PC.
+
+El contenido y comportamiento exacto de `Lectura del día` todavía debe definirse antes de implementarlo.
