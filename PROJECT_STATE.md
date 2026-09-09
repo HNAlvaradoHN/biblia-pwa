@@ -21,10 +21,15 @@ Todavía no existe implementación de la aplicación.
 - Reglas de cero basura, privacidad y documentación establecidas.
 - Concepto de vinculación por código aceptado.
 - Google Drive seleccionado como dirección preferida a investigar para sincronización personal sin exigir que otro dispositivo permanezca encendido.
+- Pantalla de congregación movida al final como función opcional; no forma parte del MVP ni debe implementarse sin confirmación posterior del usuario.
 
 ## En curso
 
 - Cerrar arquitectura técnica de la primera versión.
+
+## En evaluación
+
+- Permitir en el editor combinar texto escrito con teclado y bloques de escritura/dibujo con lápiz o stylus en teléfono/tablet. Esta idea todavía no está aprobada como requisito definitivo.
 
 ## Decisiones técnicas aún abiertas
 
@@ -33,7 +38,7 @@ Todavía no existe implementación de la aplicación.
 - Librería/editor de prédicas definitivo.
 - Fuente y formato inicial de datos bíblicos.
 - Diseño final de sincronización con Google Drive.
-- Tecnología futura de comunicación con pantalla de congregación.
+- Si se implementará o no la pantalla de congregación al final del proyecto.
 
 ## Siguiente paso recomendado
 
