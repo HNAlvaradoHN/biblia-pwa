@@ -29,6 +29,7 @@ Todavía no existe implementación de la aplicación.
 - Pantalla de inicio aprobada: `Continuar leyendo`, `Lectura del día` y accesos principales como `Biblia`, `Prédicas` y `Buscar`.
 - `Lectura del día` definida como un solo versículo con acciones `Compartir` y `Leer pasaje completo`.
 - Dirección de personalización futura registrada: vista de versículos corridos/separados, compartir versículos, fondos visuales, temas adicionales y más opciones de apariencia/lectura.
+- Entrada a `Biblia` aprobada: combina `Continuar leyendo`, selector de libros/capítulos y lupa para localizar rápidamente un libro por nombre.
 
 ## Objetivo activo
 
