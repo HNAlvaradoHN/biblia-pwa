@@ -30,6 +30,7 @@ Todavía no existe implementación de la aplicación.
 - `Lectura del día` definida como un solo versículo con acciones `Compartir` y `Leer pasaje completo`.
 - Dirección de personalización futura registrada: vista de versículos corridos/separados, compartir versículos, fondos visuales, temas adicionales y más opciones de apariencia/lectura.
 - Entrada a `Biblia` aprobada: combina `Continuar leyendo`, selector de libros/capítulos y lupa para localizar rápidamente un libro por nombre.
+- Selección de capítulos aprobada: cuadrícula de capítulos con el último capítulo leído de ese libro destacado visualmente.
 
 ## Objetivo activo
 
