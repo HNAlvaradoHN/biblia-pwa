@@ -78,3 +78,12 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Los encabezados deben diferenciarse visualmente del texto bíblico y formar parte de la estructura del contenido.
 - No se inventarán ni copiarán encabezados editoriales de una fuente sin autorización; la fuente bíblica definitiva deberá permitir incorporarlos legalmente o aportar una alternativa autorizada.
 - Con esta decisión se considera suficientemente definida la experiencia base de lectura necesaria para pasar al cierre del stack técnico mínimo de Fase 1.
+
+## 2026-09-09 — Distribución futura y stack de Fase 1
+
+- Aprobado que la aplicación pueda publicarse en el futuro para que otras personas la instalen y utilicen.
+- Esto convierte la licencia del corpus bíblico y de los encabezados editoriales en un requisito real antes de distribuir contenido definitivo.
+- Mientras no exista una fuente autorizada, Fase 1 podrá usar datos ficticios, muestras limitadas o una fuente legal de prueba detrás de una arquitectura reemplazable.
+- Cerrado el stack técnico mínimo de Fase 1: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, TypeScript/ESLint y GitHub Actions.
+- Zustand y Tiptap quedan fuera de Fase 1 hasta que exista una necesidad real.
+- `PROJECT_STATE.md` avanza el objetivo activo desde planificación de arquitectura a inicialización de la PWA base.
