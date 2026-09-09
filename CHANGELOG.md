@@ -71,3 +71,10 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Al cerrar el lector capítulo por capítulo, se restaurará exactamente la posición previa del lector normal.
 - Esa posición se resaltará o indicará visualmente durante aproximadamente 2 segundos para que el usuario identifique dónde iba.
 - `Versículos corridos` y `versículos separados` quedan como preferencia de disposición del texto, independiente de las dos experiencias de lectura.
+
+## 2026-09-09 — Títulos temáticos de la Biblia
+
+- Aprobado que el lector muestre títulos/encabezados de sección además de los versículos, para conservar una experiencia similar a una Biblia normal.
+- Los encabezados deben diferenciarse visualmente del texto bíblico y formar parte de la estructura del contenido.
+- No se inventarán ni copiarán encabezados editoriales de una fuente sin autorización; la fuente bíblica definitiva deberá permitir incorporarlos legalmente o aportar una alternativa autorizada.
+- Con esta decisión se considera suficientemente definida la experiencia base de lectura necesaria para pasar al cierre del stack técnico mínimo de Fase 1.
