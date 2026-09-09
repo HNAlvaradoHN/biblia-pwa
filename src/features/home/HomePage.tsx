@@ -3,6 +3,16 @@ import { Link } from 'react-router'
 import { getDemoDailyVerse } from '../../data/bible/provider'
 import { getLastReading, type ReadingProgress } from '../../data/db'
 
+function formatToday() {
+  const label = new Intl.DateTimeFormat('es', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(new Date())
+
+  return label.charAt(0).toUpperCase() + label.slice(1)
+}
+
 export function HomePage() {
   const daily = getDemoDailyVerse()
   const [lastReading, setLastReading] = useState<ReadingProgress | undefined>()
@@ -38,29 +48,53 @@ export function HomePage() {
     <div className="page home-page">
       <h1 className="sr-only">Inicio</h1>
 
-      <section className="section-block home-continue">
-        <p className="eyebrow">Continuar leyendo</p>
+      <section className="home-welcome glass-panel" aria-label="Hoy">
+        <div>
+          <span className="home-today">Hoy</span>
+          <strong>{formatToday()}</strong>
+          <small>Tu espacio de lectura</small>
+        </div>
+        <span className="home-orbit" aria-hidden="true">
+          <span>✦</span>
+        </span>
+      </section>
 
+      <section className="section-block home-continue">
         {lastReading ? (
-          <Link className="continue-card" to={`/biblia/${lastReading.bookId}/${lastReading.chapter}`}>
-            <div>
-              <span className="card-kicker">Última posición guardada</span>
+          <Link className="continue-card home-glass-card" to={`/biblia/${lastReading.bookId}/${lastReading.chapter}`}>
+            <span className="continue-symbol" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11a2 2 0 0 1 2 2v16a3 3 0 0 0-3-3H4V5.5Z" />
+                <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v18a3 3 0 0 1 3-3h4V5.5Z" />
+              </svg>
+            </span>
+            <div className="continue-copy">
+              <span className="card-kicker">Continuar leyendo</span>
               <strong>{lastReading.bookId} · capítulo {lastReading.chapter}</strong>
+              <small>Volver a tu última posición</small>
             </div>
-            <span aria-hidden="true">→</span>
+            <span className="continue-arrow" aria-hidden="true">→</span>
           </Link>
         ) : (
-          <Link className="continue-card" to="/biblia">
-            <div>
-              <span className="card-kicker">Primera lectura</span>
+          <Link className="continue-card home-glass-card" to="/biblia">
+            <span className="continue-symbol" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11a2 2 0 0 1 2 2v16a3 3 0 0 0-3-3H4V5.5Z" />
+                <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v18a3 3 0 0 1 3-3h4V5.5Z" />
+              </svg>
+            </span>
+            <div className="continue-copy">
+              <span className="card-kicker">Continuar leyendo</span>
               <strong>Elegí un libro para comenzar</strong>
+              <small>Tu última lectura aparecerá aquí</small>
             </div>
-            <span aria-hidden="true">→</span>
+            <span className="continue-arrow" aria-hidden="true">→</span>
           </Link>
         )}
       </section>
 
-      <section className="section-block daily-card home-daily-card">
+      <section className="section-block daily-card home-daily-card glass-panel">
+        <span className="daily-quote-mark" aria-hidden="true">“</span>
         <div className="section-heading">
           <div>
             <p className="eyebrow">Lectura del día</p>
@@ -70,7 +104,7 @@ export function HomePage() {
         </div>
         <blockquote>“{daily.verse.text}”</blockquote>
         <div className="action-row">
-          <button className="button secondary" type="button" onClick={() => void shareDailyVerse()}>
+          <button className="button secondary glass-button" type="button" onClick={() => void shareDailyVerse()}>
             Compartir
           </button>
           <Link className="button primary" to={`/biblia/${daily.book.id}/${daily.chapter.number}`}>
