@@ -38,6 +38,7 @@ Todavía no existe implementación de la aplicación.
 - Al cerrar el lector capítulo por capítulo, se vuelve exactamente a la posición previa del lector normal y esa ubicación se indicará visualmente durante aproximadamente 2 segundos.
 - La disposición `versículos corridos` / `versículos separados` es una preferencia visual independiente de esos dos lectores.
 - El lector deberá mostrar títulos/encabezados temáticos de las secciones bíblicas, no solo una secuencia plana de versículos; la fuente definitiva deberá permitir incorporarlos legalmente.
+- Se aprobó que la aplicación pueda distribuirse públicamente en el futuro para que otras personas la instalen y usen. Esto obliga a tratar licencias y permisos del contenido bíblico como requisito real de producto, no solo como precaución teórica.
 
 ## Objetivo activo
 
@@ -71,6 +72,12 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 - Diseño final de sincronización con Google Drive.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
 - Proveedor/flujo definitivo de despliegue de la PWA cuando llegue la implementación.
+
+## Restricción de contenido para desarrollo
+
+Como la aplicación puede publicarse en el futuro, no se debe construir Fase 1 alrededor de un corpus o títulos editoriales con derechos no verificados.
+
+Hasta contar con una fuente autorizada para el contenido definitivo, se puede desarrollar la arquitectura con datos ficticios, muestras limitadas o una fuente legal adecuada para pruebas, manteniendo el modelo preparado para sustituir el corpus sin romper referencias ni datos personales.
 
 ## Siguiente paso
 
