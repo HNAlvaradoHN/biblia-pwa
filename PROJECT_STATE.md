@@ -31,6 +31,9 @@ Todavía no existe implementación de la aplicación.
 - Dirección de personalización futura registrada: vista de versículos corridos/separados, compartir versículos, fondos visuales, temas adicionales y más opciones de apariencia/lectura.
 - Entrada a `Biblia` aprobada: combina `Continuar leyendo`, selector de libros/capítulos y lupa para localizar rápidamente un libro por nombre.
 - Selección de capítulos aprobada: cuadrícula de capítulos con el último capítulo leído de ese libro destacado visualmente.
+- Navegación del lector aprobada a nivel de producto: flujo continuo vertical entre capítulos y modalidad de capítulo separado.
+- En móvil/tablet, el cambio horizontal de capítulo deberá evitar depender de gestos iniciados en el borde y reconocer deslizamientos intencionales desde una zona interior segura.
+- Lectura enfocada aprobada: capítulo prácticamente a pantalla completa, sobre fondo/superficie opaca tipo hoja, con cambio directo al capítulo anterior/siguiente.
 
 ## Objetivo activo
 
@@ -41,10 +44,11 @@ No comenzar implementación ni saltar a otros módulos hasta cerrar este objetiv
 ## En evaluación
 
 - Permitir en el editor combinar texto escrito con teclado y bloques de escritura/dibujo con lápiz o stylus en teléfono/tablet. Esta idea todavía no está aprobada como requisito definitivo.
+- Definir si `capítulo separado` y `lectura enfocada a pantalla completa` serán el mismo modo o dos presentaciones distintas. No crear un tercer modo innecesario sin confirmación.
 
 ## Decisiones de producto futuras ya registradas, pero no abiertas todavía
 
-- Diseño exacto de los modos de lectura `versículos corridos` y `versículos separados`.
+- Diseño exacto de los modos de disposición `versículos corridos` y `versículos separados`.
 - Diseño y flujo de compartir versículos.
 - Uso de imágenes/fondos en contenido compartido.
 - Fondos o estilos visuales dentro de la aplicación.
