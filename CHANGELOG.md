@@ -60,3 +60,4 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Aprobado que `Biblia` tenga una pantalla propia que combine `Continuar leyendo`, selector de libros/capítulos y búsqueda rápida de libros.
 - Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer toda la lista.
 - Esta búsqueda rápida estará orientada a localizar libros; la búsqueda de palabras/frases bíblicas se mantendrá como función separada para evitar confusión.
+- Al elegir un libro, se mostrará una cuadrícula de capítulos y se destacará el último capítulo leído de ese libro para facilitar retomar la lectura.
