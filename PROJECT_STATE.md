@@ -37,6 +37,7 @@ Todavía no existe implementación de la aplicación.
 - En móvil/tablet, el cambio horizontal de capítulo deberá evitar depender de gestos iniciados en el borde y reconocer deslizamientos intencionales desde una zona interior segura.
 - Al cerrar el lector capítulo por capítulo, se vuelve exactamente a la posición previa del lector normal y esa ubicación se indicará visualmente durante aproximadamente 2 segundos.
 - La disposición `versículos corridos` / `versículos separados` es una preferencia visual independiente de esos dos lectores.
+- El lector deberá mostrar títulos/encabezados temáticos de las secciones bíblicas, no solo una secuencia plana de versículos; la fuente definitiva deberá permitir incorporarlos legalmente.
 
 ## Objetivo activo
 
@@ -73,7 +74,7 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 
 ## Siguiente paso
 
-Cerrar las decisiones de producto necesarias para la experiencia base de la primera versión y luego definir el stack técnico mínimo para Fase 1.
+La experiencia base de lectura necesaria para Fase 1 está suficientemente definida. El siguiente paso es presentar y cerrar el stack técnico mínimo de Fase 1 sin abrir todavía personalizaciones o módulos posteriores.
 
 ## Fase 1 pendiente
 
@@ -82,7 +83,7 @@ Objetivo: obtener una Biblia instalable, rápida y usable offline.
 Pendiente:
 - Inicializar aplicación.
 - Configurar PWA.
-- Crear modelo bíblico básico.
+- Crear modelo bíblico básico que soporte libros, capítulos, títulos de sección y versículos.
 - Incorporar dataset legal/de prueba apropiado.
 - Navegación libro → capítulo → versículos.
 - Persistir última lectura y posición exacta.
