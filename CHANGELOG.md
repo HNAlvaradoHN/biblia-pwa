@@ -50,7 +50,7 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 ## 2026-09-09 — Personalización futura del lector
 
-- Registrado que la Biblia deberá contemplar dos modos de lectura: versículos corridos y versículos separados.
+- Registrado que la Biblia deberá contemplar dos modos de disposición de versículos: versículos corridos y versículos separados.
 - Compartir versículos formará parte del producto, incluyendo la posibilidad de usar imágenes o fondos visuales.
 - Se desea contemplar fondos/estilos dentro de la aplicación, temas adicionales además de día/noche y más personalizaciones de lectura/apariencia.
 - Los detalles de estas funciones no se decidirán ahora; se preguntarán y documentarán cuando llegue la fase correspondiente.
@@ -61,3 +61,11 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer toda la lista.
 - Esta búsqueda rápida estará orientada a localizar libros; la búsqueda de palabras/frases bíblicas se mantendrá como función separada para evitar confusión.
 - Al elegir un libro, se mostrará una cuadrícula de capítulos y se destacará el último capítulo leído de ese libro para facilitar retomar la lectura.
+
+## 2026-09-09 — Navegación y lectura por capítulos
+
+- Aprobado un modo continuo vertical para seguir leyendo del final de un capítulo al siguiente sin volver al selector.
+- Aprobada también una modalidad de capítulo separado con navegación directa al capítulo anterior/siguiente.
+- En móvil/tablet, el gesto horizontal no deberá depender de comenzar desde el borde de la pantalla para evitar conflictos con gestos del sistema.
+- Aprobada una lectura enfocada del capítulo prácticamente a pantalla completa, sobre una superficie/fondo opaco tipo hoja.
+- Queda por definir si esa lectura enfocada será el mismo `modo separado` o una presentación adicional; no se añadirá un tercer modo sin confirmación.
