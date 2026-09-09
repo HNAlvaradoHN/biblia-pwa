@@ -25,3 +25,10 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Prohibido conservar diseño viejo oculto, comentado o desactivado como respaldo permanente; Git conserva el historial.
 - `AGENTS.md` exige leer `UI_RULES.md` antes de que un chat pueda tomar identidad y trabajar.
 - Establecido desarrollo secuencial con un único objetivo activo principal en `PROJECT_STATE.md`.
+
+## 2026-09-09 — Protocolo de decisiones con el usuario
+
+- Establecido que las preguntas al usuario deben centrarse en decisiones de producto con impacto real.
+- Evitar preguntas técnicas internas, obvias, repetidas o de bajo valor.
+- Las preguntas deben ser claras, pocas, oportunas y acompañadas de recomendación cuando corresponda.
+- Las respuestas aprobadas deben documentarse para evitar volver a preguntar lo mismo en chats futuros.
