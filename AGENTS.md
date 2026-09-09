@@ -11,9 +11,10 @@ Ningún chat puede presentarse como `Ing. 📚 #N`, proponer cambios de implemen
 3. Leer `PROJECT_STATE.md` completo.
 4. Leer `DECISIONS.md` completo.
 5. Leer `SECURITY.md` completo.
-6. Leer las entradas recientes de `CHANGELOG.md`.
-7. Verificar que el repositorio correcto es `HNAlvaradoHN/biblia-pwa` y que sigue siendo privado.
-8. Tomar la identidad secuencial siguiendo la regla de la sección 2.
+6. Leer `UI_RULES.md` completo.
+7. Leer las entradas recientes de `CHANGELOG.md`.
+8. Verificar que el repositorio correcto es `HNAlvaradoHN/biblia-pwa` y que sigue siendo privado.
+9. Tomar la identidad secuencial siguiendo la regla de la sección 2.
 
 Si falta alguno de estos archivos, no puede tomar identidad ni empezar implementación. Primero debe reparar la documentación mínima sin inventar decisiones.
 
@@ -44,15 +45,21 @@ La sesión #1 queda preasignada durante la creación inicial del repositorio, pe
 - No duplicar archivos para conservar versiones; Git ya conserva historial.
 - No crear archivos temporales, copias `final`, `final2`, `backup`, `old`, `test123` ni equivalentes.
 - Antes de crear un archivo, comprobar si ya existe una ubicación correcta para esa responsabilidad.
-- Eliminar código muerto cuando un reemplazo esté probado.
+- Cuando un reemplazo esté verificado, eliminar el código viejo, imports, estilos, rutas, variables y dependencias que hayan quedado sin uso.
+- No ocultar código sustituido mediante comentarios, `display:none`, banderas permanentes o componentes legacy para conservarlo “por si acaso”. El historial está en Git.
 - No instalar dependencias sin necesidad real.
 - No crear abstracciones o carpetas por anticipación si todavía no aportan valor.
 - Una función o módulo debe tener una responsabilidad clara.
 - Mantener nombres consistentes y estructura fácil de localizar.
 
-## 4. Forma de trabajar
+## 4. Forma de trabajar y orden obligatorio
 
 - Trabajar por fases. No intentar construir toda la aplicación al mismo tiempo.
+- `PROJECT_STATE.md` debe definir un objetivo activo y el siguiente paso.
+- No saltar a un módulo posterior porque resulte atractivo si el objetivo actual todavía no está terminado, salvo cambio explícito de prioridad del usuario.
+- Antes de empezar una tarea, definir su alcance y qué NO se va a tocar.
+- Terminar, probar, limpiar y documentar el objetivo activo antes de abrir otro objetivo importante.
+- No mezclar en un mismo cambio varias funciones no relacionadas salvo que técnicamente dependan entre sí.
 - Antes de cambios grandes, comprobar `PROJECT_STATE.md` y las decisiones existentes.
 - No cambiar una decisión marcada como APROBADA sin explicárselo primero al usuario y obtener su aprobación explícita.
 - Si aparece una alternativa mejor, presentarla de forma simple: Idea / Para qué sirve / Ventaja / Desventaja / Recomendación.
@@ -60,18 +67,40 @@ La sesión #1 queda preasignada durante la creación inicial del repositorio, pe
 - Priorizar soluciones simples, mantenibles, offline y fáciles de modificar.
 - El asistente realiza el trabajo técnico; el usuario no debe necesitar programar para mantener el proyecto.
 
-## 5. Antes de considerar terminado un cambio
+## 5. Cambios de diseño y UX
+
+`UI_RULES.md` es obligatorio para cualquier cambio de:
+
+- tema;
+- colores;
+- tipografía;
+- botones;
+- posiciones;
+- pantallas;
+- menús/submenús;
+- navegación visual;
+- transiciones;
+- animaciones;
+- efectos;
+- layouts;
+- comportamiento visual responsive.
+
+Un cambio visual debe quedar acotado, limpio y separado de la lógica no relacionada. Cuando reemplaza definitivamente una solución anterior, la solución anterior debe eliminarse después de verificar la nueva.
+
+## 6. Antes de considerar terminado un cambio
 
 Cuando aplique:
 
 - Comprobar que el proyecto compila.
 - Ejecutar pruebas/linter disponibles.
+- Para cambios visuales, cumplir además la lista de verificación de `UI_RULES.md`.
 - Revisar que no se hayan añadido secretos, datos personales ni archivos innecesarios.
+- Revisar que no quede código muerto ni restos del enfoque sustituido.
 - Actualizar `PROJECT_STATE.md` si cambió el estado real.
 - Actualizar `DECISIONS.md` solo cuando haya una decisión nueva o modificada.
 - Actualizar `CHANGELOG.md` con cambios reales relevantes, sin convertirlo en un diario de conversación.
 
-## 6. Privacidad y seguridad
+## 7. Privacidad y seguridad
 
 `SECURITY.md` es obligatorio. Como mínimo:
 
@@ -81,15 +110,16 @@ Cuando aplique:
 - Tratar el repositorio como si algún día pudiera verse comprometido aunque sea privado.
 - Los códigos de vinculación de dispositivos deben ser temporales y de uso limitado; nunca una contraseña permanente.
 
-## 7. Fuente oficial de verdad
+## 8. Fuente oficial de verdad
 
 La verdad actual del proyecto está en este orden:
 
 1. Instrucción explícita más reciente del usuario.
 2. `DECISIONS.md` para decisiones aprobadas.
-3. `PROJECT_STATE.md` para estado de implementación.
+3. `PROJECT_STATE.md` para estado de implementación y orden actual.
 4. `PROJECT_BRIEF.md` para alcance y visión.
-5. Código y pruebas para comportamiento ya implementado.
-6. `CHANGELOG.md` para historial relevante.
+5. `UI_RULES.md` para arquitectura y disciplina de interfaz.
+6. Código y pruebas para comportamiento ya implementado.
+7. `CHANGELOG.md` para historial relevante.
 
 Si dos fuentes contradicen, no adivinar: conservar la opción más reciente y documentada y señalar la contradicción antes de hacer un cambio destructivo.
