@@ -11,3 +11,9 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Registradas decisiones aprobadas hasta la fecha.
 - Establecidas reglas de privacidad, seguridad y cero basura.
 - Proyecto permanece en planificación; todavía no se ha creado código de la PWA.
+
+## 2026-09-09 — Prioridad de funciones
+
+- Pantalla de congregación movida al final como función opcional y fuera del MVP.
+- No debe implementarse salvo confirmación posterior del usuario.
+- Escritura con lápiz/stylus en el editor registrada como idea en evaluación, todavía no como requisito aprobado.
