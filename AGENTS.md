@@ -67,7 +67,43 @@ La sesión #1 queda preasignada durante la creación inicial del repositorio, pe
 - Priorizar soluciones simples, mantenibles, offline y fáciles de modificar.
 - El asistente realiza el trabajo técnico; el usuario no debe necesitar programar para mantener el proyecto.
 
-## 5. Cambios de diseño y UX
+## 5. Protocolo de preguntas al usuario
+
+Cuando una fase necesite decisiones del usuario, tratarlo como usuario/cliente del producto, no como programador.
+
+Preguntar únicamente cuando la respuesta tenga impacto real en uno o más de estos puntos:
+
+- experiencia de uso;
+- flujo de pantallas o navegación;
+- prioridad de funciones;
+- privacidad o seguridad;
+- sincronización y recuperación de datos;
+- costo o dependencia de servicios externos;
+- comportamiento visible de una función;
+- diseño, organización o accesibilidad;
+- compatibilidad importante entre móvil, tablet o PC.
+
+No preguntar:
+
+- detalles técnicos internos que el asistente pueda resolver con criterio;
+- nombres de archivos, carpetas, variables o librerías salvo que cambien una decisión de producto;
+- preferencias obvias ya documentadas;
+- cuestiones de bajo impacto que no cambian la experiencia ni la arquitectura;
+- lo que pueda deducirse con seguridad de `PROJECT_BRIEF.md`, `DECISIONS.md`, `PROJECT_STATE.md`, `SECURITY.md` o `UI_RULES.md`.
+
+Forma obligatoria de preguntar:
+
+- usar lenguaje sencillo;
+- explicar brevemente por qué la decisión importa;
+- presentar opciones concretas cuando existan;
+- indicar una recomendación cuando el asistente tenga una preferencia fundada;
+- no bombardear con muchas preguntas sin relación entre sí;
+- agrupar solo preguntas que pertenezcan a la misma decisión o etapa;
+- si una respuesta permite continuar, registrar la decisión y avanzar sin volver a preguntarla en chats futuros.
+
+Las preguntas deben aparecer cuando sean necesarias para el siguiente paso real, no meses antes “por si acaso”.
+
+## 6. Cambios de diseño y UX
 
 `UI_RULES.md` es obligatorio para cualquier cambio de:
 
@@ -87,7 +123,7 @@ La sesión #1 queda preasignada durante la creación inicial del repositorio, pe
 
 Un cambio visual debe quedar acotado, limpio y separado de la lógica no relacionada. Cuando reemplaza definitivamente una solución anterior, la solución anterior debe eliminarse después de verificar la nueva.
 
-## 6. Antes de considerar terminado un cambio
+## 7. Antes de considerar terminado un cambio
 
 Cuando aplique:
 
@@ -100,7 +136,7 @@ Cuando aplique:
 - Actualizar `DECISIONS.md` solo cuando haya una decisión nueva o modificada.
 - Actualizar `CHANGELOG.md` con cambios reales relevantes, sin convertirlo en un diario de conversación.
 
-## 7. Privacidad y seguridad
+## 8. Privacidad y seguridad
 
 `SECURITY.md` es obligatorio. Como mínimo:
 
@@ -110,7 +146,7 @@ Cuando aplique:
 - Tratar el repositorio como si algún día pudiera verse comprometido aunque sea privado.
 - Los códigos de vinculación de dispositivos deben ser temporales y de uso limitado; nunca una contraseña permanente.
 
-## 8. Fuente oficial de verdad
+## 9. Fuente oficial de verdad
 
 La verdad actual del proyecto está en este orden:
 
