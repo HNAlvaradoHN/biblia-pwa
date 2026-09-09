@@ -144,7 +144,7 @@ La aplicación debe contemplar personalización amplia, pero sus detalles se def
 
 Queda registrado que se desea:
 
-- dos formas de visualizar la Biblia: versículos corridos y versículos separados;
+- dos formas de visualizar la disposición de versículos: versículos corridos y versículos separados;
 - compartir versículos;
 - permitir fondos visuales/imágenes para contenido compartido;
 - contemplar fondos o estilos visuales dentro de la propia aplicación;
@@ -174,3 +174,19 @@ Después de elegir un libro, la aplicación mostrará una cuadrícula clara con 
 Si el usuario ya leyó antes ese libro, el último capítulo leído de ese libro quedará destacado visualmente para ayudarle a retomar su ubicación sin impedir que seleccione cualquier otro capítulo.
 
 La selección de capítulos debe ser rápida, fácil de tocar en móvil/tablet y clara también en PC.
+
+## D-022 — Navegación y flujo de lectura por capítulos
+Estado: APROBADA A NIVEL DE PRODUCTO / DETALLE VISUAL PENDIENTE
+
+El lector debe contemplar más de una forma de recorrer capítulos sin obligar al usuario a volver al selector constantemente.
+
+Queda aprobado:
+
+- un modo de lectura continua hacia abajo, donde al terminar un capítulo pueda continuar con el siguiente en el mismo flujo vertical;
+- una modalidad de capítulos separados, para leer un capítulo de forma individual y cambiar al anterior/siguiente;
+- en móvil/tablet, el gesto horizontal para cambiar de capítulo no debe depender exclusivamente de empezar desde los bordes de la pantalla, porque puede chocar con los gestos del sistema operativo;
+- si se usa gesto horizontal, debe reconocer un desplazamiento intencional desde una zona interior segura de la superficie de lectura;
+- debe existir una lectura de capítulo enfocada, con la lectura ocupando prácticamente toda la pantalla y el texto presentado sobre una superficie/fondo opaco tipo hoja para favorecer concentración y legibilidad;
+- desde esa lectura enfocada se podrá cambiar al capítulo anterior o siguiente sin volver al selector.
+
+La relación exacta entre `capítulo separado` y `lectura enfocada a pantalla completa` queda por definir: pueden ser el mismo modo o dos presentaciones distintas. No crear un tercer modo innecesario sin confirmar primero con el usuario.
