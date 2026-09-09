@@ -217,3 +217,16 @@ El lector no debe presentar la Biblia como una sucesión plana de versículos. D
 Estos encabezados deben formar parte de la estructura de contenido del lector y verse claramente diferenciados del texto bíblico sin confundirse con números de versículo.
 
 Como los títulos de sección pueden ser contenido editorial propio de una edición concreta, no se inventarán ni se copiarán de una fuente no autorizada. La fuente bíblica definitiva deberá incluirlos legalmente o proporcionar una forma autorizada y confiable de incorporarlos.
+
+## D-024 — Posible distribución pública futura
+Estado: APROBADA
+
+La aplicación no se diseña únicamente para uso privado permanente. El objetivo es que en el futuro pueda publicarse para que otras personas la instalen y utilicen.
+
+Consecuencias obligatorias:
+
+- la arquitectura no debe depender de datos bíblicos que solo sean aceptables para una prueba privada;
+- antes de incorporar o distribuir RVR60, títulos editoriales u otro contenido con derechos, debe verificarse que exista permiso o una fuente autorizada para ese uso;
+- durante desarrollo puede usarse contenido ficticio, limitado o una fuente legal de prueba si todavía no se dispone de derechos para el corpus definitivo;
+- el hecho de que el repositorio sea privado no convierte en redistribuible un contenido protegido;
+- la publicación futura no obliga a abrir públicamente el repositorio ni a exponer datos personales del usuario.
