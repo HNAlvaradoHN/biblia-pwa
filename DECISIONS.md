@@ -73,3 +73,19 @@ RVR60 es la traducción principal deseada. No incorporar ni redistribuir un data
 Estado: ABIERTO
 
 React/Vite, Dexie/IndexedDB, Tiptap, Zustand y otras herramientas han sido consideradas, pero todavía no deben tratarse como selección definitiva hasta cerrar la arquitectura con el usuario.
+
+## D-013 — Interfaz modular y reemplazo limpio
+Estado: APROBADA
+
+La interfaz debe construirse de forma modular para permitir cambios frecuentes de temas, botones, posiciones, pantallas, menús, submenús, transiciones y efectos sin afectar lógica no relacionada.
+
+Las reglas detalladas viven en `UI_RULES.md` y son obligatorias.
+
+Cuando una solución visual o componente sea reemplazado definitivamente y el reemplazo esté verificado, el código anterior debe eliminarse junto con restos huérfanos. No conservar versiones viejas ocultas, comentadas o desactivadas como mecanismo de respaldo; Git conserva el historial.
+
+## D-014 — Un objetivo activo a la vez
+Estado: APROBADA
+
+El desarrollo debe avanzar de forma secuencial y documentada. `PROJECT_STATE.md` define el objetivo activo y el siguiente paso.
+
+No saltar entre módulos o introducir funciones no relacionadas antes de cerrar, probar, limpiar y documentar el objetivo actual, salvo que el usuario cambie explícitamente la prioridad.
