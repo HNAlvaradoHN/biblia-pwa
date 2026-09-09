@@ -125,4 +125,30 @@ La estructura base del Inicio tendrá:
 
 La pantalla debe mantener la filosofía visual del proyecto: moderna, clara, responsiva, llamativa sin sobrecarga y fácil de entender en móvil, tablet y PC.
 
-El contenido y comportamiento exacto de `Lectura del día` todavía debe definirse antes de implementarlo.
+## D-018 — Lectura del día
+Estado: APROBADA
+
+`Lectura del día` mostrará un solo versículo destacado en la pantalla de Inicio.
+
+Ese versículo tendrá al menos dos acciones visibles o de acceso directo:
+
+- `Compartir`;
+- `Leer pasaje completo`, abriendo el contexto bíblico correspondiente.
+
+La forma exacta de seleccionar el versículo diario, su diseño visual y el formato de compartir se definirán cuando llegue su fase.
+
+## D-019 — Personalización amplia del lector y del contenido compartido
+Estado: DIRECCIÓN APROBADA / DETALLES PENDIENTES
+
+La aplicación debe contemplar personalización amplia, pero sus detalles se definirán solo cuando corresponda a cada fase.
+
+Queda registrado que se desea:
+
+- dos formas de visualizar la Biblia: versículos corridos y versículos separados;
+- compartir versículos;
+- permitir fondos visuales/imágenes para contenido compartido;
+- contemplar fondos o estilos visuales dentro de la propia aplicación;
+- ofrecer más temas que solo día/noche;
+- permitir diversas personalizaciones de lectura y apariencia.
+
+No adelantar preguntas ni implementación de estos puntos antes de su fase. Cuando llegue el momento, preguntar solo las decisiones necesarias y documentarlas por separado.
