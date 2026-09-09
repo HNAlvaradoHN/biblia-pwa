@@ -165,3 +165,12 @@ La pantalla principal de Biblia combinará:
 - una lupa o búsqueda rápida para escribir el nombre de un libro y encontrarlo sin recorrer manualmente toda la lista.
 
 La búsqueda por lupa de esta pantalla estará orientada primero a localizar libros rápidamente. La búsqueda de palabras o frases dentro del texto bíblico puede vivir como función separada para evitar confusión.
+
+## D-021 — Selección de capítulos
+Estado: APROBADA
+
+Después de elegir un libro, la aplicación mostrará una cuadrícula clara con sus capítulos disponibles.
+
+Si el usuario ya leyó antes ese libro, el último capítulo leído de ese libro quedará destacado visualmente para ayudarle a retomar su ubicación sin impedir que seleccione cualquier otro capítulo.
+
+La selección de capítulos debe ser rápida, fácil de tocar en móvil/tablet y clara también en PC.
