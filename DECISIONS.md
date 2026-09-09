@@ -175,18 +175,36 @@ Si el usuario ya leyó antes ese libro, el último capítulo leído de ese libro
 
 La selección de capítulos debe ser rápida, fácil de tocar en móvil/tablet y clara también en PC.
 
-## D-022 — Navegación y flujo de lectura por capítulos
-Estado: APROBADA A NIVEL DE PRODUCTO / DETALLE VISUAL PENDIENTE
+## D-022 — Dos experiencias de lectura bíblica
+Estado: APROBADA
 
-El lector debe contemplar más de una forma de recorrer capítulos sin obligar al usuario a volver al selector constantemente.
+La Biblia tendrá dos experiencias de lectura distintas, sin crear un tercer modo innecesario:
 
-Queda aprobado:
+### 1. Lector normal
 
-- un modo de lectura continua hacia abajo, donde al terminar un capítulo pueda continuar con el siguiente en el mismo flujo vertical;
-- una modalidad de capítulos separados, para leer un capítulo de forma individual y cambiar al anterior/siguiente;
-- en móvil/tablet, el gesto horizontal para cambiar de capítulo no debe depender exclusivamente de empezar desde los bordes de la pantalla, porque puede chocar con los gestos del sistema operativo;
-- si se usa gesto horizontal, debe reconocer un desplazamiento intencional desde una zona interior segura de la superficie de lectura;
-- debe existir una lectura de capítulo enfocada, con la lectura ocupando prácticamente toda la pantalla y el texto presentado sobre una superficie/fondo opaco tipo hoja para favorecer concentración y legibilidad;
-- desde esa lectura enfocada se podrá cambiar al capítulo anterior o siguiente sin volver al selector.
+Es la vista habitual de la Biblia.
 
-La relación exacta entre `capítulo separado` y `lectura enfocada a pantalla completa` queda por definir: pueden ser el mismo modo o dos presentaciones distintas. No crear un tercer modo innecesario sin confirmar primero con el usuario.
+- Permite desplazamiento vertical continuo.
+- Puede continuar del final de un capítulo al siguiente dentro del mismo flujo.
+- Conserva exactamente la posición del usuario.
+- La disposición de versículos `corridos` o `separados` es una preferencia visual independiente y no constituye otro modo de lectura.
+
+### 2. Lector capítulo por capítulo
+
+Es una vista temporal y enfocada para leer un capítulo de manera individual, sin recorrer toda la hoja continua del lector normal.
+
+- Presenta el capítulo de forma limpia y enfocada, ocupando prácticamente toda la zona útil de lectura.
+- Puede usar una superficie/fondo opaco tipo hoja para mejorar concentración y legibilidad.
+- Permite cambiar directamente al capítulo anterior o siguiente.
+- En móvil/tablet, el gesto horizontal para cambiar de capítulo no debe depender exclusivamente de comenzar desde los bordes; debe reconocer un deslizamiento intencional desde una zona interior segura para evitar conflictos con los gestos del sistema.
+
+### Regreso al lector normal
+
+Al cerrar el lector capítulo por capítulo:
+
+- volver exactamente al lector normal;
+- restaurar la posición que el usuario tenía antes de abrir el lector temporal;
+- señalar visualmente esa posición durante aproximadamente 2 segundos para que el usuario identifique inmediatamente dónde iba;
+- el indicador temporal no debe mover el texto ni hacer perder la posición.
+
+El diseño exacto del indicador de retorno y de los controles del lector capítulo por capítulo se definirá en la fase visual correspondiente.
