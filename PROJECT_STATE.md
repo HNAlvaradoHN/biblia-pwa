@@ -4,7 +4,7 @@
 
 ## Estado general
 
-Etapa: definición y planificación inicial.
+Etapa: cierre de planificación base y preparación de implementación de Fase 1.
 
 Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
@@ -38,13 +38,12 @@ Todavía no existe implementación de la aplicación.
 - Al cerrar el lector capítulo por capítulo, se vuelve exactamente a la posición previa del lector normal y esa ubicación se indicará visualmente durante aproximadamente 2 segundos.
 - La disposición `versículos corridos` / `versículos separados` es una preferencia visual independiente de esos dos lectores.
 - El lector deberá mostrar títulos/encabezados temáticos de las secciones bíblicas, no solo una secuencia plana de versículos; la fuente definitiva deberá permitir incorporarlos legalmente.
-- Se aprobó que la aplicación pueda distribuirse públicamente en el futuro para que otras personas la instalen y usen. Esto obliga a tratar licencias y permisos del contenido bíblico como requisito real de producto, no solo como precaución teórica.
+- Se aprobó que la aplicación pueda distribuirse públicamente en el futuro para que otras personas la instalen y usen. Esto obliga a tratar licencias y permisos del contenido bíblico como requisito real de producto.
+- Stack técnico mínimo de Fase 1 cerrado: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, chequeos de TypeScript/ESLint y GitHub Actions. Zustand y Tiptap quedan fuera de Fase 1 por no ser necesarios todavía.
 
 ## Objetivo activo
 
-Cerrar arquitectura técnica de la primera versión.
-
-No comenzar implementación ni saltar a otros módulos hasta cerrar este objetivo o hasta que el usuario cambie explícitamente la prioridad.
+Inicializar correctamente la aplicación de Fase 1 con el stack aprobado, sin añadir módulos futuros ni dependencias innecesarias.
 
 ## En evaluación
 
@@ -65,13 +64,11 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 
 ## Decisiones técnicas aún abiertas
 
-- Framework frontend definitivo.
-- Persistencia local definitiva.
-- Librería/editor de prédicas definitivo.
-- Fuente y formato inicial de datos bíblicos.
+- Fuente y formato definitivo del corpus bíblico autorizado.
 - Diseño final de sincronización con Google Drive.
+- Editor definitivo de prédicas cuando llegue esa fase.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
-- Proveedor/flujo definitivo de despliegue de la PWA cuando llegue la implementación.
+- Proveedor/flujo definitivo de despliegue de la PWA para la primera entrega pública verificable.
 
 ## Restricción de contenido para desarrollo
 
@@ -81,7 +78,9 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se puede de
 
 ## Siguiente paso
 
-La experiencia base de lectura necesaria para Fase 1 está suficientemente definida. El siguiente paso es presentar y cerrar el stack técnico mínimo de Fase 1 sin abrir todavía personalizaciones o módulos posteriores.
+Crear la estructura inicial de la PWA con el stack aprobado y dejar funcionando la base técnica mínima: navegación inicial, PWA, estructura de datos bíblicos reemplazable, persistencia local básica y verificaciones de calidad.
+
+No implementar todavía editor de prédicas, sincronización, personalizaciones avanzadas ni funciones futuras.
 
 ## Fase 1 pendiente
 
