@@ -46,4 +46,11 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 - Aprobado que la aplicación abra en una pantalla de Inicio, no directamente en el lector bíblico.
 - El Inicio tendrá `Continuar leyendo`, una sección `Lectura del día` y accesos claros a `Biblia`, `Prédicas`, `Buscar` y otras funciones aprobadas.
-- El comportamiento exacto de `Lectura del día` queda pendiente de definición antes de implementación.
+- `Lectura del día` queda definida como un solo versículo con opciones `Compartir` y `Leer pasaje completo`.
+
+## 2026-09-09 — Personalización futura del lector
+
+- Registrado que la Biblia deberá contemplar dos modos de lectura: versículos corridos y versículos separados.
+- Compartir versículos formará parte del producto, incluyendo la posibilidad de usar imágenes o fondos visuales.
+- Se desea contemplar fondos/estilos dentro de la aplicación, temas adicionales además de día/noche y más personalizaciones de lectura/apariencia.
+- Los detalles de estas funciones no se decidirán ahora; se preguntarán y documentarán cuando llegue la fase correspondiente.
