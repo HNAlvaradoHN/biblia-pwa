@@ -87,3 +87,19 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Cerrado el stack técnico mínimo de Fase 1: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, TypeScript/ESLint y GitHub Actions.
 - Zustand y Tiptap quedan fuera de Fase 1 hasta que exista una necesidad real.
 - `PROJECT_STATE.md` avanza el objetivo activo desde planificación de arquitectura a inicialización de la PWA base.
+
+## 2026-09-09 — Primera base ejecutable de Fase 1
+
+- Inicializada la aplicación React + TypeScript + Vite en versión `0.1.0`.
+- Añadida PWA con manifiesto, service worker/Workbox, limpieza de cachés antiguas y aviso explícito `Nueva versión disponible` / `Actualizar ahora`.
+- Añadida versión visible para identificar con certeza el build que se está usando.
+- Implementada pantalla Inicio con `Continuar leyendo`, versículo diario de demostración y accesos a las áreas principales.
+- Implementada entrada a Biblia con búsqueda rápida por nombre de libro, selector de capítulos y resaltado preparado para el último capítulo leído.
+- Implementado lector vertical continuo con títulos de sección y contenido ficticio claramente identificado como prueba, no RVR60.
+- Implementado modelo/proveedor bíblico reemplazable separado de los datos personales.
+- Implementada persistencia local con IndexedDB/Dexie para libro, capítulo y ancla de versículo de la última lectura.
+- Añadido diseño base moderno y responsive con tokens CSS centralizados y soporte de movimiento reducido.
+- Registrada como regla permanente la dirección visual moderna desde la primera entrega en `UI_RULES.md` y D-025.
+- Añadido `package-lock.json` reproducible y CI permanente con `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
+- Durante bootstrap se detectaron y corrigieron antes del merge una incompatibilidad Vite/PWA y un error de TypeScript; el ciclo final de bootstrap quedó en verde.
+- Prédicas, búsqueda de texto bíblico, sincronización y personalizaciones avanzadas siguen fuera de este cambio para respetar el alcance de Fase 1.
