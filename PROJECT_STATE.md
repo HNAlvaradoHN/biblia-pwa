@@ -4,46 +4,55 @@
 
 ## Estado general
 
-Etapa: cierre de planificación base y preparación de implementación de Fase 1.
+Etapa: implementación de Fase 1.
 
 Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
 Visibilidad esperada: privada.
 
-Todavía no existe implementación de la aplicación.
+Existe una primera base ejecutable de la aplicación en proceso de integración. Todavía no debe presentarse al usuario como `Lista para probar` hasta completar merge, despliegue y verificación publicada según `RELEASE_RULES.md`.
 
 ## Completado
+
+### Definición y reglas
 
 - Objetivo y alcance general definidos.
 - PWA elegida como plataforma inicial.
 - Repositorio privado creado.
 - Sistema de continuidad entre chats definido mediante `AGENTS.md`.
-- Reglas de cero basura, privacidad y documentación establecidas.
-- Reglas estrictas de interfaz y cambios visuales establecidas en `UI_RULES.md`.
+- Reglas de cero basura, privacidad, interfaz, documentación y entregas establecidas.
 - Desarrollo secuencial definido: un objetivo activo a la vez, con cierre, prueba, limpieza y documentación antes de avanzar.
 - Protocolo de preguntas al usuario definido para pedir solo decisiones con impacto real.
-- Reglas de entrega establecidas en `RELEASE_RULES.md`: no declarar versiones listas mientras existan fallos relevantes, identificar builds y avisar actualización de la PWA antes de probar cambios nuevos.
-- Concepto de vinculación por código aceptado.
-- Google Drive seleccionado como dirección preferida a investigar para sincronización personal sin exigir que otro dispositivo permanezca encendido.
-- Pantalla de congregación movida al final como función opcional; no forma parte del MVP ni debe implementarse sin confirmación posterior del usuario.
-- Pantalla de inicio aprobada: `Continuar leyendo`, `Lectura del día` y accesos principales como `Biblia`, `Prédicas` y `Buscar`.
-- `Lectura del día` definida como un solo versículo con acciones `Compartir` y `Leer pasaje completo`.
-- Dirección de personalización futura registrada: vista de versículos corridos/separados, compartir versículos, fondos visuales, temas adicionales y más opciones de apariencia/lectura.
-- Entrada a `Biblia` aprobada: combina `Continuar leyendo`, selector de libros/capítulos y lupa para localizar rápidamente un libro por nombre.
-- Selección de capítulos aprobada: cuadrícula de capítulos con el último capítulo leído de ese libro destacado visualmente.
-- Lectura bíblica aclarada en dos experiencias: lector normal continuo y lector temporal capítulo por capítulo.
-- El lector normal permite flujo vertical continuo entre capítulos y conserva la posición.
-- El lector capítulo por capítulo permite lectura enfocada de un capítulo y cambio directo al anterior/siguiente.
-- En móvil/tablet, el cambio horizontal de capítulo deberá evitar depender de gestos iniciados en el borde y reconocer deslizamientos intencionales desde una zona interior segura.
-- Al cerrar el lector capítulo por capítulo, se vuelve exactamente a la posición previa del lector normal y esa ubicación se indicará visualmente durante aproximadamente 2 segundos.
-- La disposición `versículos corridos` / `versículos separados` es una preferencia visual independiente de esos dos lectores.
-- El lector deberá mostrar títulos/encabezados temáticos de las secciones bíblicas, no solo una secuencia plana de versículos; la fuente definitiva deberá permitir incorporarlos legalmente.
-- Se aprobó que la aplicación pueda distribuirse públicamente en el futuro para que otras personas la instalen y usen. Esto obliga a tratar licencias y permisos del contenido bíblico como requisito real de producto.
-- Stack técnico mínimo de Fase 1 cerrado: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, chequeos de TypeScript/ESLint y GitHub Actions. Zustand y Tiptap quedan fuera de Fase 1 por no ser necesarios todavía.
+- Dirección visual moderna, clara y responsive establecida como regla obligatoria desde la primera entrega.
+- Posible distribución pública futura aprobada; licencias/permisos del contenido bíblico se tratan como requisito real.
+- Stack técnico mínimo de Fase 1 cerrado: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, TypeScript/ESLint y GitHub Actions.
+
+### Base ejecutable de Fase 1
+
+- Proyecto React + TypeScript + Vite inicializado.
+- Dependencias bloqueadas mediante `package-lock.json` reproducible.
+- PWA configurada con manifiesto, service worker/Workbox, limpieza de cachés antiguas y estrategia de actualización por aviso.
+- Versión inicial `0.1.0` visible en la aplicación.
+- Aviso `Nueva versión disponible` con acción `Actualizar ahora`; no hay recarga automática silenciosa.
+- Navegación base implementada: Inicio, Biblia y rutas preparadas para áreas posteriores sin implementar su lógica antes de tiempo.
+- Pantalla Inicio implementada con `Continuar leyendo`, `Lectura del día` de demostración y accesos principales.
+- Pantalla Biblia implementada con búsqueda rápida de libros por nombre.
+- Selector de capítulos implementado en cuadrícula y preparado para destacar el último capítulo leído.
+- Lector normal vertical implementado con continuidad entre los capítulos disponibles del libro.
+- Modelo bíblico implementado con traducción, libro, capítulo, sección/título y versículo.
+- Contenido bíblico detrás de un proveedor reemplazable para sustituir la muestra sin acoplar el resto de la aplicación.
+- Muestra ficticia explícita incluida; no contiene RVR60 ni pretende reproducir otra traducción.
+- Persistencia local con IndexedDB/Dexie implementada para última lectura, capítulo y ancla de versículo.
+- Restauración de lectura basada en ancla estable de versículo en vez de depender solo de píxeles de scroll.
+- Diseño base responsive implementado con tokens CSS centralizados, navegación adaptativa y soporte `prefers-reduced-motion`.
+- CI permanente preparado para `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
+- Bootstrap técnico ejecutado en GitHub Actions con instalación, typecheck, lint, build y auditoría en verde antes de abrir integración.
 
 ## Objetivo activo
 
-Inicializar correctamente la aplicación de Fase 1 con el stack aprobado, sin añadir módulos futuros ni dependencias innecesarias.
+Completar la primera entrega ejecutable de Fase 1: integrar la base en `main`, desplegarla mediante un flujo de prueba reemplazable y verificar que la versión publicada carga correctamente antes de declararla lista para probar.
+
+No abrir todavía editor de prédicas, sincronización, personalizaciones avanzadas ni otros módulos posteriores.
 
 ## En evaluación
 
@@ -52,13 +61,12 @@ Inicializar correctamente la aplicación de Fase 1 con el stack aprobado, sin a�
 ## Decisiones de producto futuras ya registradas, pero no abiertas todavía
 
 - Diseño exacto de los modos de disposición `versículos corridos` y `versículos separados`.
-- Diseño y flujo de compartir versículos.
-- Uso de imágenes/fondos en contenido compartido.
+- Diseño y flujo completo de compartir versículos con imágenes/fondos.
 - Fondos o estilos visuales dentro de la aplicación.
 - Temas adicionales además de día/noche.
 - Personalizaciones de lectura y apariencia.
-- Diseño exacto del indicador temporal de retorno al lector normal.
-- Diseño final de controles del lector capítulo por capítulo.
+- Diseño exacto del indicador temporal al volver del lector capítulo por capítulo.
+- Implementación y controles definitivos del lector temporal capítulo por capítulo.
 
 No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspondiente.
 
@@ -68,34 +76,33 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 - Diseño final de sincronización con Google Drive.
 - Editor definitivo de prédicas cuando llegue esa fase.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
-- Proveedor/flujo definitivo de despliegue de la PWA para la primera entrega pública verificable.
+- Proveedor definitivo de despliegue para etapas posteriores; el primer host de prueba no debe crear dependencia arquitectónica.
 
 ## Restricción de contenido para desarrollo
 
 Como la aplicación puede publicarse en el futuro, no se debe construir Fase 1 alrededor de un corpus o títulos editoriales con derechos no verificados.
 
-Hasta contar con una fuente autorizada para el contenido definitivo, se puede desarrollar la arquitectura con datos ficticios, muestras limitadas o una fuente legal adecuada para pruebas, manteniendo el modelo preparado para sustituir el corpus sin romper referencias ni datos personales.
+Hasta contar con una fuente autorizada para el contenido definitivo, se desarrolla con datos ficticios o una fuente legal adecuada para pruebas, manteniendo el modelo preparado para sustituir el corpus sin romper referencias ni datos personales.
 
 ## Siguiente paso
 
-Crear la estructura inicial de la PWA con el stack aprobado y dejar funcionando la base técnica mínima: navegación inicial, PWA, estructura de datos bíblicos reemplazable, persistencia local básica y verificaciones de calidad.
-
-No implementar todavía editor de prédicas, sincronización, personalizaciones avanzadas ni funciones futuras.
+1. Abrir PR de la base de Fase 1 contra `main`.
+2. Exigir CI verde sobre el PR usando instalación desde `package-lock.json`.
+3. Integrar solo si todas las verificaciones pasan.
+4. Verificar nuevamente CI sobre `main`.
+5. Desplegar la versión `0.1.0` para prueba.
+6. Comprobar la aplicación publicada y su versión antes de comunicar `✅ Lista para probar`.
 
 ## Fase 1 pendiente
 
 Objetivo: obtener una Biblia instalable, rápida y usable offline.
 
-Pendiente:
-- Inicializar aplicación.
-- Configurar PWA.
-- Crear modelo bíblico básico que soporte libros, capítulos, títulos de sección y versículos.
-- Incorporar dataset legal/de prueba apropiado.
-- Navegación libro → capítulo → versículos.
-- Persistir última lectura y posición exacta.
-- Probar funcionamiento offline.
-- Configurar verificaciones de calidad/CI y flujo de despliegue antes de la primera entrega ejecutable.
-- Implementar un mecanismo visible de versión/actualización antes de depender de pruebas sobre versiones desplegadas.
+Pendiente después de este bootstrap:
+
+- verificar funcionamiento offline desde una versión realmente desplegada/instalada;
+- verificar en navegador real el aviso y proceso de actualización entre versiones;
+- ampliar el corpus únicamente cuando exista fuente legal/autorizada apropiada;
+- completar las siguientes funciones del lector en su orden aprobado, sin mezclarlas en este bootstrap.
 
 ## Regla de actualización
 

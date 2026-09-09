@@ -251,3 +251,12 @@ Consecuencias obligatorias:
 - durante desarrollo puede usarse contenido ficticio, limitado o una fuente legal de prueba si todavía no se dispone de derechos para el corpus definitivo;
 - el hecho de que el repositorio sea privado no convierte en redistribuible un contenido protegido;
 - la publicación futura no obliga a abrir públicamente el repositorio ni a exponer datos personales del usuario.
+
+## D-025 — Dirección visual moderna desde la primera entrega
+Estado: APROBADA
+
+La aplicación debe verse actual, clara, atractiva y fácil de entender desde su primera versión ejecutable. No se construirá deliberadamente una interfaz anticuada o descuidada para corregirla al final.
+
+La experiencia debe adaptarse de forma real a teléfono, tablet y computadora, mantener buena legibilidad y objetivos táctiles cómodos, y evitar sobrecarga de controles o efectos.
+
+La dirección detallada vive en `UI_RULES.md`. Esta regla no obliga a implementar ahora todos los temas, fondos o personalizaciones futuras; exige que la base visual ya sea moderna, coherente y preparada para evolucionar limpiamente.

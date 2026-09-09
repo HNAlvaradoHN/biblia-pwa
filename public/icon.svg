@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Biblia">
+  <rect width="512" height="512" rx="112" fill="#173a2a"/>
+  <path d="M132 112c0-22 18-40 40-40h84v328h-84c-22 0-40 18-40 40V112Z" fill="#f4f0e7"/>
+  <path d="M380 112c0-22-18-40-40-40h-84v328h84c22 0 40 18 40 40V112Z" fill="#e5dccb"/>
+  <path d="M256 72v368" stroke="#c9a86a" stroke-width="16" stroke-linecap="round"/>
+  <path d="M187 172h44M187 220h44M281 172h44M281 220h44" stroke="#173a2a" stroke-width="14" stroke-linecap="round" opacity=".82"/>
+</svg>
