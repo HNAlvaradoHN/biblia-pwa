@@ -21,6 +21,8 @@ Todavía no existe implementación de la aplicación.
 - Reglas de cero basura, privacidad y documentación establecidas.
 - Reglas estrictas de interfaz y cambios visuales establecidas en `UI_RULES.md`.
 - Desarrollo secuencial definido: un objetivo activo a la vez, con cierre, prueba, limpieza y documentación antes de avanzar.
+- Protocolo de preguntas al usuario definido para pedir solo decisiones con impacto real.
+- Reglas de entrega establecidas en `RELEASE_RULES.md`: no declarar versiones listas mientras existan fallos relevantes, identificar builds y avisar actualización de la PWA antes de probar cambios nuevos.
 - Concepto de vinculación por código aceptado.
 - Google Drive seleccionado como dirección preferida a investigar para sincronización personal sin exigir que otro dispositivo permanezca encendido.
 - Pantalla de congregación movida al final como función opcional; no forma parte del MVP ni debe implementarse sin confirmación posterior del usuario.
@@ -43,6 +45,7 @@ No comenzar implementación ni saltar a otros módulos hasta cerrar este objetiv
 - Fuente y formato inicial de datos bíblicos.
 - Diseño final de sincronización con Google Drive.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
+- Proveedor/flujo definitivo de despliegue de la PWA cuando llegue la implementación.
 
 ## Siguiente paso
 
@@ -60,6 +63,8 @@ Pendiente:
 - Navegación libro → capítulo → versículos.
 - Persistir última lectura.
 - Probar funcionamiento offline.
+- Configurar verificaciones de calidad/CI y flujo de despliegue antes de la primera entrega ejecutable.
+- Implementar un mecanismo visible de versión/actualización antes de depender de pruebas sobre versiones desplegadas.
 
 ## Regla de actualización
 
