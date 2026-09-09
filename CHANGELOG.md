@@ -32,3 +32,12 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Evitar preguntas técnicas internas, obvias, repetidas o de bajo valor.
 - Las preguntas deben ser claras, pocas, oportunas y acompañadas de recomendación cuando corresponda.
 - Las respuestas aprobadas deben documentarse para evitar volver a preguntar lo mismo en chats futuros.
+
+## 2026-09-09 — Disciplina de entregas y actualización
+
+- Creado `RELEASE_RULES.md` como regla obligatoria para merge, CI, despliegue, versiones y actualización de la PWA.
+- Prohibido declarar una versión `Lista para probar` mientras existan fallos conocidos relevantes de build, tipos, lint, pruebas, CI, merge o despliegue.
+- Cada versión desplegada deberá ser identificable para confirmar qué build está usando el usuario.
+- La PWA deberá avisar cuando exista una nueva versión y pedir actualizar antes de probar cambios nuevos.
+- No se forzará una recarga durante predicación, edición no guardada u otra operación crítica; la actualización se aplicará en un punto seguro.
+- `AGENTS.md` exige leer `RELEASE_RULES.md` antes de que un chat pueda tomar identidad y trabajar.
