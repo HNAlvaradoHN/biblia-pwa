@@ -12,9 +12,10 @@ Ningún chat puede presentarse como `Ing. 📚 #N`, proponer cambios de implemen
 4. Leer `DECISIONS.md` completo.
 5. Leer `SECURITY.md` completo.
 6. Leer `UI_RULES.md` completo.
-7. Leer las entradas recientes de `CHANGELOG.md`.
-8. Verificar que el repositorio correcto es `HNAlvaradoHN/biblia-pwa` y que sigue siendo privado.
-9. Tomar la identidad secuencial siguiendo la regla de la sección 2.
+7. Leer `RELEASE_RULES.md` completo.
+8. Leer las entradas recientes de `CHANGELOG.md`.
+9. Verificar que el repositorio correcto es `HNAlvaradoHN/biblia-pwa` y que sigue siendo privado.
+10. Tomar la identidad secuencial siguiendo la regla de la sección 2.
 
 Si falta alguno de estos archivos, no puede tomar identidad ni empezar implementación. Primero debe reparar la documentación mínima sin inventar decisiones.
 
@@ -89,7 +90,7 @@ No preguntar:
 - nombres de archivos, carpetas, variables o librerías salvo que cambien una decisión de producto;
 - preferencias obvias ya documentadas;
 - cuestiones de bajo impacto que no cambian la experiencia ni la arquitectura;
-- lo que pueda deducirse con seguridad de `PROJECT_BRIEF.md`, `DECISIONS.md`, `PROJECT_STATE.md`, `SECURITY.md` o `UI_RULES.md`.
+- lo que pueda deducirse con seguridad de `PROJECT_BRIEF.md`, `DECISIONS.md`, `PROJECT_STATE.md`, `SECURITY.md`, `UI_RULES.md` o `RELEASE_RULES.md`.
 
 Forma obligatoria de preguntar:
 
@@ -123,20 +124,35 @@ Las preguntas deben aparecer cuando sean necesarias para el siguiente paso real,
 
 Un cambio visual debe quedar acotado, limpio y separado de la lógica no relacionada. Cuando reemplaza definitivamente una solución anterior, la solución anterior debe eliminarse después de verificar la nueva.
 
-## 7. Antes de considerar terminado un cambio
+## 7. Entrega, merge y actualización
+
+`RELEASE_RULES.md` es obligatorio para cualquier cambio que modifique la aplicación ejecutable.
+
+- No declarar una versión lista para probar mientras existan fallos conocidos relevantes de build, tipos, lint, pruebas, CI, merge o despliegue.
+- No detener la entrega en un estado rojo si el fallo puede resolverse dentro del trabajo actual.
+- No silenciar verificaciones solo para obtener verde.
+- Si existe un bloqueo externo real que no puede resolverse desde el entorno disponible, informarlo claramente y NO usar el mensaje `Lista para probar`.
+- Cada versión desplegable debe ser identificable para poder confirmar qué build está usando el usuario.
+- Toda nueva versión ejecutable debe avisar que existe una actualización y pedir actualizar antes de probar cambios nuevos.
+- Evitar que la caché de la PWA haga que el usuario crea estar probando una versión nueva cuando todavía ejecuta una antigua.
+- Nunca forzar una recarga que pueda interrumpir una sesión de predicación, edición no guardada u operación crítica. En esos casos, avisar y actualizar en un punto seguro.
+- Solo después de verificar la versión desplegada puede comunicarse `✅ Lista para probar`.
+
+## 8. Antes de considerar terminado un cambio
 
 Cuando aplique:
 
 - Comprobar que el proyecto compila.
 - Ejecutar pruebas/linter disponibles.
 - Para cambios visuales, cumplir además la lista de verificación de `UI_RULES.md`.
+- Para cambios ejecutables, cumplir además `RELEASE_RULES.md`.
 - Revisar que no se hayan añadido secretos, datos personales ni archivos innecesarios.
 - Revisar que no quede código muerto ni restos del enfoque sustituido.
 - Actualizar `PROJECT_STATE.md` si cambió el estado real.
 - Actualizar `DECISIONS.md` solo cuando haya una decisión nueva o modificada.
 - Actualizar `CHANGELOG.md` con cambios reales relevantes, sin convertirlo en un diario de conversación.
 
-## 8. Privacidad y seguridad
+## 9. Privacidad y seguridad
 
 `SECURITY.md` es obligatorio. Como mínimo:
 
@@ -146,7 +162,7 @@ Cuando aplique:
 - Tratar el repositorio como si algún día pudiera verse comprometido aunque sea privado.
 - Los códigos de vinculación de dispositivos deben ser temporales y de uso limitado; nunca una contraseña permanente.
 
-## 9. Fuente oficial de verdad
+## 10. Fuente oficial de verdad
 
 La verdad actual del proyecto está en este orden:
 
@@ -155,7 +171,9 @@ La verdad actual del proyecto está en este orden:
 3. `PROJECT_STATE.md` para estado de implementación y orden actual.
 4. `PROJECT_BRIEF.md` para alcance y visión.
 5. `UI_RULES.md` para arquitectura y disciplina de interfaz.
-6. Código y pruebas para comportamiento ya implementado.
-7. `CHANGELOG.md` para historial relevante.
+6. `RELEASE_RULES.md` para entrega, verificación, versiones y actualización.
+7. `SECURITY.md` para privacidad y seguridad.
+8. Código y pruebas para comportamiento ya implementado.
+9. `CHANGELOG.md` para historial relevante.
 
 Si dos fuentes contradicen, no adivinar: conservar la opción más reciente y documentada y señalar la contradicción antes de hacer un cambio destructivo.
