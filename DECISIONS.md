@@ -152,3 +152,16 @@ Queda registrado que se desea:
 - permitir diversas personalizaciones de lectura y apariencia.
 
 No adelantar preguntas ni implementación de estos puntos antes de su fase. Cuando llegue el momento, preguntar solo las decisiones necesarias y documentarlas por separado.
+
+## D-020 — Entrada a la sección Biblia
+Estado: APROBADA
+
+Al tocar `Biblia` desde Inicio, no se abrirá únicamente un selector de libros ni únicamente la última lectura.
+
+La pantalla principal de Biblia combinará:
+
+- acceso a `Continuar leyendo` desde la última posición guardada;
+- acceso claro al listado/selector de libros y capítulos;
+- una lupa o búsqueda rápida para escribir el nombre de un libro y encontrarlo sin recorrer manualmente toda la lista.
+
+La búsqueda por lupa de esta pantalla estará orientada primero a localizar libros rápidamente. La búsqueda de palabras o frases dentro del texto bíblico puede vivir como función separada para evitar confusión.
