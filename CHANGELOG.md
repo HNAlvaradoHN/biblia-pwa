@@ -62,10 +62,12 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Esta búsqueda rápida estará orientada a localizar libros; la búsqueda de palabras/frases bíblicas se mantendrá como función separada para evitar confusión.
 - Al elegir un libro, se mostrará una cuadrícula de capítulos y se destacará el último capítulo leído de ese libro para facilitar retomar la lectura.
 
-## 2026-09-09 — Navegación y lectura por capítulos
+## 2026-09-09 — Dos experiencias de lectura bíblica
 
-- Aprobado un modo continuo vertical para seguir leyendo del final de un capítulo al siguiente sin volver al selector.
-- Aprobada también una modalidad de capítulo separado con navegación directa al capítulo anterior/siguiente.
-- En móvil/tablet, el gesto horizontal no deberá depender de comenzar desde el borde de la pantalla para evitar conflictos con gestos del sistema.
-- Aprobada una lectura enfocada del capítulo prácticamente a pantalla completa, sobre una superficie/fondo opaco tipo hoja.
-- Queda por definir si esa lectura enfocada será el mismo `modo separado` o una presentación adicional; no se añadirá un tercer modo sin confirmación.
+- Corregida la definición anterior para evitar confundir `capítulo separado` con un tercer modo de lectura.
+- La Biblia tendrá un lector normal con desplazamiento vertical continuo entre capítulos.
+- Existirá además un lector temporal capítulo por capítulo para leer un capítulo de forma enfocada y cambiar al anterior/siguiente.
+- En móvil/tablet, el gesto horizontal de cambio de capítulo evitará depender de los bordes para no chocar con gestos del sistema.
+- Al cerrar el lector capítulo por capítulo, se restaurará exactamente la posición previa del lector normal.
+- Esa posición se resaltará o indicará visualmente durante aproximadamente 2 segundos para que el usuario identifique dónde iba.
+- `Versículos corridos` y `versículos separados` quedan como preferencia de disposición del texto, independiente de las dos experiencias de lectura.
