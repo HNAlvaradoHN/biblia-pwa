@@ -56,9 +56,13 @@ No se desea depender obligatoriamente de Supabase, Firebase, Cloudflare u otra b
 La implementación exacta, cifrado, manejo de conflictos y autenticación quedan abiertos hasta su fase técnica.
 
 ## D-010 — Pantalla de congregación independiente
-Estado: APROBADA
+Estado: POSTERGADA / OPCIONAL
 
-No duplicar la pantalla del pastor. La congregación debe tener una vista independiente en navegador que solo muestre contenido público enviado por el pastor.
+Si algún día se implementa, no debe duplicar la pantalla privada del pastor: la congregación tendría una vista independiente que solo muestre contenido público.
+
+Sin embargo, desde 2026-09-09 esta función deja de formar parte del camino principal y del MVP. Debe quedar para el final del proyecto y no implementarse salvo que el usuario confirme posteriormente que realmente la quiere.
+
+No diseñar otras partes del proyecto de forma que dependan obligatoriamente de esta función.
 
 ## D-011 — RVR60 deseada, licencia no asumida
 Estado: APROBADA
