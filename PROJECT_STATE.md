@@ -4,13 +4,15 @@
 
 ## Estado general
 
-Etapa: implementación de Fase 1.
+Etapa: implementación de Fase 1 y cierre de la primera entrega ejecutable.
 
 Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
 Visibilidad esperada: privada.
 
-Existe una primera base ejecutable de la aplicación en proceso de integración. Todavía no debe presentarse al usuario como `Lista para probar` hasta completar merge, despliegue y verificación publicada según `RELEASE_RULES.md`.
+La primera base ejecutable `0.1.0` ya está integrada en `main` y sus verificaciones están en verde. Se creó un despliegue de producción para esta versión, pero todavía NO debe presentarse al usuario como `Lista para probar` porque falta verificar desde fuera que el despliegue terminó correctamente y sirve la versión esperada.
+
+El bloqueo actual es externo: el conector de Vercel utilizado para consultar/verificar el despliegue no tiene autorización sobre el mismo scope/equipo donde el propio despliegue fue creado. `RELEASE_RULES.md` obliga a resolver esa verificación antes de entregar el enlace como listo.
 
 ## Completado
 
@@ -45,14 +47,27 @@ Existe una primera base ejecutable de la aplicación en proceso de integración.
 - Persistencia local con IndexedDB/Dexie implementada para última lectura, capítulo y ancla de versículo.
 - Restauración de lectura basada en ancla estable de versículo en vez de depender solo de píxeles de scroll.
 - Diseño base responsive implementado con tokens CSS centralizados, navegación adaptativa y soporte `prefers-reduced-motion`.
-- CI permanente preparado para `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
-- Bootstrap técnico ejecutado en GitHub Actions con instalación, typecheck, lint, build y auditoría en verde antes de abrir integración.
+- CI permanente configurado con `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
+- PR #1 de la base ejecutable pasó CI y fue integrado mediante squash en `main`.
+- `main` volvió a pasar todas las verificaciones después del merge de la base.
+- PR #2 añadió retención del `dist/` verificado de `main` y fallback SPA para despliegue; también pasó CI y fue integrado.
+- Commit de entrega actual en `main`: `7fdf73867de2d12c88fad62e8675de5fadce6b20`.
+- CI de ese commit quedó en verde y conservó el artefacto `biblia-pwa-dist`, generado por el mismo build verificado.
+- Digest del artefacto verificado: `sha256:2219827e137032cd028d66bd9830e6b9ecbc86e71dc7b32edb0c2139a53c5481`.
+- Se solicitó despliegue de producción en Vercel usando ese artefacto exacto, sin reconstruir la aplicación con dependencias distintas.
 
 ## Objetivo activo
 
-Completar la primera entrega ejecutable de Fase 1: integrar la base en `main`, desplegarla mediante un flujo de prueba reemplazable y verificar que la versión publicada carga correctamente antes de declararla lista para probar.
+Cerrar la entrega `0.1.0` verificando la publicación real antes de comunicar `✅ Lista para probar`.
 
 No abrir todavía editor de prédicas, sincronización, personalizaciones avanzadas ni otros módulos posteriores.
+
+### Bloqueo externo actual
+
+- El despliegue de producción fue creado con ID `dpl_9TaQQG4nECpfKRYcGTTNju72NqKq` y alias previsto `biblia-pwa-geovaalvarado0-2860.vercel.app`.
+- Las herramientas de lectura/verificación de Vercel responden `403 Forbidden` porque la conexión actual no está autorizada para el scope `geovaalvarado0-2860` / equipo `team_OxT7ZRrQ8lO1KbkGg9ZpTVvb`.
+- El entorno de ejecución disponible tampoco puede hacer una comprobación HTTP independiente porque su resolución DNS externa está bloqueada.
+- Por lo tanto, el despliegue está creado pero NO se considera todavía verificado ni listo para entregar.
 
 ## En evaluación
 
@@ -86,18 +101,18 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se desarrol
 
 ## Siguiente paso
 
-1. Abrir PR de la base de Fase 1 contra `main`.
-2. Exigir CI verde sobre el PR usando instalación desde `package-lock.json`.
-3. Integrar solo si todas las verificaciones pasan.
-4. Verificar nuevamente CI sobre `main`.
-5. Desplegar la versión `0.1.0` para prueba.
-6. Comprobar la aplicación publicada y su versión antes de comunicar `✅ Lista para probar`.
+1. Restablecer/autorizAR la conexión de Vercel para el scope donde se creó `biblia-pwa`.
+2. Verificar que el despliegue terminó en estado correcto.
+3. Abrir la raíz publicada y comprobar que carga la aplicación.
+4. Abrir directamente una ruta interna como `/biblia` y comprobar el fallback SPA.
+5. Confirmar que la aplicación publicada muestra versión `0.1.0` y que manifiesto/service worker son accesibles.
+6. Solo después comunicar `✅ Lista para probar` y pedir al usuario actualizar antes de probar si ya tenía la PWA abierta/instalada.
 
 ## Fase 1 pendiente
 
 Objetivo: obtener una Biblia instalable, rápida y usable offline.
 
-Pendiente después de este bootstrap:
+Pendiente después de cerrar esta primera entrega:
 
 - verificar funcionamiento offline desde una versión realmente desplegada/instalada;
 - verificar en navegador real el aviso y proceso de actualización entre versiones;
