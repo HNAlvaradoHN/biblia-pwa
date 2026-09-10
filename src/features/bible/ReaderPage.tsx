@@ -5,6 +5,7 @@ import {
   getBibleNote,
   getLastReading,
   isFavorite,
+  makeBibleLocationId,
   removeBibleNote,
   saveBibleNote,
   saveLastReading,
@@ -15,7 +16,6 @@ import './reader-actions.css'
 type SelectedVerse = {
   chapter: number
   verse: number
-  text: string
   anchorId: string
 }
 
@@ -183,7 +183,7 @@ export function ReaderPage() {
   }
 
   async function handleFavorite() {
-    if (!selectedVerse) return
+    if (!book || !selectedVerse) return
 
     const active = await toggleFavorite({
       bookId: book.id,
@@ -195,7 +195,7 @@ export function ReaderPage() {
   }
 
   async function handleSaveNote() {
-    if (!selectedVerse || !noteDraft.trim()) return
+    if (!book || !selectedVerse || !noteDraft.trim()) return
 
     const saved = await saveBibleNote(
       {
@@ -212,9 +212,13 @@ export function ReaderPage() {
   }
 
   async function handleDeleteNote() {
-    if (!selectedVerse) return
+    if (!book || !selectedVerse) return
 
-    await removeBibleNote(`${book.id}:${selectedVerse.chapter}:${selectedVerse.verse}`)
+    await removeBibleNote(makeBibleLocationId({
+      bookId: book.id,
+      chapter: selectedVerse.chapter,
+      verse: selectedVerse.verse,
+    }))
     setNoteDraft('')
     setNoteSaved(false)
     setNoteOpen(false)
@@ -267,7 +271,6 @@ export function ReaderPage() {
                                 : {
                                     chapter: chapter.number,
                                     verse: verse.number,
-                                    text: verse.text,
                                     anchorId,
                                   },
                             )
