@@ -147,3 +147,15 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Los estilos nuevos se aislaron en `src/features/home/home.css` para conservar modularidad y evitar ensuciar el CSS global.
 - La función completa de favoritos, resaltados y notas sigue pendiente; cuando exista, esta sección deberá alimentarse de datos reales.
 - El build queda identificado como `0.1.3`.
+
+## 2026-09-10 — Favoritos y notas reales 0.1.4
+
+- Convertidas las tarjetas `Favoritos` y `Notas` del Inicio en accesos reales a pantallas completas de cada colección, sin añadir nuevas pestañas a la barra inferior.
+- Añadido almacenamiento local en IndexedDB/Dexie para favoritos y notas bíblicas, separado del corpus y basado en referencias estructuradas libro/capítulo/versículo.
+- `Guardados recientes` deja de usar muestras ficticias: muestra el favorito y la nota más recientes del usuario o estados vacíos útiles si todavía no existen.
+- Añadidas pantallas `Mis favoritos` y `Mis notas` con listas reales, estados vacíos y opciones para quitar/eliminar elementos.
+- Cada elemento guardado permite volver al versículo exacto mediante el ancla estable del lector.
+- Al tocar un versículo en el lector normal aparece un panel contextual compacto con acciones `Favorito` y `Nota`, evitando controles permanentes sobre todo el texto.
+- Desde el lector se puede guardar o quitar un favorito y crear, guardar o eliminar una nota asociada al versículo.
+- Durante la validación se detectaron y corrigieron errores de nulabilidad TypeScript y un import no utilizado; no se desactivó ninguna comprobación.
+- El build queda identificado como `0.1.4`.

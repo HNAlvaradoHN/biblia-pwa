@@ -4,6 +4,7 @@ import { HomePage } from '../features/home/HomePage'
 import { BiblePage } from '../features/bible/BiblePage'
 import { BookPage } from '../features/bible/BookPage'
 import { ReaderPage } from '../features/bible/ReaderPage'
+import { FavoritesPage, NotesPage } from '../features/saved/SavedPages'
 import { ComingSoonPage } from '../features/placeholders/ComingSoonPage'
 
 export function App() {
@@ -14,6 +15,8 @@ export function App() {
         <Route path="biblia" element={<BiblePage />} />
         <Route path="biblia/:bookId" element={<BookPage />} />
         <Route path="biblia/:bookId/:chapter" element={<ReaderPage />} />
+        <Route path="favoritos" element={<FavoritesPage />} />
+        <Route path="notas" element={<NotesPage />} />
         <Route
           path="predicas"
           element={

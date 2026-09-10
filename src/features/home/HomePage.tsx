@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { bibleProvider, getDemoDailyVerse } from '../../data/bible/provider'
-import { getLastReading, type ReadingProgress } from '../../data/db'
+import { getDemoDailyVerse } from '../../data/bible/provider'
+import {
+  getLastReading,
+  getRecentFavorites,
+  getRecentNotes,
+  type BibleNoteRecord,
+  type FavoriteRecord,
+  type ReadingProgress,
+} from '../../data/db'
+import { resolveBibleLocation } from '../saved/resolveSaved'
 import './home.css'
-
-const demoSavedSpecs = [
-  { kind: 'Favorito', bookId: 'GEN', chapter: 1, verse: 2 },
-  { kind: 'Nota', bookId: 'JHN', chapter: 1, verse: 2 },
-] as const
 
 function formatToday() {
   const label = new Intl.DateTimeFormat('es', {
@@ -19,39 +22,27 @@ function formatToday() {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
-function getDemoSavedItems() {
-  return demoSavedSpecs.flatMap((spec) => {
-    const book = bibleProvider.getBook(spec.bookId)
-    const chapter = bibleProvider.getChapter(spec.bookId, spec.chapter)
-    const verse = chapter?.sections
-      .flatMap((section) => section.verses)
-      .find((item) => item.number === spec.verse)
-
-    if (!book || !verse) {
-      return []
-    }
-
-    return [
-      {
-        ...spec,
-        reference: `${book.name} ${spec.chapter}:${spec.verse}`,
-        text: verse.text,
-        to: `/biblia/${book.id}/${spec.chapter}`,
-      },
-    ]
-  })
-}
-
 export function HomePage() {
   const daily = getDemoDailyVerse()
-  const savedPreview = getDemoSavedItems()
   const [lastReading, setLastReading] = useState<ReadingProgress | undefined>()
+  const [recentFavorite, setRecentFavorite] = useState<FavoriteRecord | undefined>()
+  const [recentNote, setRecentNote] = useState<BibleNoteRecord | undefined>()
   const [shareMessage, setShareMessage] = useState('')
 
   useEffect(() => {
-    void getLastReading().then(setLastReading)
+    void Promise.all([
+      getLastReading(),
+      getRecentFavorites(1),
+      getRecentNotes(1),
+    ]).then(([reading, favorites, notes]) => {
+      setLastReading(reading)
+      setRecentFavorite(favorites[0])
+      setRecentNote(notes[0])
+    })
   }, [])
 
+  const favoriteLocation = recentFavorite ? resolveBibleLocation(recentFavorite) : undefined
+  const noteLocation = recentNote ? resolveBibleLocation(recentNote) : undefined
   const dailyReference = `${daily.book.name} ${daily.chapter.number}:${daily.verse.number}`
   const dailyText = `${daily.verse.text} — ${dailyReference}`
 
@@ -148,33 +139,37 @@ export function HomePage() {
         <div className="home-saved-heading">
           <div>
             <p className="eyebrow" id="saved-title">Guardados recientes</p>
-            <span>Vista previa de favoritos y notas</span>
+            <span>Tus listas, siempre a mano</span>
           </div>
-          <span className="saved-demo-chip">Demostración</span>
         </div>
 
         <div className="home-saved-grid">
-          {savedPreview.map((item) => (
-            <Link className="saved-preview-card glass-panel" key={`${item.kind}-${item.reference}`} to={item.to}>
-              <span className="saved-preview-icon" aria-hidden="true">
-                {item.kind === 'Favorito' ? (
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path d="m12 3 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.4 7.2 18l.9-5.4-3.9-3.8 5.4-.8L12 3Z" />
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M6 4h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
-                    <path d="M8 8h8M8 12h5" />
-                  </svg>
-                )}
-              </span>
-              <span className="saved-preview-copy">
-                <small>{item.kind}</small>
-                <strong>{item.reference}</strong>
-                <span>{item.text}</span>
-              </span>
-            </Link>
-          ))}
+          <Link className="saved-preview-card glass-panel" to="/favoritos">
+            <span className="saved-preview-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="m12 3 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.4 7.2 18l.9-5.4-3.9-3.8 5.4-.8L12 3Z" />
+              </svg>
+            </span>
+            <span className="saved-preview-copy">
+              <small>Favoritos</small>
+              <strong>{favoriteLocation?.reference ?? 'Sin favoritos todavía'}</strong>
+              <span>{favoriteLocation?.verse.text ?? 'Tocá un versículo para guardarlo.'}</span>
+            </span>
+          </Link>
+
+          <Link className="saved-preview-card glass-panel" to="/notas">
+            <span className="saved-preview-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 4h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
+                <path d="M8 8h8M8 12h5" />
+              </svg>
+            </span>
+            <span className="saved-preview-copy">
+              <small>Notas</small>
+              <strong>{noteLocation?.reference ?? 'Sin notas todavía'}</strong>
+              <span>{recentNote?.text ?? 'Añadí una nota desde cualquier versículo.'}</span>
+            </span>
+          </Link>
         </div>
       </section>
     </div>

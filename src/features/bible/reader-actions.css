@@ -1,0 +1,167 @@
+.verse-item {
+  display: grid;
+  gap: 8px;
+}
+
+.verse-button {
+  width: 100%;
+  padding: 5px 7px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 140ms ease, box-shadow 140ms ease;
+}
+
+.verse-button:hover,
+.verse-item.selected .verse-button {
+  background: color-mix(in srgb, var(--accent-soft) 58%, transparent);
+}
+
+.verse-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  outline-offset: 2px;
+}
+
+.verse-action-panel {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 4px;
+  padding: 11px;
+  border-radius: 15px;
+}
+
+.verse-action-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.verse-action-header strong {
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.78rem;
+}
+
+.verse-action-header button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.verse-action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.verse-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.verse-action-button.active {
+  border-color: color-mix(in srgb, var(--nav-accent) 22%, var(--glass-border));
+  background: color-mix(in srgb, var(--nav-accent) 12%, rgba(255, 255, 255, 0.62));
+  color: var(--nav-accent);
+}
+
+.verse-action-button span {
+  font-size: 1rem;
+}
+
+.verse-note-editor {
+  display: grid;
+  gap: 7px;
+}
+
+.verse-note-editor label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.verse-note-editor textarea {
+  width: 100%;
+  min-height: 84px;
+  resize: vertical;
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  outline: 0;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.45;
+}
+
+.verse-note-editor textarea:focus {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.verse-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.verse-note-actions .button {
+  min-height: 38px;
+  padding-inline: 12px;
+  font-size: 0.76rem;
+}
+
+.verse-note-actions .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+}
+
+.verse-action-message {
+  margin: 0;
+  color: var(--brand);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+@media (max-width: 680px) {
+  .verse-item {
+    gap: 6px;
+  }
+
+  .verse-button {
+    padding: 4px 5px;
+  }
+
+  .verse-action-panel {
+    gap: 8px;
+    padding: 9px;
+    border-radius: 13px;
+  }
+
+  .verse-action-button {
+    min-height: 38px;
+    font-size: 0.74rem;
+  }
+}
