@@ -10,9 +10,9 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
 Visibilidad esperada: privada.
 
-La versión `0.1.3` quedó integrada y el usuario confirmó en un dispositivo real que un despliegue publicado mostraba `v0.1.3`. Esa versión cerró la composición del Inicio con `Guardados recientes`.
+La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cierra el objetivo de Favoritos y Notas reales.
 
-El objetivo activo es `0.1.4`: convertir Favoritos y Notas en funciones reales, locales y navegables desde el Inicio y desde el lector.
+El siguiente objetivo activo es completar las acciones básicas del versículo que todavía faltan en el lector: `Resaltar`, `Copiar` y `Compartir`, manteniendo el panel contextual limpio ya usado para Favorito y Nota.
 
 ## Completado
 
@@ -40,13 +40,10 @@ El objetivo activo es `0.1.4`: convertir Favoritos y Notas en funciones reales, 
 - `0.1.0`: primera base ejecutable.
 - `0.1.1`: Inicio móvil compactado y accesos duplicados eliminados.
 - `0.1.2`: Inicio visual reforzado y barra inferior glass.
-- `0.1.3`: `Guardados recientes` añadido al Inicio; el usuario confirmó un despliegue que mostraba `v0.1.3`.
+- `0.1.3`: `Guardados recientes` añadido al Inicio y confirmado en dispositivo real.
+- `0.1.4`: Favoritos y Notas reales, confirmado por el usuario en la publicación de producción.
 
-### Favoritos y Notas 0.1.4 — implementación actual en rama
-
-Rama activa: `feature-favorites-notes-014`.
-
-Implementado:
+### Favoritos y Notas 0.1.4 — cerrado
 
 - IndexedDB/Dexie ampliado con tablas separadas para favoritos y notas bíblicas.
 - Guardados basados en referencia estructurada `bookId + capítulo + versículo`, sin copiar el corpus dentro de los datos personales.
@@ -59,18 +56,24 @@ Implementado:
 - Desde ese panel se puede guardar/quitar Favorito y crear/guardar/eliminar una nota asociada al versículo.
 - Los enlaces desde Favoritos y Notas vuelven al versículo exacto usando el ancla estable del lector.
 - Build visible identificado como `0.1.4`.
-- Durante validación, CI detectó un problema de nulabilidad en TypeScript y un import sin uso en lint; ambos fueron corregidos sin desactivar verificaciones.
-- El último commit funcional de la rama pasó instalación bloqueada, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
+- Durante validación, CI detectó problemas de nulabilidad TypeScript y un import sin uso; fueron corregidos sin silenciar verificaciones.
+- Rama, PR #6 y `main` pasaron instalación bloqueada, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
+- El usuario confirmó en un dispositivo real que la publicación `v0.1.4` se ve correctamente; entrega cerrada.
 
 ## Objetivo activo
 
-Cerrar, integrar, desplegar y verificar `0.1.4 — Favoritos y Notas reales`.
+Completar las acciones básicas restantes del versículo en el lector normal: `Resaltar`, `Copiar` y `Compartir`, integrándolas en el mismo panel contextual que ya contiene Favorito y Nota.
 
-No abrir todavía resaltados, búsqueda bíblica completa, lector capítulo por capítulo, prédicas, sincronización, fondos o personalizaciones avanzadas hasta cerrar esta entrega.
+Reglas de alcance:
+
+- `Resaltar` debe persistirse como dato personal local y mantenerse separado del corpus bíblico.
+- `Copiar` debe copiar referencia y texto de forma clara.
+- `Compartir` debe usar el mecanismo nativo del dispositivo cuando exista y un fallback razonable cuando no exista.
+- No abrir todavía búsqueda bíblica completa, lector capítulo por capítulo, prédicas, sincronización, fondos o personalizaciones avanzadas dentro de este objetivo.
 
 ## Decisiones de producto futuras ya registradas, pero no abiertas todavía
 
-- Resaltados bíblicos y su comportamiento visual.
+- Diseño exacto de colores y personalización avanzada de resaltados; en el primer paso solo se necesita una experiencia funcional y coherente.
 - Diseño exacto de `versículos corridos` y `versículos separados`.
 - Compartir versículos con imágenes/fondos y su flujo visual completo.
 - Fondos seleccionables dentro de la aplicación.
@@ -92,23 +95,20 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 
 ## Restricción de contenido para desarrollo
 
-Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja con datos ficticios o una fuente legal de prueba. Los favoritos y notas guardan referencias estructuradas y datos personales, no copias acopladas del corpus, para poder sustituir la traducción sin romper las referencias.
+Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja con datos ficticios o una fuente legal de prueba. Favoritos, notas y futuros resaltados guardan referencias estructuradas y datos personales, no copias acopladas del corpus, para poder sustituir la traducción sin romper referencias.
 
 ## Siguiente paso inmediato
 
-1. Registrar la decisión de Favoritos y Notas reales y actualizar changelog.
-2. Exigir nuevamente CI verde sobre el commit final de la rama.
-3. Revisar diferencias contra `main` para descartar basura o cambios no relacionados.
-4. Abrir PR y exigir CI verde sobre integración.
-5. Fusionar solo si todo queda verde.
-6. Confirmar CI verde y artefacto exacto de `main`.
-7. Desplegar `0.1.4`.
-8. Verificar que la versión publicada muestra `v0.1.4` y las rutas internas funcionan.
-9. Pedir al usuario actualizar la PWA antes de probar Favoritos y Notas.
+1. Implementar persistencia local mínima para resaltados.
+2. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual del versículo sin recargar visualmente el lector.
+3. Exigir TypeScript, lint, build PWA y auditoría en verde.
+4. Revisar diferencias y limpiar cualquier resto no relacionado.
+5. Integrar mediante PR solo si todo queda verde.
+6. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
 
-## Después de 0.1.4
+## Después de este objetivo
 
-El siguiente objetivo funcional previsto es la búsqueda bíblica completa por palabras/frases. Después se retomará el lector capítulo por capítulo ya aprobado, salvo que una revisión real de `0.1.4` revele una corrección prioritaria.
+El siguiente objetivo funcional previsto es la búsqueda bíblica completa por palabras/frases. Después se retomará el lector capítulo por capítulo ya aprobado, salvo que una revisión real revele una corrección prioritaria.
 
 ## Regla de actualización
 
