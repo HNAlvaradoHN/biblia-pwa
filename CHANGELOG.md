@@ -159,3 +159,5 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Desde el lector se puede guardar o quitar un favorito y crear, guardar o eliminar una nota asociada al versículo.
 - Durante la validación se detectaron y corrigieron errores de nulabilidad TypeScript y un import no utilizado; no se desactivó ninguna comprobación.
 - El build queda identificado como `0.1.4`.
+- PR #6 y `main` pasaron TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
+- El usuario confirmó en un dispositivo real que la versión publicada `v0.1.4` se ve correctamente; la entrega queda cerrada y verificada.
