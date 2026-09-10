@@ -285,3 +285,18 @@ Reglas:
 - cuando existan guardados reales, la sección deberá alimentarse de los datos reales del usuario;
 - mientras la función de guardados todavía no esté implementada, cualquier contenido usado para probar la composición debe estar marcado explícitamente como demostración y no presentarse como dato personal real;
 - en pantallas bajas, se reducirán primero textos secundarios y altura de las vistas previas antes de introducir desplazamiento vertical innecesario.
+
+## D-028 — Favoritos y notas como colecciones reales
+Estado: APROBADA
+
+Las tarjetas `Favoritos` y `Notas` de `Guardados recientes` serán accesos funcionales a colecciones completas y no nuevas pestañas de la barra inferior.
+
+- `Favoritos` abre una pantalla completa con todos los versículos marcados como favoritos por el usuario.
+- `Notas` abre una pantalla completa con todas las notas bíblicas guardadas por el usuario.
+- Cada elemento conserva una referencia bíblica estructurada y permite volver directamente al versículo exacto relacionado.
+- El Inicio muestra una vista previa reciente tomada de los datos reales del usuario; cuando no hay datos, muestra un estado vacío útil en lugar de contenido ficticio presentado como personal.
+- En el lector normal, tocar un versículo revela acciones contextuales sin llenar permanentemente el texto de controles.
+- La primera implementación incluye guardar/quitar favorito y crear, guardar o eliminar una nota asociada al versículo.
+- Favoritos y notas son datos personales locales, almacenados de forma separada del corpus bíblico.
+
+La implementación interna puede evolucionar más adelante sin cambiar esta experiencia, por ejemplo para ampliar organización, búsqueda o edición de notas cuando corresponda.
