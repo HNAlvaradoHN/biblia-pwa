@@ -10,7 +10,9 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
 Visibilidad esperada: privada.
 
-La base ejecutable está publicada y ya recibió revisión visual real en móvil. La versión `0.1.1` compactó Inicio y eliminó accesos duplicados. A partir de la siguiente revisión del usuario se prepara `0.1.2`, enfocada en dar más presencia visual al Inicio sin volver a introducir scroll innecesario y en mejorar la barra inferior con una dirección tipo glass compatible con futuros temas/fondos.
+La versión `0.1.2` fue integrada en `main`, pasó CI y el usuario confirmó visualmente en móvil que un despliegue específico servía `v0.1.2`. Esa versión introdujo el Inicio visual compacto y la barra inferior glass.
+
+A partir de la revisión real del usuario se prepara `0.1.3`, centrada únicamente en aprovechar el espacio libre del Inicio mediante una sección compacta `Guardados recientes`, sin abrir todavía la función completa de favoritos/notas ni romper la regla de evitar scroll vertical innecesario en móvil.
 
 ## Completado
 
@@ -27,6 +29,7 @@ La base ejecutable está publicada y ya recibió revisión visual real en móvil
 - Posible distribución pública futura aprobada; licencias/permisos del contenido bíblico se tratan como requisito real.
 - Stack técnico mínimo de Fase 1 cerrado: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, TypeScript/ESLint y GitHub Actions.
 - Dirección visual glass para navegación inferior aprobada mediante D-026, preparada para convivir con futuros temas/fondos sin implementar todavía el selector de fondos.
+- D-027 aprueba mostrar `Guardados recientes` de forma compacta en Inicio y exige que cualquier muestra previa a la función real se identifique claramente como demostración.
 
 ### Base ejecutable de Fase 1
 
@@ -47,27 +50,26 @@ La base ejecutable está publicada y ya recibió revisión visual real en móvil
 - CI permanente configurado con `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
 - PR #1 de la base ejecutable pasó CI y fue integrado mediante squash en `main`.
 - PR #2 añadió retención del `dist/` verificado de `main` y fallback SPA para despliegue; también pasó CI y fue integrado.
-- La publicación `0.1.0` fue accesible desde el enlace público y recibió revisión visual real del usuario.
-- PR #3 integró `0.1.1` después de CI verde: eliminó la portada grande, retiró accesos duplicados y compactó Inicio/barra inferior en móvil.
+- PR #3 integró `0.1.1`: eliminó la portada grande, retiró accesos duplicados y compactó Inicio/barra inferior en móvil.
+- PR #4 integró `0.1.2`: encabezado compacto, tarjetas con mayor presencia visual, iconos SVG y navegación inferior glass.
+- El usuario confirmó en un teléfono que el despliegue específico de `0.1.2` mostraba `v0.1.2`.
 
-### Ajuste visual 0.1.2 en preparación
+### Ajuste visual 0.1.3 en preparación
 
-- Añadido encabezado compacto con fecha y contexto visual para que Inicio no se perciba vacío sin crear nuevas funciones.
-- `Continuar leyendo` rediseñado como tarjeta visual compacta con icono y jerarquía más clara.
-- `Lectura del día` reforzada como pieza protagonista, manteniendo sus acciones actuales.
-- Barra inferior rediseñada con efecto glass translúcido, blur y contraste controlado.
-- Sustituidos símbolos tipográficos de navegación por iconos SVG propios y consistentes.
-- Estado activo de la barra usa un tono suave derivado del color del tema mediante variables CSS, preparado para futuros fondos/temas.
-- Añadidos ajustes específicos para móviles bajos de altura para reducir elementos secundarios antes de provocar scroll.
-- El scroll permanece disponible por accesibilidad, zoom o pantallas excepcionalmente pequeñas; no se recorta contenido.
-- Build identificado como `0.1.2`.
-- Primera validación de rama pasó `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias en verde antes de completar documentación.
+- Añadida al Inicio una sección compacta `Guardados recientes` debajo de `Lectura del día`.
+- La muestra usa dos vistas previas (`Favorito` y `Nota`) tomadas del corpus ficticio de desarrollo y está marcada explícitamente como `Demostración`; no pretende representar datos personales reales.
+- Cada tarjeta muestra tipo de guardado, referencia y una vista previa corta del texto, y permite abrir el contexto bíblico correspondiente.
+- Los estilos de esta sección viven en un archivo propio del módulo Inicio para mantener modularidad y evitar ampliar innecesariamente el CSS global.
+- En móviles comunes se muestran dos tarjetas compactas; en pantallas de poca altura se reducen primero subtítulos, líneas de texto y altura de tarjetas antes de necesitar scroll.
+- En tablet/PC la sección ocupa el ancho completo debajo de las dos tarjetas principales de Inicio.
+- Build identificado como `0.1.3`.
+- La rama `ui-home-saved-013` pasó `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
 
 ## Objetivo activo
 
-Cerrar, integrar, publicar y verificar el ajuste visual `0.1.2` sin abrir funciones nuevas.
+Cerrar, integrar, publicar y verificar `0.1.3` sin abrir todavía la función completa de guardados.
 
-No abrir todavía editor de prédicas, sincronización, selector de fondos, personalizaciones avanzadas ni otros módulos posteriores.
+No abrir editor de prédicas, sincronización, selector de fondos, personalizaciones avanzadas ni otros módulos posteriores dentro de este ajuste.
 
 ## En evaluación
 
@@ -75,6 +77,7 @@ No abrir todavía editor de prédicas, sincronización, selector de fondos, pers
 
 ## Decisiones de producto futuras ya registradas, pero no abiertas todavía
 
+- Implementación completa de favoritos, resaltados y notas; cuando exista, `Guardados recientes` deberá usar esos datos reales.
 - Diseño exacto de los modos de disposición `versículos corridos` y `versículos separados`.
 - Diseño y flujo completo de compartir versículos con imágenes/fondos.
 - Fondos o estilos visuales seleccionables dentro de la aplicación.
@@ -101,13 +104,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se desarrol
 
 ## Siguiente paso
 
-1. Exigir CI verde sobre el commit final de `0.1.2`.
+1. Exigir CI verde sobre el commit final de `0.1.3`.
 2. Abrir PR contra `main` y exigir nuevamente CI verde.
 3. Integrar solo si todas las verificaciones pasan.
 4. Confirmar CI verde y artefacto en `main`.
-5. Desplegar `0.1.2`.
-6. Verificar que el enlace publicado carga y muestra versión `0.1.2`.
-7. Pedir al usuario actualizar la PWA antes de revisar el nuevo Inicio y la barra glass.
+5. Desplegar `0.1.3`.
+6. Verificar que el enlace publicado carga y muestra versión `0.1.3`.
+7. Pedir al usuario actualizar antes de revisar `Guardados recientes`.
 
 ## Fase 1 pendiente
 

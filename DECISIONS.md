@@ -271,3 +271,17 @@ La barra de navegación inferior usará una dirección visual tipo `glass`: supe
 La sección activa debe distinguirse con un tono suave derivado del tema visual actual. La arquitectura de estilos debe permitir que, cuando se implementen fondos de pantalla o temas personalizados, ese tono pueda adaptarse al fondo/tema sin rehacer la navegación.
 
 El efecto glass no debe ser tan transparente que perjudique lectura, accesibilidad o claridad de iconos y etiquetas. Los fondos de pantalla personalizados siguen perteneciendo a su fase futura; esta decisión solo prepara la navegación para convivir correctamente con ellos.
+
+## D-027 — Guardados recientes en Inicio
+Estado: APROBADA
+
+La pantalla Inicio puede aprovechar el espacio disponible mostrando una sección compacta `Guardados recientes` con vistas previas de contenido guardado, como favoritos, resaltados o notas, en lugar de rellenar con accesos duplicados o contenido decorativo sin función.
+
+Reglas:
+
+- la sección debe mantenerse compacta y priorizar que Inicio siga cabiendo sin scroll vertical en móviles comunes con tamaño de texto normal;
+- puede mostrar dos o tres vistas previas recientes y adaptarse horizontalmente si el ancho es limitado;
+- cada vista previa debe indicar claramente el tipo de guardado y su referencia bíblica;
+- cuando existan guardados reales, la sección deberá alimentarse de los datos reales del usuario;
+- mientras la función de guardados todavía no esté implementada, cualquier contenido usado para probar la composición debe estar marcado explícitamente como demostración y no presentarse como dato personal real;
+- en pantallas bajas, se reducirán primero textos secundarios y altura de las vistas previas antes de introducir desplazamiento vertical innecesario.
