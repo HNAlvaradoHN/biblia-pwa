@@ -20,7 +20,7 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 ## 2026-09-09 — Disciplina de interfaz y desarrollo
 
-- Creado `UI_RULES.md` como regla obligatoria para temas, botones, layouts, pantallas, menús, transiciones, efectos y cambios visuales.
+- Creado `UI_RULES.md` como regla obligatoria para temas, botones, layouts, pantallas, menús, submenús, transiciones, efectos y cambios visuales.
 - Establecido reemplazo limpio: una solución anterior verificada como sustituida debe eliminarse junto con código, estilos, imports y dependencias huérfanas.
 - Prohibido conservar diseño viejo oculto, comentado o desactivado como respaldo permanente; Git conserva el historial.
 - `AGENTS.md` exige leer `UI_RULES.md` antes de que un chat pueda tomar identidad y trabajar.
@@ -58,7 +58,7 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 ## 2026-09-09 — Entrada a la sección Biblia
 
 - Aprobado que `Biblia` tenga una pantalla propia que combine `Continuar leyendo`, selector de libros/capítulos y búsqueda rápida de libros.
-- Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer toda la lista.
+- Se añadirá una lupa para escribir el nombre de un libro y encontrarlo rápidamente sin recorrer manualmente toda la lista.
 - Esta búsqueda rápida estará orientada a localizar libros; la búsqueda de palabras/frases bíblicas se mantendrá como función separada para evitar confusión.
 - Al elegir un libro, se mostrará una cuadrícula de capítulos y se destacará el último capítulo leído de ese libro para facilitar retomar la lectura.
 
@@ -137,3 +137,13 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - El scroll no se bloquea para conservar accesibilidad, zoom y compatibilidad con pantallas excepcionalmente pequeñas.
 - El selector de fondos de pantalla todavía no se implementa; esta versión únicamente prepara el sistema visual para convivir con él más adelante.
 - El build queda identificado como `0.1.2`.
+
+## 2026-09-09 — Guardados recientes en Inicio 0.1.3
+
+- Aprobado usar parte del espacio libre del Inicio para una sección compacta `Guardados recientes` en vez de añadir accesos duplicados o relleno decorativo.
+- Añadidas dos vistas previas de demostración (`Favorito` y `Nota`) usando exclusivamente el corpus ficticio de desarrollo; se identifican explícitamente como `Demostración` y no representan datos personales reales.
+- Cada vista previa muestra tipo de guardado, referencia y texto breve y abre el contexto bíblico correspondiente.
+- La sección se adapta a móvil, tablet y PC; en pantallas bajas reduce contenido secundario y altura antes de provocar scroll vertical.
+- Los estilos nuevos se aislaron en `src/features/home/home.css` para conservar modularidad y evitar ensuciar el CSS global.
+- La función completa de favoritos, resaltados y notas sigue pendiente; cuando exista, esta sección deberá alimentarse de datos reales.
+- El build queda identificado como `0.1.3`.
