@@ -300,3 +300,23 @@ Las tarjetas `Favoritos` y `Notas` de `Guardados recientes` serán accesos funci
 - Favoritos y notas son datos personales locales, almacenados de forma separada del corpus bíblico.
 
 La implementación interna puede evolucionar más adelante sin cambiar esta experiencia, por ejemplo para ampliar organización, búsqueda o edición de notas cuando corresponda.
+
+## D-029 — Versículo activo por defecto y acciones adicionales
+Estado: APROBADA
+
+En el lector normal, tocar un versículo debe marcarlo de forma visible como `versículo activo` para ayudar al usuario a seguir por dónde va leyendo.
+
+Reglas:
+
+- el versículo activo es el comportamiento por defecto al tocar un versículo durante la lectura normal;
+- solo puede existir un versículo activo a la vez;
+- al tocar otro versículo, el anterior deja de estar activo y el nuevo toma su lugar;
+- la marca del versículo activo debe ser visualmente suave y distinta de un resaltado permanente;
+- la posición activa debe guardarse localmente para ayudar a retomar la lectura sin perder el punto;
+- `Resaltar` es una acción independiente y persistente: puede existir en varios versículos a la vez;
+- el panel contextual del versículo incluirá, además de `Favorito` y `Nota`, las acciones `Resaltar`, `Copiar` y `Compartir`;
+- `Copiar` copiará texto y referencia de forma clara;
+- `Compartir` usará el mecanismo nativo del dispositivo cuando esté disponible y tendrá un fallback razonable cuando no lo esté;
+- los detalles visuales avanzados de colores de resaltado y compartir con imágenes/fondos siguen reservados para una fase posterior.
+
+Esta distinción evita confundir la guía temporal de lectura con los resaltados que el usuario decide conservar como guardados permanentes.
