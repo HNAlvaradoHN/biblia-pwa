@@ -173,3 +173,16 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Ampliado `.gitignore` para excluir claves privadas comunes, archivos de credenciales, bases locales, dumps y backups.
 - La revisión preventiva actual del árbol y búsquedas de patrones comunes no detectó credenciales evidentes ni archivos personales sensibles versionados; esta revisión no sustituye la auditoría histórica completa previa a publicación.
 - Este cambio es documental/de seguridad del repositorio; no modifica la versión ejecutable de la PWA.
+
+## 2026-09-16 — Auditoría tras cambio a repositorio público
+
+- El usuario autorizó y realizó el cambio de visibilidad del repositorio oficial a público.
+- Verificado el árbol actual de `main`; no se observaron archivos de credenciales, claves privadas, bases personales, dumps o backups versionados.
+- Las búsquedas de patrones de alta señal en el árbol público actual no detectaron tokens o claves evidentes de los proveedores revisados.
+- El CI del PR de seguridad se reejecutó después del cambio a público y completó instalación, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
+- La revisión de ramas públicas detectó `recibos-apk-build`, una rama ajena al proyecto Biblia con código de una aplicación de recibos y un valor histórico de contraseña de firma incrustado en configuración Android.
+- No se detectó un archivo de keystore versionado en la ruta revisada. El valor histórico se considera comprometido si llegó a usarse o reutilizarse fuera del repositorio y no debe volver a utilizarse.
+- La referencia `recibos-apk-build` se movió al commit limpio actual de `main`, retirando de la punta de la rama pública el árbol ajeno. Esto no equivale a garantizar purga inmediata de objetos históricos, cachés o copias externas.
+- Las demás ramas públicas revisadas corresponden a trabajo histórico de Biblia y no mostraron archivos adicionales de credenciales o datos personales en sus diferencias actuales.
+- Confirmado que `main` no tiene branch protection/rulesets configurados; queda como endurecimiento recomendable, no como fallo de la aplicación.
+- `SECURITY.md` y `PROJECT_STATE.md` se actualizaron para reflejar la visibilidad pública real y las reglas de seguridad posteriores a la auditoría.
