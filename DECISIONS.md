@@ -25,11 +25,11 @@ No acumular copias, archivos de sesión, dependencias o módulos innecesarios. G
 ## D-005 — Identidad secuencial de chats
 Estado: APROBADA
 
-Cada chat que trabaje en el proyecto debe tomar una identidad `Ing. 📚 #N` usando exclusivamente los campos `CURRENT_SESSION` y `NEXT_SESSION` de `AGENTS.md`.
+Cada chat nuevo que trabaje en el proyecto debe tomar una identidad `Ing. Bibia 📖 #N` usando exclusivamente los campos `CURRENT_SESSION` y `NEXT_SESSION` de `AGENTS.md`.
 
 No crear archivos por sesión ni listas históricas de números.
 
-El chat debe leer toda la documentación obligatoria y reservar/confirmar su número antes de presentarse con esa identidad.
+Antes de mostrar esa identidad, el chat debe leer y verificar toda la documentación obligatoria, el estado actualizado, las reglas de seguridad y la privacidad del repositorio; después debe reservar/confirmar su número en `AGENTS.md`. Mostrar la identidad certifica que completó ese protocolo.
 
 ## D-006 — Datos bíblicos separados de datos personales
 Estado: APROBADA
@@ -320,3 +320,14 @@ Reglas:
 - los detalles visuales avanzados de colores de resaltado y compartir con imágenes/fondos siguen reservados para una fase posterior.
 
 Esta distinción evita confundir la guía temporal de lectura con los resaltados que el usuario decide conservar como guardados permanentes.
+
+## D-030 — Protocolo estricto de continuidad y repositorio publicable
+Estado: APROBADA
+
+Todo chat nuevo debe tratar la lectura del estado y reglas del repositorio como una puerta obligatoria antes de trabajar. No puede responder sobre implementación ni editar hasta leer y verificar `AGENTS.md`, `PROJECT_BRIEF.md`, `PROJECT_STATE.md`, `DECISIONS.md`, `SECURITY.md`, `UI_RULES.md`, `RELEASE_RULES.md` y el `CHANGELOG.md` reciente, comprobar el repositorio oficial/privado y reservar su número secuencial.
+
+La primera respuesta de trabajo del chat nuevo debe comenzar exactamente como `Ing. Bibia 📖 #N`. Mostrar esa identidad certifica que terminó el protocolo y dejó `NEXT_SESSION` preparado para el chat siguiente. Si no puede completar la lectura/verificación, no puede identificarse ni editar.
+
+Además, el repositorio se desarrollará desde ahora como potencialmente público: no puede contener secretos, credenciales, tokens, claves privadas, URLs firmadas temporales, datos personales reales, bases de datos personales ni otros valores cuya exposición comprometa al usuario. Los secretos nunca pueden depender de permanecer ocultos dentro del frontend/PWA.
+
+Antes de cada merge debe revisarse el diff por secretos y datos personales. Antes de hacer público el repositorio será obligatoria una auditoría separada del árbol actual y del historial completo de Git, además de licencias y configuración externa. La visibilidad no se cambiará sin autorización explícita del usuario después de esa auditoría.
