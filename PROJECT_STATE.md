@@ -1,6 +1,6 @@
 # PROJECT_STATE.md — ESTADO ACTUAL
 
-Última actualización: 2026-09-15
+Última actualización: 2026-09-16
 
 ## Estado general
 
@@ -8,22 +8,50 @@ Etapa: implementación de Fase 1 del lector bíblico y datos personales locales.
 
 Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
-Visibilidad esperada: privada.
+Visibilidad actual: pública desde el 2026-09-16 por autorización explícita del usuario.
 
-La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cierra el objetivo de Favoritos y Notas reales.
+La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cerró Favoritos y Notas reales.
 
-El objetivo activo es completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto.
+Antes de continuar la siguiente función del lector, el usuario pidió endurecer la continuidad entre chats y la seguridad del repositorio. Durante ese trabajo el usuario autorizó y realizó el cambio de visibilidad a público, por lo que la revisión preventiva se convirtió en una auditoría real del repositorio público. El endurecimiento queda documentado como D-030 y no cambia la versión ejecutable.
+
+El objetivo funcional activo continúa siendo completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto.
 
 ## Completado
 
 ### Base y reglas
 
 - PWA elegida como plataforma inicial, con enfoque offline-first.
-- Repositorio privado y documentación de continuidad, seguridad, UI y entregas establecidos.
+- Repositorio oficial público y documentación de continuidad, seguridad, UI y entregas establecidos.
 - Stack de Fase 1: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Corpus bíblico separado de datos personales y detrás de un proveedor reemplazable.
 - RVR60 sigue siendo la traducción deseada, pero no se incorporará ni redistribuirá contenido sin procedencia y permisos verificables.
 - La aplicación puede publicarse para terceros en el futuro, por lo que las licencias del corpus y encabezados son requisito real.
+
+### Continuidad y seguridad endurecidas
+
+- `AGENTS.md` exige a todo chat nuevo leer todos los documentos obligatorios y verificar el estado actualizado antes de responder sobre implementación o editar.
+- Un chat que no puede completar esa verificación queda bloqueado y no puede identificarse como ingeniero ni editar.
+- La identidad secuencial futura usa el formato exacto `Ing. Bibia 📖 #N` y solo puede mostrarse después de reservar `CURRENT_SESSION`/`NEXT_SESSION` y volver a verificar `AGENTS.md`.
+- Mostrar esa identidad certifica que el chat leyó reglas, estado, decisiones, seguridad, UI, entregas y changelog reciente.
+- `SECURITY.md` trata todo contenido versionado, ramas e historial como públicamente accesibles.
+- Se prohíben secretos, tokens, credenciales, claves privadas, URLs firmadas temporales, datos personales reales, bases personales y material privado en Git.
+- Se documentó explícitamente que cualquier secreto incorporado al frontend/PWA debe considerarse públicamente visible y no puede usarse como secreto real.
+- Antes de cada merge debe revisarse el diff por secretos/datos personales y también cualquier rama o referencia auxiliar creada por el cambio.
+- `.gitignore` se amplió para bloquear claves/certificados privados comunes, archivos de credenciales, bases locales, dumps y backups.
+
+### Auditoría del repositorio público — 2026-09-16
+
+- Confirmado que el repositorio oficial está público por decisión explícita del usuario.
+- Revisado el árbol actual de `main`: no se observaron `.env`, claves privadas, archivos de credenciales, bases locales, dumps, backups ni datasets personales versionados.
+- Ejecutadas búsquedas de alta señal en el árbol público actual para prefijos/patrones comunes de GitHub, Google, AWS, OpenAI, Slack, GitLab, Stripe y claves privadas; no se detectaron coincidencias evidentes.
+- Revisado el workflow principal: permisos de contenido en solo lectura y verificaciones con `npm ci`, TypeScript, ESLint, build PWA y `npm audit --omit=dev --audit-level=high`.
+- El CI del PR de endurecimiento, que antes no lograba iniciar runner mientras el repositorio era privado, se reejecutó después del cambio a público y completó en verde.
+- Revisadas las ramas públicas. Se detectó `recibos-apk-build`, una rama ajena al proyecto Biblia con código de una aplicación de recibos.
+- En el historial antiguo de esa rama se detectó un valor de contraseña de firma incrustado en configuración Android. No se detectó un archivo de keystore versionado mediante la revisión del historial de esa ruta.
+- La referencia pública `recibos-apk-build` se movió al mismo commit limpio de `main`, retirando de la punta de la rama todo el árbol ajeno al proyecto Biblia.
+- El valor histórico debe considerarse comprometido si fue utilizado o reutilizado fuera de este repositorio. Mover la referencia no garantiza purgar inmediatamente objetos históricos, cachés o copias externas.
+- Las demás ramas públicas revisadas corresponden a trabajo histórico de Biblia; sus diferencias actuales respecto de `main` no mostraron archivos adicionales de credenciales ni datos personales.
+- `main` no tiene actualmente reglas de protección/rulesets configurados. Esto no expone por sí solo un secreto, pero queda como endurecimiento recomendable para exigir PR/CI en cambios futuros cuando la configuración de GitHub disponible lo permita.
 
 ### Lectura bíblica existente
 
@@ -49,14 +77,12 @@ El objetivo activo es completar las acciones básicas del versículo y añadir u
 - Guardados basados en referencia estructurada `bookId + capítulo + versículo`, sin copiar el corpus dentro de los datos personales.
 - Pantalla completa `Mis favoritos` con lista real, estado vacío, acceso al versículo exacto y opción de quitar favoritos.
 - Pantalla completa `Mis notas` con lista real, estado vacío, texto de la nota, contexto bíblico, acceso al versículo exacto y opción de eliminar.
-- Tarjeta `Favoritos` del Inicio abre la colección completa y muestra el favorito más reciente cuando existe.
-- Tarjeta `Notas` del Inicio abre la colección completa y muestra la nota más reciente cuando existe.
-- Eliminadas las vistas previas ficticias de guardados del Inicio; los estados vacíos explican cómo crear el primer dato real.
-- En el lector normal, tocar un versículo abre un panel contextual compacto en vez de mostrar controles permanentes.
+- Tarjetas `Favoritos` y `Notas` del Inicio abren sus colecciones y muestran el dato más reciente cuando existe.
+- Eliminadas las vistas previas ficticias de guardados del Inicio.
+- En el lector normal, tocar un versículo abre un panel contextual compacto.
 - Desde ese panel se puede guardar/quitar Favorito y crear/guardar/eliminar una nota asociada al versículo.
 - Los enlaces desde Favoritos y Notas vuelven al versículo exacto usando el ancla estable del lector.
 - Build visible identificado como `0.1.4`.
-- Durante validación, CI detectó problemas de nulabilidad TypeScript y un import sin uso; fueron corregidos sin silenciar verificaciones.
 - Rama, PR #6 y `main` pasaron instalación bloqueada, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
 - El usuario confirmó en un dispositivo real que la publicación `v0.1.4` se ve correctamente; entrega cerrada.
 
@@ -83,7 +109,7 @@ La decisión completa está registrada como D-029 en `DECISIONS.md`.
 
 ## Decisiones de producto futuras ya registradas, pero no abiertas todavía
 
-- Diseño exacto de colores y personalización avanzada de resaltados; en el primer paso solo se necesita una experiencia funcional y coherente.
+- Diseño exacto de colores y personalización avanzada de resaltados.
 - Diseño exacto de `versículos corridos` y `versículos separados`.
 - Compartir versículos con imágenes/fondos y su flujo visual completo.
 - Fondos seleccionables dentro de la aplicación.
@@ -102,20 +128,25 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 - Editor definitivo de prédicas cuando llegue esa fase.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
 - Proveedor definitivo de despliegue a largo plazo; el host de prueba no debe crear dependencia arquitectónica.
+- Si se añadirá protección obligatoria de `main` mediante ruleset/branch protection; la conexión actual de automatización no dispone de administración suficiente para configurarlo directamente.
 
 ## Restricción de contenido para desarrollo
 
-Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja con datos ficticios o una fuente legal de prueba. Favoritos, notas y futuros resaltados guardan referencias estructuradas y datos personales, no copias acopladas del corpus, para poder sustituir la traducción sin romper referencias.
+Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja con datos ficticios o una fuente legal de prueba. Favoritos, notas y futuros resaltados guardan referencias estructuradas y datos personales en almacenamiento del usuario, no copias acopladas del corpus ni datos personales versionados en Git.
 
 ## Siguiente paso inmediato
 
-1. Implementar persistencia local del versículo activo y de resaltados.
-2. Hacer que el toque normal seleccione visualmente un único versículo activo y reemplace al anterior.
-3. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual existente junto con `Favorito` y `Nota`.
-4. Exigir TypeScript, lint, build PWA y auditoría en verde.
-5. Revisar diferencias y limpiar cualquier resto no relacionado.
-6. Integrar mediante PR solo si todo queda verde.
-7. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
+1. Cerrar mediante PR el endurecimiento documental/seguridad ya actualizado para la visibilidad pública.
+2. Confirmar CI verde del PR después de los últimos cambios y fusionarlo.
+3. Confirmar `main` verde después del merge.
+4. Retomar D-029 sin mezclar más objetivos.
+5. Implementar persistencia local del versículo activo y de resaltados.
+6. Hacer que el toque normal seleccione visualmente un único versículo activo y reemplace al anterior.
+7. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual existente junto con `Favorito` y `Nota`.
+8. Exigir TypeScript, lint, build PWA y auditoría en verde.
+9. Revisar diferencias, incluyendo revisión de secretos/datos personales, y limpiar cualquier resto no relacionado.
+10. Integrar mediante PR solo si todo queda verde.
+11. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
 
 ## Después de este objetivo
 
