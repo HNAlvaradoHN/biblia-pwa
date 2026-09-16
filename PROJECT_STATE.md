@@ -1,6 +1,6 @@
 # PROJECT_STATE.md — ESTADO ACTUAL
 
-Última actualización: 2026-09-15
+Última actualización: 2026-09-16
 
 ## Estado general
 
@@ -8,11 +8,11 @@ Etapa: implementación de Fase 1 del lector bíblico y datos personales locales.
 
 Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
-Visibilidad esperada: privada hasta autorización explícita del usuario después de una auditoría previa a publicación.
+Visibilidad actual: pública desde el 2026-09-16 por autorización explícita del usuario.
 
 La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cerró Favoritos y Notas reales.
 
-Antes de continuar la siguiente función del lector, el usuario pidió endurecer la continuidad entre chats y la seguridad del repositorio pensando en una posible publicación futura. Ese endurecimiento queda documentado como D-030 y no cambia la versión ejecutable.
+Antes de continuar la siguiente función del lector, el usuario pidió endurecer la continuidad entre chats y la seguridad del repositorio. Durante ese trabajo el usuario autorizó y realizó el cambio de visibilidad a público, por lo que la revisión preventiva se convirtió en una auditoría real del repositorio público. El endurecimiento queda documentado como D-030 y no cambia la versión ejecutable.
 
 El objetivo funcional activo continúa siendo completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto.
 
@@ -21,7 +21,7 @@ El objetivo funcional activo continúa siendo completar las acciones básicas de
 ### Base y reglas
 
 - PWA elegida como plataforma inicial, con enfoque offline-first.
-- Repositorio privado y documentación de continuidad, seguridad, UI y entregas establecidos.
+- Repositorio oficial público y documentación de continuidad, seguridad, UI y entregas establecidos.
 - Stack de Fase 1: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Corpus bíblico separado de datos personales y detrás de un proveedor reemplazable.
 - RVR60 sigue siendo la traducción deseada, pero no se incorporará ni redistribuirá contenido sin procedencia y permisos verificables.
@@ -33,13 +33,25 @@ El objetivo funcional activo continúa siendo completar las acciones básicas de
 - Un chat que no puede completar esa verificación queda bloqueado y no puede identificarse como ingeniero ni editar.
 - La identidad secuencial futura usa el formato exacto `Ing. Bibia 📖 #N` y solo puede mostrarse después de reservar `CURRENT_SESSION`/`NEXT_SESSION` y volver a verificar `AGENTS.md`.
 - Mostrar esa identidad certifica que el chat leyó reglas, estado, decisiones, seguridad, UI, entregas y changelog reciente.
-- `SECURITY.md` establece que el repositorio debe desarrollarse como potencialmente público incluso mientras siga privado.
+- `SECURITY.md` trata todo contenido versionado, ramas e historial como públicamente accesibles.
 - Se prohíben secretos, tokens, credenciales, claves privadas, URLs firmadas temporales, datos personales reales, bases personales y material privado en Git.
 - Se documentó explícitamente que cualquier secreto incorporado al frontend/PWA debe considerarse públicamente visible y no puede usarse como secreto real.
-- Antes de cada merge debe revisarse el diff por secretos/datos personales; antes de hacer público el repo será obligatoria una auditoría separada del árbol actual y del historial de Git.
+- Antes de cada merge debe revisarse el diff por secretos/datos personales y también cualquier rama o referencia auxiliar creada por el cambio.
 - `.gitignore` se amplió para bloquear claves/certificados privados comunes, archivos de credenciales, bases locales, dumps y backups.
-- Primera revisión del árbol actual: no se observaron archivos `.env`, claves privadas, bases locales, archivos de credenciales ni backups versionados; búsquedas de prefijos/patrones comunes de credenciales no devolvieron coincidencias en `main`.
-- Esta revisión actual es preventiva y no sustituye la auditoría histórica completa obligatoria antes de una futura publicación pública.
+
+### Auditoría del repositorio público — 2026-09-16
+
+- Confirmado que el repositorio oficial está público por decisión explícita del usuario.
+- Revisado el árbol actual de `main`: no se observaron `.env`, claves privadas, archivos de credenciales, bases locales, dumps, backups ni datasets personales versionados.
+- Ejecutadas búsquedas de alta señal en el árbol público actual para prefijos/patrones comunes de GitHub, Google, AWS, OpenAI, Slack, GitLab, Stripe y claves privadas; no se detectaron coincidencias evidentes.
+- Revisado el workflow principal: permisos de contenido en solo lectura y verificaciones con `npm ci`, TypeScript, ESLint, build PWA y `npm audit --omit=dev --audit-level=high`.
+- El CI del PR de endurecimiento, que antes no lograba iniciar runner mientras el repositorio era privado, se reejecutó después del cambio a público y completó en verde.
+- Revisadas las ramas públicas. Se detectó `recibos-apk-build`, una rama ajena al proyecto Biblia con código de una aplicación de recibos.
+- En el historial antiguo de esa rama se detectó un valor de contraseña de firma incrustado en configuración Android. No se detectó un archivo de keystore versionado mediante la revisión del historial de esa ruta.
+- La referencia pública `recibos-apk-build` se movió al mismo commit limpio de `main`, retirando de la punta de la rama todo el árbol ajeno al proyecto Biblia.
+- El valor histórico debe considerarse comprometido si fue utilizado o reutilizado fuera de este repositorio. Mover la referencia no garantiza purgar inmediatamente objetos históricos, cachés o copias externas.
+- Las demás ramas públicas revisadas corresponden a trabajo histórico de Biblia; sus diferencias actuales respecto de `main` no mostraron archivos adicionales de credenciales ni datos personales.
+- `main` no tiene actualmente reglas de protección/rulesets configurados. Esto no expone por sí solo un secreto, pero queda como endurecimiento recomendable para exigir PR/CI en cambios futuros cuando la configuración de GitHub disponible lo permita.
 
 ### Lectura bíblica existente
 
@@ -116,6 +128,7 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 - Editor definitivo de prédicas cuando llegue esa fase.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
 - Proveedor definitivo de despliegue a largo plazo; el host de prueba no debe crear dependencia arquitectónica.
+- Si se añadirá protección obligatoria de `main` mediante ruleset/branch protection; la conexión actual de automatización no dispone de administración suficiente para configurarlo directamente.
 
 ## Restricción de contenido para desarrollo
 
@@ -123,15 +136,17 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Cerrar mediante PR el endurecimiento documental/seguridad y mantener el repositorio privado.
-2. Retomar D-029 sin mezclar más objetivos.
-3. Implementar persistencia local del versículo activo y de resaltados.
-4. Hacer que el toque normal seleccione visualmente un único versículo activo y reemplace al anterior.
-5. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual existente junto con `Favorito` y `Nota`.
-6. Exigir TypeScript, lint, build PWA y auditoría en verde.
-7. Revisar diferencias, incluyendo revisión de secretos/datos personales, y limpiar cualquier resto no relacionado.
-8. Integrar mediante PR solo si todo queda verde.
-9. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
+1. Cerrar mediante PR el endurecimiento documental/seguridad ya actualizado para la visibilidad pública.
+2. Confirmar CI verde del PR después de los últimos cambios y fusionarlo.
+3. Confirmar `main` verde después del merge.
+4. Retomar D-029 sin mezclar más objetivos.
+5. Implementar persistencia local del versículo activo y de resaltados.
+6. Hacer que el toque normal seleccione visualmente un único versículo activo y reemplace al anterior.
+7. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual existente junto con `Favorito` y `Nota`.
+8. Exigir TypeScript, lint, build PWA y auditoría en verde.
+9. Revisar diferencias, incluyendo revisión de secretos/datos personales, y limpiar cualquier resto no relacionado.
+10. Integrar mediante PR solo si todo queda verde.
+11. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
 
 ## Después de este objetivo
 
