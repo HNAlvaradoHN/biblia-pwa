@@ -161,3 +161,15 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - El build queda identificado como `0.1.4`.
 - PR #6 y `main` pasaron TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
 - El usuario confirmó en un dispositivo real que la versión publicada `v0.1.4` se ve correctamente; la entrega queda cerrada y verificada.
+
+## 2026-09-15 — Continuidad estricta y endurecimiento de seguridad
+
+- Endurecido `AGENTS.md`: todo chat nuevo debe leer y verificar documentación, estado, reglas, privacidad del repositorio y objetivo activo antes de responder sobre implementación o editar.
+- La identidad secuencial futura cambia al formato exacto `Ing. Bibia 📖 #N`; solo puede mostrarse después de reservar y volver a verificar `CURRENT_SESSION`/`NEXT_SESSION`.
+- Un chat que no pueda completar todas las verificaciones obligatorias queda bloqueado para editar y no puede fingir estar al día.
+- Registrada D-030 como regla aprobada de continuidad y repositorio potencialmente publicable.
+- Endurecido `SECURITY.md`: secretos reales nunca pueden depender de permanecer ocultos en el frontend/PWA; también se prohíben URLs firmadas temporales, credenciales, bases personales y datos privados en Git.
+- Establecida revisión de secretos/datos personales antes de cada merge y auditoría separada del árbol actual + historial completo antes de cualquier futura publicación del repositorio.
+- Ampliado `.gitignore` para excluir claves privadas comunes, archivos de credenciales, bases locales, dumps y backups.
+- La revisión preventiva actual del árbol y búsquedas de patrones comunes no detectó credenciales evidentes ni archivos personales sensibles versionados; esta revisión no sustituye la auditoría histórica completa previa a publicación.
+- Este cambio es documental/de seguridad del repositorio; no modifica la versión ejecutable de la PWA.
