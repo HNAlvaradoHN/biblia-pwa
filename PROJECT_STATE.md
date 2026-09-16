@@ -8,11 +8,13 @@ Etapa: implementación de Fase 1 del lector bíblico y datos personales locales.
 
 Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
-Visibilidad esperada: privada.
+Visibilidad esperada: privada hasta autorización explícita del usuario después de una auditoría previa a publicación.
 
-La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cierra el objetivo de Favoritos y Notas reales.
+La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cerró Favoritos y Notas reales.
 
-El objetivo activo es completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto.
+Antes de continuar la siguiente función del lector, el usuario pidió endurecer la continuidad entre chats y la seguridad del repositorio pensando en una posible publicación futura. Ese endurecimiento queda documentado como D-030 y no cambia la versión ejecutable.
+
+El objetivo funcional activo continúa siendo completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto.
 
 ## Completado
 
@@ -24,6 +26,20 @@ El objetivo activo es completar las acciones básicas del versículo y añadir u
 - Corpus bíblico separado de datos personales y detrás de un proveedor reemplazable.
 - RVR60 sigue siendo la traducción deseada, pero no se incorporará ni redistribuirá contenido sin procedencia y permisos verificables.
 - La aplicación puede publicarse para terceros en el futuro, por lo que las licencias del corpus y encabezados son requisito real.
+
+### Continuidad y seguridad endurecidas
+
+- `AGENTS.md` exige a todo chat nuevo leer todos los documentos obligatorios y verificar el estado actualizado antes de responder sobre implementación o editar.
+- Un chat que no puede completar esa verificación queda bloqueado y no puede identificarse como ingeniero ni editar.
+- La identidad secuencial futura usa el formato exacto `Ing. Bibia 📖 #N` y solo puede mostrarse después de reservar `CURRENT_SESSION`/`NEXT_SESSION` y volver a verificar `AGENTS.md`.
+- Mostrar esa identidad certifica que el chat leyó reglas, estado, decisiones, seguridad, UI, entregas y changelog reciente.
+- `SECURITY.md` establece que el repositorio debe desarrollarse como potencialmente público incluso mientras siga privado.
+- Se prohíben secretos, tokens, credenciales, claves privadas, URLs firmadas temporales, datos personales reales, bases personales y material privado en Git.
+- Se documentó explícitamente que cualquier secreto incorporado al frontend/PWA debe considerarse públicamente visible y no puede usarse como secreto real.
+- Antes de cada merge debe revisarse el diff por secretos/datos personales; antes de hacer público el repo será obligatoria una auditoría separada del árbol actual y del historial de Git.
+- `.gitignore` se amplió para bloquear claves/certificados privados comunes, archivos de credenciales, bases locales, dumps y backups.
+- Primera revisión del árbol actual: no se observaron archivos `.env`, claves privadas, bases locales, archivos de credenciales ni backups versionados; búsquedas de prefijos/patrones comunes de credenciales no devolvieron coincidencias en `main`.
+- Esta revisión actual es preventiva y no sustituye la auditoría histórica completa obligatoria antes de una futura publicación pública.
 
 ### Lectura bíblica existente
 
@@ -49,14 +65,12 @@ El objetivo activo es completar las acciones básicas del versículo y añadir u
 - Guardados basados en referencia estructurada `bookId + capítulo + versículo`, sin copiar el corpus dentro de los datos personales.
 - Pantalla completa `Mis favoritos` con lista real, estado vacío, acceso al versículo exacto y opción de quitar favoritos.
 - Pantalla completa `Mis notas` con lista real, estado vacío, texto de la nota, contexto bíblico, acceso al versículo exacto y opción de eliminar.
-- Tarjeta `Favoritos` del Inicio abre la colección completa y muestra el favorito más reciente cuando existe.
-- Tarjeta `Notas` del Inicio abre la colección completa y muestra la nota más reciente cuando existe.
-- Eliminadas las vistas previas ficticias de guardados del Inicio; los estados vacíos explican cómo crear el primer dato real.
-- En el lector normal, tocar un versículo abre un panel contextual compacto en vez de mostrar controles permanentes.
+- Tarjetas `Favoritos` y `Notas` del Inicio abren sus colecciones y muestran el dato más reciente cuando existe.
+- Eliminadas las vistas previas ficticias de guardados del Inicio.
+- En el lector normal, tocar un versículo abre un panel contextual compacto.
 - Desde ese panel se puede guardar/quitar Favorito y crear/guardar/eliminar una nota asociada al versículo.
 - Los enlaces desde Favoritos y Notas vuelven al versículo exacto usando el ancla estable del lector.
 - Build visible identificado como `0.1.4`.
-- Durante validación, CI detectó problemas de nulabilidad TypeScript y un import sin uso; fueron corregidos sin silenciar verificaciones.
 - Rama, PR #6 y `main` pasaron instalación bloqueada, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
 - El usuario confirmó en un dispositivo real que la publicación `v0.1.4` se ve correctamente; entrega cerrada.
 
@@ -83,7 +97,7 @@ La decisión completa está registrada como D-029 en `DECISIONS.md`.
 
 ## Decisiones de producto futuras ya registradas, pero no abiertas todavía
 
-- Diseño exacto de colores y personalización avanzada de resaltados; en el primer paso solo se necesita una experiencia funcional y coherente.
+- Diseño exacto de colores y personalización avanzada de resaltados.
 - Diseño exacto de `versículos corridos` y `versículos separados`.
 - Compartir versículos con imágenes/fondos y su flujo visual completo.
 - Fondos seleccionables dentro de la aplicación.
@@ -105,17 +119,19 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 
 ## Restricción de contenido para desarrollo
 
-Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja con datos ficticios o una fuente legal de prueba. Favoritos, notas y futuros resaltados guardan referencias estructuradas y datos personales, no copias acopladas del corpus, para poder sustituir la traducción sin romper referencias.
+Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja con datos ficticios o una fuente legal de prueba. Favoritos, notas y futuros resaltados guardan referencias estructuradas y datos personales en almacenamiento del usuario, no copias acopladas del corpus ni datos personales versionados en Git.
 
 ## Siguiente paso inmediato
 
-1. Implementar persistencia local del versículo activo y de resaltados.
-2. Hacer que el toque normal seleccione visualmente un único versículo activo y reemplace al anterior.
-3. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual existente junto con `Favorito` y `Nota`.
-4. Exigir TypeScript, lint, build PWA y auditoría en verde.
-5. Revisar diferencias y limpiar cualquier resto no relacionado.
-6. Integrar mediante PR solo si todo queda verde.
-7. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
+1. Cerrar mediante PR el endurecimiento documental/seguridad y mantener el repositorio privado.
+2. Retomar D-029 sin mezclar más objetivos.
+3. Implementar persistencia local del versículo activo y de resaltados.
+4. Hacer que el toque normal seleccione visualmente un único versículo activo y reemplace al anterior.
+5. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual existente junto con `Favorito` y `Nota`.
+6. Exigir TypeScript, lint, build PWA y auditoría en verde.
+7. Revisar diferencias, incluyendo revisión de secretos/datos personales, y limpiar cualquier resto no relacionado.
+8. Integrar mediante PR solo si todo queda verde.
+9. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
 
 ## Después de este objetivo
 
