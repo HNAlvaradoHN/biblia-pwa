@@ -1,6 +1,6 @@
 # PROJECT_STATE.md — ESTADO ACTUAL
 
-Última actualización: 2026-09-10
+Última actualización: 2026-09-15
 
 ## Estado general
 
@@ -12,7 +12,7 @@ Visibilidad esperada: privada.
 
 La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cierra el objetivo de Favoritos y Notas reales.
 
-El siguiente objetivo activo es completar las acciones básicas del versículo que todavía faltan en el lector: `Resaltar`, `Copiar` y `Compartir`, manteniendo el panel contextual limpio ya usado para Favorito y Nota.
+El objetivo activo es completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto.
 
 ## Completado
 
@@ -62,14 +62,24 @@ El siguiente objetivo activo es completar las acciones básicas del versículo q
 
 ## Objetivo activo
 
-Completar las acciones básicas restantes del versículo en el lector normal: `Resaltar`, `Copiar` y `Compartir`, integrándolas en el mismo panel contextual que ya contiene Favorito y Nota.
+Completar el comportamiento del versículo en el lector normal con dos capas claramente distintas:
+
+1. `Versículo activo` por defecto para seguir visualmente la lectura.
+2. Acciones contextuales persistentes o utilitarias: `Favorito`, `Nota`, `Resaltar`, `Copiar` y `Compartir`.
 
 Reglas de alcance:
 
-- `Resaltar` debe persistirse como dato personal local y mantenerse separado del corpus bíblico.
-- `Copiar` debe copiar referencia y texto de forma clara.
-- `Compartir` debe usar el mecanismo nativo del dispositivo cuando exista y un fallback razonable cuando no exista.
-- No abrir todavía búsqueda bíblica completa, lector capítulo por capítulo, prédicas, sincronización, fondos o personalizaciones avanzadas dentro de este objetivo.
+- tocar un versículo lo convierte en el único versículo activo;
+- al tocar otro, el anterior deja de estar activo y el nuevo toma su lugar;
+- la marca activa debe ser suave, clara y distinta de un resaltado permanente;
+- la posición activa debe guardarse localmente para ayudar a retomar la lectura;
+- `Resaltar` debe persistirse como dato personal local, separado del corpus, y puede existir en varios versículos;
+- `Copiar` debe copiar referencia y texto de forma clara;
+- `Compartir` debe usar el mecanismo nativo del dispositivo cuando exista y un fallback razonable cuando no exista;
+- el panel contextual debe mantener el lector limpio y no cubrir innecesariamente el texto;
+- no abrir todavía búsqueda bíblica completa, lector capítulo por capítulo, prédicas, sincronización, fondos o personalizaciones avanzadas dentro de este objetivo.
+
+La decisión completa está registrada como D-029 en `DECISIONS.md`.
 
 ## Decisiones de producto futuras ya registradas, pero no abiertas todavía
 
@@ -99,12 +109,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Implementar persistencia local mínima para resaltados.
-2. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual del versículo sin recargar visualmente el lector.
-3. Exigir TypeScript, lint, build PWA y auditoría en verde.
-4. Revisar diferencias y limpiar cualquier resto no relacionado.
-5. Integrar mediante PR solo si todo queda verde.
-6. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
+1. Implementar persistencia local del versículo activo y de resaltados.
+2. Hacer que el toque normal seleccione visualmente un único versículo activo y reemplace al anterior.
+3. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual existente junto con `Favorito` y `Nota`.
+4. Exigir TypeScript, lint, build PWA y auditoría en verde.
+5. Revisar diferencias y limpiar cualquier resto no relacionado.
+6. Integrar mediante PR solo si todo queda verde.
+7. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
 
 ## Después de este objetivo
 
