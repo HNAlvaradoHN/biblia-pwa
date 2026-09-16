@@ -1,14 +1,15 @@
 # SECURITY.md — PRIVACIDAD Y SEGURIDAD
 
-Este proyecto puede manejar prédicas, notas y otra información personal. La privacidad se diseña desde el inicio y el repositorio debe construirse como si pudiera hacerse público en el futuro.
+Este proyecto puede manejar prédicas, notas y otra información personal. La privacidad se diseña desde el inicio. El repositorio oficial es público desde el 2026-09-16 por autorización explícita del usuario, por lo que todo contenido versionado, ramas e historial deben tratarse como públicamente accesibles.
 
 ## 1. Regla principal
 
-- El repositorio debe permanecer privado salvo autorización explícita del usuario.
-- Ser privado NO justifica guardar secretos ni datos personales en Git.
-- Todo contenido versionado debe considerarse potencialmente público desde el momento en que se crea.
-- El objetivo es que, si en el futuro se decide hacer público el repositorio, el código pueda revisarse y publicarse sin exponer credenciales ni información privada del usuario.
+- La visibilidad actual del repositorio es pública por decisión explícita del usuario.
+- Cambiar nuevamente la visibilidad requiere autorización explícita del usuario.
+- Ser público no autoriza guardar secretos ni datos personales en Git.
+- Todo contenido versionado debe considerarse público desde el momento en que se crea.
 - No incluir información personal que no sea estrictamente necesaria para el funcionamiento/documentación pública del proyecto.
+- Antes de crear o mantener una rama, recordar que una rama pública también expone su árbol y su historial alcanzable.
 
 ## 2. Prohibido subir a Git
 
@@ -51,16 +52,17 @@ Por tanto:
 
 ## 4. Si un secreto entra en Git por accidente
 
-No basta con borrarlo en un commit posterior.
+No basta con borrarlo en un commit posterior ni con mover/eliminar una rama.
 
 - Considerarlo comprometido.
 - Revocarlo o rotarlo inmediatamente.
 - Sustituirlo por uno nuevo cuando sea necesario.
 - Revisar el historial y los lugares donde pudo haberse copiado.
 - Limpiar historial si corresponde, entendiendo que limpiar Git no sustituye la rotación del secreto.
+- Si GitHub conserva vistas, cachés o referencias alcanzables después de reescribir historial, seguir el proceso de eliminación de datos sensibles de GitHub cuando aplique.
 - Registrar el incidente sin copiar el secreto dentro de la documentación.
 
-Nunca afirmar que un secreto vuelve a ser seguro solamente porque ya no aparece en `main`.
+Nunca afirmar que un secreto vuelve a ser seguro solamente porque ya no aparece en `main` o en una rama visible.
 
 ## 5. Configuración y secretos
 
@@ -126,7 +128,7 @@ Antes de añadir una dependencia:
 - evitar paquetes desconocidos para tareas triviales;
 - mantener versiones controladas mediante lockfile;
 - revisar alertas de vulnerabilidades y actualizar cuando corresponda;
-- no instalar una herramienta de seguridad que exija subir el código o datos privados a un tercero sin evaluar esa implicación.
+- no instalar una herramienta de seguridad que exija subir código o datos personales a un tercero sin evaluar esa implicación.
 
 ## 11. Código y entradas externas
 
@@ -146,28 +148,32 @@ Todo cambio debe pasar una revisión de privacidad/secretos antes del merge:
 - comprobar que no se incluyeron URLs firmadas temporales o cabeceras autenticadas;
 - comprobar que no se añadieron datos personales reales;
 - comprobar que cualquier configuración expuesta en frontend está clasificada conscientemente como pública;
+- revisar también ramas nuevas o referencias auxiliares creadas por el cambio;
 - ante una duda razonable, bloquear el merge hasta resolverla.
 
-## 13. Auditoría obligatoria antes de hacer público el repositorio
+## 13. Auditoría de repositorio público
 
-Hacer público el repositorio requiere una revisión separada y explícita. No basta con que `main` compile.
+El repositorio ya es público. La auditoría de transición realizada el 2026-09-16 deja estas conclusiones operativas:
 
-Antes de cambiar la visibilidad:
+1. El árbol actual de `main` no mostró archivos `.env`, claves privadas, bases locales, archivos de credenciales, dumps o backups versionados.
+2. Las búsquedas realizadas sobre `main` para patrones comunes de tokens, claves y credenciales no devolvieron coincidencias evidentes.
+3. El workflow principal usa permisos de solo lectura sobre contenido y mantiene `npm ci`, TypeScript, ESLint, build PWA y auditoría de dependencias.
+4. Se revisaron las ramas públicas. Se detectó una rama ajena al proyecto Biblia, `recibos-apk-build`, con código de otra aplicación y un valor de contraseña de firma incrustado en un commit histórico antiguo.
+5. La referencia de `recibos-apk-build` se movió al mismo commit limpio de `main` para retirar de la rama pública el árbol ajeno. No se detectó un archivo de keystore versionado en esa rama, pero cualquier contraseña o material de firma relacionado debe considerarse comprometido si fue usado fuera de este repositorio y no debe reutilizarse.
+6. Mover una referencia no garantiza borrar inmediatamente objetos históricos, cachés o copias externas. Si existiera material de firma real asociado o reutilización de esa contraseña, debe rotarse/reemplazarse fuera de este repositorio y, si fuera necesario eliminar objetos históricos de GitHub, seguir el procedimiento específico de eliminación de datos sensibles.
+7. Las demás ramas públicas revisadas corresponden a trabajo histórico del proyecto Biblia; no se observaron archivos adicionales de credenciales ni datasets personales en sus diferencias actuales respecto de `main`.
+8. No se detectaron credenciales de GitHub, Google, Vercel, AWS, Slack, GitLab o claves privadas mediante los patrones de alta señal revisados en el árbol público actual.
 
-1. Revisar el árbol completo de archivos y nombres.
-2. Buscar patrones de credenciales y secretos en el contenido actual.
-3. Revisar el historial completo de Git para archivos eliminados y secretos antiguos.
-4. Revisar documentación, workflows, logs/versionados y configuraciones.
-5. Confirmar que no hay datos personales reales ni archivos personales históricos.
-6. Rotar/revocar cualquier secreto que alguna vez haya aparecido en el repositorio.
-7. Revisar dependencias y vulnerabilidades conocidas.
-8. Confirmar que corpus bíblico, títulos y otros contenidos tienen permisos adecuados para distribución.
-9. Confirmar que los servicios externos no dependen de secretos colocados en el frontend.
-10. Solo después de una auditoría satisfactoria pedir/recibir autorización explícita del usuario para cambiar la visibilidad.
+Esta auditoría reduce el riesgo conocido, pero no convierte un secreto previamente expuesto en seguro. Ante cualquier hallazgo futuro, se aplica la sección 4 sin excepciones.
 
-Hasta completar este proceso, el repositorio permanece privado.
+## 14. Publicación, licencias y datos
 
-## 14. Cambios de seguridad
+- Que el repositorio sea público no autoriza redistribuir RVR60 ni encabezados editoriales protegidos.
+- Antes de incorporar corpus definitivo, confirmar procedencia y permisos de distribución.
+- El contenido de desarrollo seguirá siendo ficticio o legalmente utilizable hasta contar con fuente autorizada.
+- Los datos personales reales del usuario nunca forman parte del repositorio público.
+
+## 15. Cambios de seguridad
 
 Una medida de seguridad no debe eliminarse solo para simplificar desarrollo. Si una protección bloquea una función, identificar la causa y diseñar una solución segura antes de desactivarla.
 
