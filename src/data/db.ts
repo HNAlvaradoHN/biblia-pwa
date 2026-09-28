@@ -27,8 +27,11 @@ export interface BibleNoteRecord extends BibleLocation {
   updatedAt: number
 }
 
+export type HighlightColor = 'yellow' | 'green' | 'blue' | 'pink'
+
 export interface HighlightRecord extends BibleLocation {
   id: string
+  color: HighlightColor
   createdAt: number
   updatedAt: number
 }
@@ -156,16 +159,43 @@ export async function removeBibleNote(id: string) {
   await db.notes.delete(id)
 }
 
-export async function isHighlighted(location: BibleLocation) {
-  const record = await db.highlights.get(makeBibleLocationId(location))
-  return Boolean(record)
+export async function getHighlight(location: BibleLocation) {
+  return db.highlights.get(makeBibleLocationId(location))
 }
 
-export async function toggleHighlight(location: BibleLocation) {
+export async function isHighlighted(location: BibleLocation) {
+  return Boolean(await getHighlight(location))
+}
+
+export async function setHighlight(
+  location: BibleLocation,
+  color: HighlightColor,
+) {
+  const id = makeBibleLocationId(location)
+  const existing = await db.highlights.get(id)
+  const now = Date.now()
+
+  await db.highlights.put({
+    id,
+    ...location,
+    color,
+    createdAt: existing?.createdAt ?? now,
+    updatedAt: now,
+  })
+}
+
+export async function removeHighlight(location: BibleLocation) {
+  await db.highlights.delete(makeBibleLocationId(location))
+}
+
+export async function toggleHighlight(
+  location: BibleLocation,
+  color: HighlightColor = 'yellow',
+) {
   const id = makeBibleLocationId(location)
   const existing = await db.highlights.get(id)
 
-  if (existing) {
+  if (existing?.color === color) {
     await db.highlights.delete(id)
     return false
   }
@@ -174,7 +204,8 @@ export async function toggleHighlight(location: BibleLocation) {
   await db.highlights.put({
     id,
     ...location,
-    createdAt: now,
+    color,
+    createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   })
   return true
