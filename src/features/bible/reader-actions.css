@@ -19,6 +19,11 @@
   background: color-mix(in srgb, var(--accent-soft) 58%, transparent);
 }
 
+.verse-button.highlighted,
+.verse-item.selected .verse-button.highlighted {
+  background: color-mix(in srgb, #facc15 22%, transparent);
+}
+
 .verse-button:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
   outline-offset: 2px;
