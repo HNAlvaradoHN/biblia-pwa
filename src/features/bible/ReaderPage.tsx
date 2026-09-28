@@ -4,23 +4,34 @@ import { bibleProvider } from '../../data/bible/provider'
 import {
   db,
   getBibleNote,
+  getHighlight,
   getLastReading,
   isFavorite,
-  isHighlighted,
   makeBibleLocationId,
   removeBibleNote,
+  removeHighlight,
   saveBibleNote,
   saveLastReading,
+  setHighlight,
   toggleFavorite,
-  toggleHighlight,
+  type HighlightColor,
 } from '../../data/db'
 import './reader-actions.css'
 
-type SelectedVerse = {
+type VerseTarget = {
   chapter: number
   verse: number
   anchorId: string
+  text: string
+  reference: string
 }
+
+const highlightChoices: Array<{ color: HighlightColor; label: string }> = [
+  { color: 'yellow', label: 'Amarillo' },
+  { color: 'green', label: 'Verde' },
+  { color: 'blue', label: 'Azul' },
+  { color: 'pink', label: 'Rosado' },
+]
 
 export function ReaderPage() {
   const { bookId = '', chapter: chapterParam = '1' } = useParams()
@@ -28,10 +39,18 @@ export function ReaderPage() {
   const book = bibleProvider.getBook(bookId)
   const requestedChapter = Number(chapterParam)
   const saveTimer = useRef<number | undefined>(undefined)
-  const [selectedVerse, setSelectedVerse] = useState<SelectedVerse | undefined>()
+  const longPressTimer = useRef<number | undefined>(undefined)
+  const longPressTriggered = useRef(false)
+  const [selectedVerse, setSelectedVerse] = useState<VerseTarget | undefined>()
+  const [optionsVerse, setOptionsVerse] = useState<VerseTarget | undefined>()
   const [favoriteActive, setFavoriteActive] = useState(false)
   const [highlighted, setHighlighted] = useState(false)
+  const [highlightColor, setHighlightColor] = useState<HighlightColor>('yellow')
+  const [highlightPickerOpen, setHighlightPickerOpen] = useState(false)
   const [highlightedVerses, setHighlightedVerses] = useState<Set<number>>(() => new Set())
+  const [highlightColors, setHighlightColors] = useState<Map<number, HighlightColor>>(
+    () => new Map(),
+  )
   const [noteOpen, setNoteOpen] = useState(false)
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
@@ -161,11 +180,14 @@ export function ReaderPage() {
       .toArray()
       .then((records) => {
         if (cancelled) return
-        setHighlightedVerses(
-          new Set(
-            records
-              .filter((record) => record.bookId === book.id)
-              .map((record) => record.verse),
+        const bookHighlights = records.filter((record) => record.bookId === book.id)
+        setHighlightedVerses(new Set(bookHighlights.map((record) => record.verse)))
+        setHighlightColors(
+          new Map(
+            bookHighlights.map((record) => [
+              record.verse,
+              record.color ?? 'yellow',
+            ]),
           ),
         )
       })
@@ -176,9 +198,11 @@ export function ReaderPage() {
   }, [book, requestedChapter])
 
   useEffect(() => {
-    if (!book || !selectedVerse) {
+    if (!book || !optionsVerse) {
       setFavoriteActive(false)
       setHighlighted(false)
+      setHighlightColor('yellow')
+      setHighlightPickerOpen(false)
       setNoteDraft('')
       setNoteSaved(false)
       setNoteOpen(false)
@@ -189,18 +213,20 @@ export function ReaderPage() {
     let cancelled = false
     const location = {
       bookId: book.id,
-      chapter: selectedVerse.chapter,
-      verse: selectedVerse.verse,
+      chapter: optionsVerse.chapter,
+      verse: optionsVerse.verse,
     }
 
     void Promise.all([
       isFavorite(location),
-      isHighlighted(location),
+      getHighlight(location),
       getBibleNote(location),
     ]).then(([favorite, highlight, note]) => {
       if (cancelled) return
       setFavoriteActive(favorite)
-      setHighlighted(highlight)
+      setHighlighted(Boolean(highlight))
+      setHighlightColor(highlight?.color ?? 'yellow')
+      setHighlightPickerOpen(false)
       setNoteDraft(note?.text ?? '')
       setNoteSaved(Boolean(note))
       setNoteOpen(Boolean(note))
@@ -210,7 +236,7 @@ export function ReaderPage() {
     return () => {
       cancelled = true
     }
-  }, [book, selectedVerse])
+  }, [book, optionsVerse])
 
   if (!book || chapters.length === 0) {
     return (
@@ -221,49 +247,153 @@ export function ReaderPage() {
     )
   }
 
+  function clearLongPressTimer() {
+    if (longPressTimer.current) {
+      window.clearTimeout(longPressTimer.current)
+      longPressTimer.current = undefined
+    }
+  }
+
+  function startLongPress(target: VerseTarget) {
+    clearLongPressTimer()
+    longPressTriggered.current = false
+    longPressTimer.current = window.setTimeout(() => {
+      longPressTriggered.current = true
+      setOptionsVerse(target)
+    }, 500)
+  }
+
+  function handleVerseTap(target: VerseTarget) {
+    clearLongPressTimer()
+    if (longPressTriggered.current) {
+      longPressTriggered.current = false
+      return
+    }
+
+    setOptionsVerse(undefined)
+    setSelectedVerse((current) =>
+      current?.anchorId === target.anchorId ? undefined : target,
+    )
+  }
+
   async function handleFavorite() {
-    if (!book || !selectedVerse) return
+    if (!book || !optionsVerse) return
 
     const active = await toggleFavorite({
       bookId: book.id,
-      chapter: selectedVerse.chapter,
-      verse: selectedVerse.verse,
+      chapter: optionsVerse.chapter,
+      verse: optionsVerse.verse,
     })
     setFavoriteActive(active)
     setActionMessage(active ? 'Añadido a favoritos' : 'Quitado de favoritos')
   }
 
-  async function handleHighlight() {
-    if (!book || !selectedVerse) return
+  async function handleHighlightColor(color: HighlightColor) {
+    if (!book || !optionsVerse) return
 
-    const active = await toggleHighlight({
+    const location = {
       bookId: book.id,
-      chapter: selectedVerse.chapter,
-      verse: selectedVerse.verse,
-    })
-    setHighlighted(active)
-    if (selectedVerse.chapter === requestedChapter) {
-      setHighlightedVerses((current) => {
-        const next = new Set(current)
-        if (active) {
-          next.add(selectedVerse.verse)
-        } else {
-          next.delete(selectedVerse.verse)
-        }
+      chapter: optionsVerse.chapter,
+      verse: optionsVerse.verse,
+    }
+
+    await setHighlight(location, color)
+    setHighlighted(true)
+    setHighlightColor(color)
+    setHighlightPickerOpen(false)
+
+    if (optionsVerse.chapter === requestedChapter) {
+      setHighlightedVerses((current) => new Set(current).add(optionsVerse.verse))
+      setHighlightColors((current) => {
+        const next = new Map(current)
+        next.set(optionsVerse.verse, color)
         return next
       })
     }
-    setActionMessage(active ? 'Versículo resaltado' : 'Resaltado quitado')
+
+    setActionMessage('Versículo resaltado')
+  }
+
+  async function handleRemoveHighlight() {
+    if (!book || !optionsVerse) return
+
+    const location = {
+      bookId: book.id,
+      chapter: optionsVerse.chapter,
+      verse: optionsVerse.verse,
+    }
+
+    await removeHighlight(location)
+    setHighlighted(false)
+    setHighlightPickerOpen(false)
+
+    if (optionsVerse.chapter === requestedChapter) {
+      setHighlightedVerses((current) => {
+        const next = new Set(current)
+        next.delete(optionsVerse.verse)
+        return next
+      })
+      setHighlightColors((current) => {
+        const next = new Map(current)
+        next.delete(optionsVerse.verse)
+        return next
+      })
+    }
+
+    setActionMessage('Resaltado quitado')
+  }
+
+  async function copyVerseText() {
+    if (!optionsVerse) return
+
+    const text = `${optionsVerse.text}\n${optionsVerse.reference}`
+
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text)
+    } else {
+      const textarea = document.createElement('textarea')
+      textarea.value = text
+      textarea.style.position = 'fixed'
+      textarea.style.opacity = '0'
+      document.body.append(textarea)
+      textarea.select()
+      document.execCommand('copy')
+      textarea.remove()
+    }
+
+    setActionMessage('Versículo copiado')
+  }
+
+  async function shareVerse() {
+    if (!optionsVerse) return
+
+    const text = `${optionsVerse.text}\n${optionsVerse.reference}`
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: optionsVerse.reference,
+          text,
+        })
+        setActionMessage('Versículo compartido')
+        return
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return
+      }
+    }
+
+    await copyVerseText()
+    setActionMessage('Compartir no está disponible; se copió el versículo')
   }
 
   async function handleSaveNote() {
-    if (!book || !selectedVerse || !noteDraft.trim()) return
+    if (!book || !optionsVerse || !noteDraft.trim()) return
 
     const saved = await saveBibleNote(
       {
         bookId: book.id,
-        chapter: selectedVerse.chapter,
-        verse: selectedVerse.verse,
+        chapter: optionsVerse.chapter,
+        verse: optionsVerse.verse,
       },
       noteDraft,
     )
@@ -274,12 +404,12 @@ export function ReaderPage() {
   }
 
   async function handleDeleteNote() {
-    if (!book || !selectedVerse) return
+    if (!book || !optionsVerse) return
 
     await removeBibleNote(makeBibleLocationId({
       bookId: book.id,
-      chapter: selectedVerse.chapter,
-      verse: selectedVerse.verse,
+      chapter: optionsVerse.chapter,
+      verse: optionsVerse.verse,
     }))
     setNoteDraft('')
     setNoteSaved(false)
