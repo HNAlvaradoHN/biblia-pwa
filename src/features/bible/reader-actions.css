@@ -5,23 +5,46 @@
 
 .verse-button {
   width: 100%;
-  padding: 5px 7px;
+  padding: 5px 7px 5px 9px;
   border: 0;
+  border-left: 3px solid transparent;
   border-radius: 10px;
   background: transparent;
   cursor: pointer;
   text-align: left;
-  transition: background 140ms ease, box-shadow 140ms ease;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
-.verse-button:hover,
+.verse-button:hover {
+  background: color-mix(in srgb, var(--accent-soft) 34%, transparent);
+}
+
 .verse-item.selected .verse-button {
-  background: color-mix(in srgb, var(--accent-soft) 58%, transparent);
+  border-left-color: color-mix(in srgb, var(--accent) 52%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 24%, transparent);
 }
 
-.verse-button.highlighted,
+.verse-button.highlighted.highlight-yellow {
+  background: color-mix(in srgb, #facc15 24%, transparent);
+}
+
+.verse-button.highlighted.highlight-green {
+  background: color-mix(in srgb, #86efac 28%, transparent);
+}
+
+.verse-button.highlighted.highlight-blue {
+  background: color-mix(in srgb, #93c5fd 28%, transparent);
+}
+
+.verse-button.highlighted.highlight-pink {
+  background: color-mix(in srgb, #f9a8d4 28%, transparent);
+}
+
 .verse-item.selected .verse-button.highlighted {
-  background: color-mix(in srgb, #facc15 22%, transparent);
+  border-left-color: color-mix(in srgb, var(--accent) 62%, transparent);
 }
 
 .verse-button:focus-visible {
@@ -93,6 +116,63 @@
 
 .verse-action-button span {
   font-size: 1rem;
+}
+
+.highlight-color-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.highlight-color-option,
+.highlight-remove {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.highlight-color-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.highlight-color-option span {
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+}
+
+.highlight-color-option.highlight-yellow span {
+  background: #facc15;
+}
+
+.highlight-color-option.highlight-green span {
+  background: #86efac;
+}
+
+.highlight-color-option.highlight-blue span {
+  background: #93c5fd;
+}
+
+.highlight-color-option.highlight-pink span {
+  background: #f9a8d4;
+}
+
+.highlight-color-option.active {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.highlight-remove {
+  grid-column: 1 / -1;
+  color: var(--muted);
 }
 
 .verse-note-editor {
