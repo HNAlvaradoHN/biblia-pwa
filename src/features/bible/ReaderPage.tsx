@@ -5,11 +5,13 @@ import {
   getBibleNote,
   getLastReading,
   isFavorite,
+  isHighlighted,
   makeBibleLocationId,
   removeBibleNote,
   saveBibleNote,
   saveLastReading,
   toggleFavorite,
+  toggleHighlight,
 } from '../../data/db'
 import './reader-actions.css'
 
@@ -27,6 +29,7 @@ export function ReaderPage() {
   const saveTimer = useRef<number | undefined>(undefined)
   const [selectedVerse, setSelectedVerse] = useState<SelectedVerse | undefined>()
   const [favoriteActive, setFavoriteActive] = useState(false)
+  const [highlighted, setHighlighted] = useState(false)
   const [noteOpen, setNoteOpen] = useState(false)
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
@@ -145,6 +148,7 @@ export function ReaderPage() {
   useEffect(() => {
     if (!book || !selectedVerse) {
       setFavoriteActive(false)
+      setHighlighted(false)
       setNoteDraft('')
       setNoteSaved(false)
       setNoteOpen(false)
@@ -159,9 +163,14 @@ export function ReaderPage() {
       verse: selectedVerse.verse,
     }
 
-    void Promise.all([isFavorite(location), getBibleNote(location)]).then(([favorite, note]) => {
+    void Promise.all([
+      isFavorite(location),
+      isHighlighted(location),
+      getBibleNote(location),
+    ]).then(([favorite, highlight, note]) => {
       if (cancelled) return
       setFavoriteActive(favorite)
+      setHighlighted(highlight)
       setNoteDraft(note?.text ?? '')
       setNoteSaved(Boolean(note))
       setNoteOpen(Boolean(note))
@@ -192,6 +201,18 @@ export function ReaderPage() {
     })
     setFavoriteActive(active)
     setActionMessage(active ? 'Añadido a favoritos' : 'Quitado de favoritos')
+  }
+
+  async function handleHighlight() {
+    if (!book || !selectedVerse) return
+
+    const active = await toggleHighlight({
+      bookId: book.id,
+      chapter: selectedVerse.chapter,
+      verse: selectedVerse.verse,
+    })
+    setHighlighted(active)
+    setActionMessage(active ? 'Versículo resaltado' : 'Resaltado quitado')
   }
 
   async function handleSaveNote() {
@@ -305,6 +326,15 @@ export function ReaderPage() {
                               >
                                 <span aria-hidden="true">✎</span>
                                 {noteSaved ? 'Nota guardada' : 'Nota'}
+                              </button>
+                              <button
+                                className={`verse-action-button${highlighted ? ' active' : ''}`}
+                                type="button"
+                                aria-pressed={highlighted}
+                                onClick={() => void handleHighlight()}
+                              >
+                                <span aria-hidden="true">▰</span>
+                                {highlighted ? 'Resaltado' : 'Resaltar'}
                               </button>
                             </div>
 
