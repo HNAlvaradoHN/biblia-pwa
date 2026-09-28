@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
 import { bibleProvider } from '../../data/bible/provider'
 import {
+  db,
   getBibleNote,
   getLastReading,
   isFavorite,
@@ -30,6 +31,7 @@ export function ReaderPage() {
   const [selectedVerse, setSelectedVerse] = useState<SelectedVerse | undefined>()
   const [favoriteActive, setFavoriteActive] = useState(false)
   const [highlighted, setHighlighted] = useState(false)
+  const [highlightedVerses, setHighlightedVerses] = useState<Set<number>>(() => new Set())
   const [noteOpen, setNoteOpen] = useState(false)
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
@@ -146,6 +148,34 @@ export function ReaderPage() {
   }, [book, chapters, requestedChapter, routerLocation.hash])
 
   useEffect(() => {
+    if (!book || !Number.isFinite(requestedChapter)) {
+      setHighlightedVerses(new Set())
+      return
+    }
+
+    let cancelled = false
+
+    void db.highlights
+      .where('chapter')
+      .equals(requestedChapter)
+      .toArray()
+      .then((records) => {
+        if (cancelled) return
+        setHighlightedVerses(
+          new Set(
+            records
+              .filter((record) => record.bookId === book.id)
+              .map((record) => record.verse),
+          ),
+        )
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [book, requestedChapter])
+
+  useEffect(() => {
     if (!book || !selectedVerse) {
       setFavoriteActive(false)
       setHighlighted(false)
@@ -212,6 +242,17 @@ export function ReaderPage() {
       verse: selectedVerse.verse,
     })
     setHighlighted(active)
+    if (selectedVerse.chapter === requestedChapter) {
+      setHighlightedVerses((current) => {
+        const next = new Set(current)
+        if (active) {
+          next.add(selectedVerse.verse)
+        } else {
+          next.delete(selectedVerse.verse)
+        }
+        return next
+      })
+    }
     setActionMessage(active ? 'Versículo resaltado' : 'Resaltado quitado')
   }
 
@@ -273,13 +314,15 @@ export function ReaderPage() {
                   {section.verses.map((verse) => {
                     const anchorId = `verse-${book.id}-${chapter.number}-${verse.number}`
                     const isSelected = selectedVerse?.anchorId === anchorId
+                    const isPersistentlyHighlighted =
+                      chapter.number === requestedChapter && highlightedVerses.has(verse.number)
                     const reference = `${book.name} ${chapter.number}:${verse.number}`
 
                     return (
                       <div className={`verse-item${isSelected ? ' selected' : ''}`} key={verse.number}>
                         <button
                           id={anchorId}
-                          className="verse verse-button"
+                          className={`verse verse-button${isPersistentlyHighlighted ? ' highlighted' : ''}`}
                           type="button"
                           data-reading-anchor="true"
                           data-chapter={chapter.number}
