@@ -443,42 +443,63 @@ export function ReaderPage() {
                 <div className="verse-flow">
                   {section.verses.map((verse) => {
                     const anchorId = `verse-${book.id}-${chapter.number}-${verse.number}`
+                    const reference = `${book.name} ${chapter.number}:${verse.number}`
+                    const target: VerseTarget = {
+                      chapter: chapter.number,
+                      verse: verse.number,
+                      anchorId,
+                      text: verse.text,
+                      reference,
+                    }
                     const isSelected = selectedVerse?.anchorId === anchorId
+                    const isOptionsOpen = optionsVerse?.anchorId === anchorId
                     const isPersistentlyHighlighted =
                       chapter.number === requestedChapter && highlightedVerses.has(verse.number)
-                    const reference = `${book.name} ${chapter.number}:${verse.number}`
+                    const persistentHighlightColor =
+                      highlightColors.get(verse.number) ?? 'yellow'
+                    const highlightClass = isPersistentlyHighlighted
+                      ? ` highlighted highlight-${persistentHighlightColor}`
+                      : ''
 
                     return (
-                      <div className={`verse-item${isSelected ? ' selected' : ''}`} key={verse.number}>
+                      <div
+                        className={`verse-item${isSelected ? ' selected' : ''}`}
+                        key={verse.number}
+                      >
                         <button
                           id={anchorId}
-                          className={`verse verse-button${isPersistentlyHighlighted ? ' highlighted' : ''}`}
+                          className={`verse verse-button${highlightClass}`}
                           type="button"
                           data-reading-anchor="true"
                           data-chapter={chapter.number}
-                          aria-expanded={isSelected}
-                          aria-label={`${reference}. Tocar para opciones`}
-                          onClick={() => {
-                            setSelectedVerse((current) =>
-                              current?.anchorId === anchorId
-                                ? undefined
-                                : {
-                                    chapter: chapter.number,
-                                    verse: verse.number,
-                                    anchorId,
-                                  },
-                            )
-                          }}
+                          aria-pressed={isSelected}
+                          aria-expanded={isOptionsOpen}
+                          aria-label={`${reference}. Tocar para activar; mantener presionado para opciones`}
+                          onPointerDown={() => startLongPress(target)}
+                          onPointerUp={clearLongPressTimer}
+                          onPointerCancel={clearLongPressTimer}
+                          onPointerLeave={clearLongPressTimer}
+                          onContextMenu={(event) => event.preventDefault()}
+                          onClick={() => handleVerseTap(target)}
                         >
                           <sup>{verse.number}</sup>
                           {verse.text}
                         </button>
 
-                        {isSelected ? (
-                          <div className="verse-action-panel glass-panel" aria-label={`Opciones para ${reference}`}>
+                        {isOptionsOpen ? (
+                          <div
+                            className="verse-action-panel glass-panel"
+                            aria-label={`Opciones para ${reference}`}
+                          >
                             <div className="verse-action-header">
                               <strong>{reference}</strong>
-                              <button type="button" onClick={() => setSelectedVerse(undefined)} aria-label="Cerrar opciones">×</button>
+                              <button
+                                type="button"
+                                onClick={() => setOptionsVerse(undefined)}
+                                aria-label="Cerrar opciones"
+                              >
+                                ×
+                              </button>
                             </div>
 
                             <div className="verse-action-buttons">
@@ -491,6 +512,7 @@ export function ReaderPage() {
                                 <span aria-hidden="true">{favoriteActive ? '★' : '☆'}</span>
                                 {favoriteActive ? 'En favoritos' : 'Favorito'}
                               </button>
+
                               <button
                                 className={`verse-action-button${noteOpen || noteSaved ? ' active' : ''}`}
                                 type="button"
@@ -500,16 +522,61 @@ export function ReaderPage() {
                                 <span aria-hidden="true">✎</span>
                                 {noteSaved ? 'Nota guardada' : 'Nota'}
                               </button>
+
                               <button
                                 className={`verse-action-button${highlighted ? ' active' : ''}`}
                                 type="button"
-                                aria-pressed={highlighted}
-                                onClick={() => void handleHighlight()}
+                                aria-expanded={highlightPickerOpen}
+                                onClick={() => setHighlightPickerOpen((current) => !current)}
                               >
                                 <span aria-hidden="true">▰</span>
                                 {highlighted ? 'Resaltado' : 'Resaltar'}
                               </button>
+
+                              <button
+                                className="verse-action-button"
+                                type="button"
+                                onClick={() => void copyVerseText()}
+                              >
+                                <span aria-hidden="true">⧉</span>
+                                Copiar
+                              </button>
+
+                              <button
+                                className="verse-action-button"
+                                type="button"
+                                onClick={() => void shareVerse()}
+                              >
+                                <span aria-hidden="true">↗</span>
+                                Compartir
+                              </button>
                             </div>
+
+                            {highlightPickerOpen ? (
+                              <div className="highlight-color-picker" aria-label="Color de resaltado">
+                                {highlightChoices.map((choice) => (
+                                  <button
+                                    className={`highlight-color-option highlight-${choice.color}${highlighted && highlightColor === choice.color ? ' active' : ''}`}
+                                    type="button"
+                                    key={choice.color}
+                                    aria-pressed={highlighted && highlightColor === choice.color}
+                                    onClick={() => void handleHighlightColor(choice.color)}
+                                  >
+                                    <span aria-hidden="true" />
+                                    {choice.label}
+                                  </button>
+                                ))}
+                                {highlighted ? (
+                                  <button
+                                    className="highlight-remove"
+                                    type="button"
+                                    onClick={() => void handleRemoveHighlight()}
+                                  >
+                                    Quitar resaltado
+                                  </button>
+                                ) : null}
+                              </div>
+                            ) : null}
 
                             {noteOpen ? (
                               <div className="verse-note-editor">
@@ -532,7 +599,11 @@ export function ReaderPage() {
                                     Guardar nota
                                   </button>
                                   {noteSaved ? (
-                                    <button className="button secondary" type="button" onClick={() => void handleDeleteNote()}>
+                                    <button
+                                      className="button secondary"
+                                      type="button"
+                                      onClick={() => void handleDeleteNote()}
+                                    >
                                       Eliminar
                                     </button>
                                   ) : null}
@@ -540,7 +611,11 @@ export function ReaderPage() {
                               </div>
                             ) : null}
 
-                            {actionMessage ? <p className="verse-action-message" role="status">{actionMessage}</p> : null}
+                            {actionMessage ? (
+                              <p className="verse-action-message" role="status">
+                                {actionMessage}
+                              </p>
+                            ) : null}
                           </div>
                         ) : null}
                       </div>
