@@ -186,7 +186,7 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 4. Solo después de esa validación cerrar D-029 y mover el siguiente objetivo funcional.
 5. Continuar el inventario comparativo de la APK externa para seleccionar la próxima función útil, sin mezclar funciones no relacionadas.
 
-Bloqueo externo actual: desde la conexión disponible no aparece ningún equipo/proyecto de Vercel accesible, por lo que no se puede ejecutar ni verificar el despliegue desde este entorno. Esto no afecta el CI ni el artefacto ya verificado en GitHub.
+Estado de despliegue actual: el usuario conectó el proyecto de Vercel con el repositorio oficial `HNAlvaradoHN/biblia-pwa` el 2026-10-02. Los deployments visibles en producción seguían siendo anteriores a la conexión y `https://biblia-pwa.vercel.app/` continuaba mostrando `v0.1.4`. Se crea un commit posterior a la conexión para disparar el primer deployment automático desde `main`; la versión `0.1.5` seguirá como `IMPLEMENTADO_PENDIENTE_VALIDACIÓN` hasta verificar el deployment y la prueba física.
 
 ## Después de este objetivo
 
