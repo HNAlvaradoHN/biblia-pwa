@@ -3,6 +3,16 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-02 — Compartir por formato y búsqueda bíblica 0.1.7
+
+- Al tocar un nuevo versículo fuera del modo de selección múltiple se limpia cualquier selección transitoria para asegurar un único versículo activo visible.
+- `Compartir` ahora pregunta si se desea compartir como texto o como imagen.
+- La imagen se genera localmente; si el contenido seleccionado no cabe de forma legible, la app solicita reducir la selección.
+- Compartir imagen usa Web Share con archivo PNG cuando el dispositivo lo soporta y descarga el PNG como fallback.
+- Implementada la siguiente etapa: búsqueda bíblica por palabras o frases sobre todo el corpus disponible.
+- Los resultados muestran referencia + texto y abren directamente el versículo exacto.
+- Build visible actualizado a `0.1.7`.
+
 ## 2026-10-02 — Ajuste de interacción del lector 0.1.6
 
 - Tocar un versículo ahora solo mueve el `versículo activo`; ya no abre automáticamente el panel de acciones.
