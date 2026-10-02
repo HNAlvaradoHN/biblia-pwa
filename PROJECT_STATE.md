@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Versículo activo y acciones — ajuste 0.1.7 en implementación
+### Versículo activo, compartir y búsqueda 0.1.7 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -183,13 +183,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI/revisión de `0.1.7`.
-2. Desplegar y validar físicamente el comportamiento de versículo activo y Compartir Texto/Imagen.
-3. Validar la búsqueda por palabras/frases y apertura al versículo exacto.
-4. Cerrar D-029/D-032/D-033 si la prueba real pasa.
-5. Continuar el inventario comparativo de la APK externa y preparar el siguiente objetivo sin volver a estancarse en la validación anterior.
+1. Validar físicamente `0.1.7`: cambio de versículo activo, selector Compartir Texto/Imagen y generación/compartición de imagen.
+2. Validar búsqueda por palabra/frase en el dispositivo y apertura al versículo exacto.
+3. Cerrar D-029/D-032/D-033 si la prueba real pasa.
+4. Continuar de inmediato con el lector capítulo por capítulo ya aprobado, salvo que la validación revele un defecto relevante.
+5. Mantener en paralelo el inventario comparativo de la APK externa como referencia, sin bloquear el avance funcional.
 
-Estado de despliegue actual: producción sirve `0.1.6`. La validación física detectó dos ajustes: evitar cualquier marca transitoria anterior al cambiar de versículo fuera de selección múltiple y convertir Compartir en un selector Texto/Imagen. Ambos se trabajan en `0.1.7` junto con el siguiente objetivo funcional, la búsqueda bíblica por palabras/frases.
+Estado de despliegue actual: `0.1.7` fue fusionada a `main` en `a96116e16203838fde4a154c1ed2102ce312833e`. El CI de `main` (run `37078904573`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.7`. La previsualización automatizada confirmó que al mover el versículo activo el anterior deja de verse activo, Compartir pregunta Texto/Imagen y la búsqueda devuelve coincidencias y abre el versículo exacto. Falta validación física del usuario, especialmente compartir imagen en su dispositivo.
 
 ## Después de este objetivo
 
