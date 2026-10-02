@@ -239,10 +239,12 @@ export function ReaderPage() {
     )
   }
 
+  const activeBook = book
+
   function getActiveLocation() {
     if (!activeVerse) return undefined
     return {
-      bookId: book.id,
+      bookId: activeBook.id,
       chapter: activeVerse.chapter,
       verse: activeVerse.verse,
     }
@@ -250,7 +252,7 @@ export function ReaderPage() {
 
   function getShareText() {
     if (!activeVerse || !activeVerseText) return undefined
-    const reference = `${book.name} ${activeVerse.chapter}:${activeVerse.verse}`
+    const reference = `${activeBook.name} ${activeVerse.chapter}:${activeVerse.verse}`
     return {
       reference,
       text: `${reference}\n${activeVerseText}`,
@@ -340,7 +342,7 @@ export function ReaderPage() {
 
   function activateVerse(chapter: number, verse: number, anchorId: string) {
     const location = {
-      bookId: book.id,
+      bookId: activeBook.id,
       chapter,
       verse,
     }
@@ -349,7 +351,7 @@ export function ReaderPage() {
     setActionPanelOpen(true)
     void saveActiveVerse(location)
     void saveLastReading({
-      bookId: book.id,
+      bookId: activeBook.id,
       chapter,
       anchorId,
     })
@@ -358,7 +360,7 @@ export function ReaderPage() {
   return (
     <div className="reader-page">
       <div className="reader-toolbar">
-        <Link to={`/biblia/${book.id}`}>← {book.name}</Link>
+        <Link to={`/biblia/${activeBook.id}`}>← {activeBook.name}</Link>
         <span>{bibleProvider.translation.label}</span>
       </div>
 
@@ -371,7 +373,7 @@ export function ReaderPage() {
         {chapters.map((chapter) => (
           <section className="chapter-section" key={chapter.number} data-chapter-section={chapter.number}>
             <header className="chapter-heading">
-              <p>{book.name}</p>
+              <p>{activeBook.name}</p>
               <h1>Capítulo {chapter.number}</h1>
             </header>
 
@@ -380,16 +382,16 @@ export function ReaderPage() {
                 {section.heading ? <h2>{section.heading}</h2> : null}
                 <div className="verse-flow">
                   {section.verses.map((verse) => {
-                    const anchorId = `verse-${book.id}-${chapter.number}-${verse.number}`
+                    const anchorId = `verse-${activeBook.id}-${chapter.number}-${verse.number}`
                     const locationId = makeBibleLocationId({
-                      bookId: book.id,
+                      bookId: activeBook.id,
                       chapter: chapter.number,
                       verse: verse.number,
                     })
                     const isActive = activeVerse?.anchorId === anchorId
                     const isHighlighted = highlightedIds.has(locationId)
                     const panelVisible = isActive && actionPanelOpen
-                    const reference = `${book.name} ${chapter.number}:${verse.number}`
+                    const reference = `${activeBook.name} ${chapter.number}:${verse.number}`
 
                     return (
                       <div
