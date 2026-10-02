@@ -34,8 +34,8 @@ Un chat nuevo NO puede responder sobre el estado del proyecto, proponer implemen
 
 Solo este archivo guarda el número de sesión. Está prohibido crear archivos `CHAT-001`, `CHAT-002`, carpetas de sesiones, logs por chat o listas acumulativas de identidades.
 
-CURRENT_SESSION: 1
-NEXT_SESSION: 2
+CURRENT_SESSION: 2
+NEXT_SESSION: 3
 
 ### Cómo toma identidad un chat nuevo
 
