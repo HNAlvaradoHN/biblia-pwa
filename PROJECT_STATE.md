@@ -1,6 +1,6 @@
 # PROJECT_STATE.md — ESTADO ACTUAL
 
-Última actualización: 2026-09-16
+Última actualización: 2026-10-02
 
 ## Estado general
 
@@ -85,6 +85,17 @@ El objetivo funcional activo continúa siendo completar las acciones básicas de
 - Build visible identificado como `0.1.4`.
 - Rama, PR #6 y `main` pasaron instalación bloqueada, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
 - El usuario confirmó en un dispositivo real que la publicación `v0.1.4` se ve correctamente; entrega cerrada.
+
+### Versículo activo y acciones 0.1.5 — implementado pendiente de validación
+
+- PR #8 implementa persistencia local de un único versículo activo.
+- PR #8 añade resaltados persistentes separados del estado de versículo activo.
+- El panel contextual incluye Favorito, Nota, Resaltar, Copiar y Compartir.
+- Copiar usa texto + referencia; Compartir usa Web Share cuando está disponible y fallback al portapapeles.
+- La versión visible del build pasa a `0.1.5`.
+- El primer CI del PR falló en TypeScript; la causa fue el estrechamiento de tipo de `book` dentro de handlers anidados.
+- La corrección posterior pasó TypeScript, ESLint, build PWA y auditoría de dependencias en verde en la rama.
+- Estado actual: `IMPLEMENTADO_PENDIENTE_VALIDACIÓN` hasta merge, CI de `main`, despliegue y comprobación publicada.
 
 ## Objetivo activo
 
