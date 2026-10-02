@@ -119,6 +119,17 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
+### Versículo activo y acciones 0.1.5 — implementado pendiente de validación
+
+- PR #8 implementa persistencia local de un único versículo activo.
+- PR #8 añade resaltados persistentes separados del estado de versículo activo.
+- El panel contextual incluye Favorito, Nota, Resaltar, Copiar y Compartir.
+- Copiar usa texto + referencia; Compartir usa Web Share cuando está disponible y fallback al portapapeles.
+- La versión visible del build pasa a `0.1.5`.
+- El primer CI del PR falló en TypeScript; la causa fue el estrechamiento de tipo de `book` dentro de handlers anidados.
+- La corrección posterior pasó TypeScript, ESLint, build PWA y auditoría de dependencias en verde en la rama.
+- Estado actual: `IMPLEMENTADO_PENDIENTE_VALIDACIÓN` hasta merge, CI de `main`, despliegue y comprobación publicada.
+
 ## Objetivo activo
 
 Completar el comportamiento del versículo en el lector normal con dos capas claramente distintas:
@@ -169,13 +180,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Mantener el objetivo D-029 como único objetivo funcional activo.
-2. Revisar el PR #8 (`0.1.5`) y confirmar CI real; si falla, corregir la causa dentro del mismo objetivo.
-3. Revisar diff, secretos/datos personales y limpieza del cambio.
-4. Integrar el PR #8 solo con verificaciones aplicables en verde.
-5. Confirmar `main` en verde, desplegar y verificar la versión publicada antes de pedir prueba al usuario.
-6. En paralelo solo como análisis/documentación, continuar el inventario de la APK externa; no mezclar nuevas funciones de ese inventario dentro de D-029.
-7. Después de cerrar D-029, usar el inventario comparativo para decidir qué función útil de la APK conviene incorporar en la siguiente fase, respetando las decisiones ya aprobadas.
+1. Revisar el diff final del PR #8 y confirmar que no contiene secretos, datos personales ni cambios fuera de alcance.
+2. Integrar el PR #8 porque la rama ya pasó TypeScript, ESLint, build PWA y auditoría de dependencias.
+3. Confirmar CI de `main` en verde.
+4. Desplegar/verificar la versión publicada `0.1.5` y solo entonces pedir prueba al usuario.
+5. Cerrar D-029 y mover el siguiente objetivo funcional.
+6. Continuar el inventario comparativo de la APK externa para seleccionar la próxima función útil, sin mezclar funciones no relacionadas.
 
 ## Después de este objetivo
 

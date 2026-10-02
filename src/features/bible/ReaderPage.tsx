@@ -2,18 +2,23 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
 import { bibleProvider } from '../../data/bible/provider'
 import {
+  getActiveVerse,
   getBibleNote,
+  getHighlights,
   getLastReading,
   isFavorite,
+  isHighlighted,
   makeBibleLocationId,
   removeBibleNote,
+  saveActiveVerse,
   saveBibleNote,
   saveLastReading,
   toggleFavorite,
+  toggleHighlight,
 } from '../../data/db'
 import './reader-actions.css'
 
-type SelectedVerse = {
+type ActiveVerse = {
   chapter: number
   verse: number
   anchorId: string
@@ -25,8 +30,11 @@ export function ReaderPage() {
   const book = bibleProvider.getBook(bookId)
   const requestedChapter = Number(chapterParam)
   const saveTimer = useRef<number | undefined>(undefined)
-  const [selectedVerse, setSelectedVerse] = useState<SelectedVerse | undefined>()
+  const [activeVerse, setActiveVerse] = useState<ActiveVerse | undefined>()
+  const [actionPanelOpen, setActionPanelOpen] = useState(false)
   const [favoriteActive, setFavoriteActive] = useState(false)
+  const [highlightActive, setHighlightActive] = useState(false)
+  const [highlightedIds, setHighlightedIds] = useState<Set<string>>(() => new Set())
   const [noteOpen, setNoteOpen] = useState(false)
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
@@ -38,6 +46,41 @@ export function ReaderPage() {
     if (startIndex < 0) return []
     return book.chapters.slice(startIndex)
   }, [book, requestedChapter])
+
+  useEffect(() => {
+    if (!book || chapters.length === 0) return
+
+    let cancelled = false
+    const visibleChapterNumbers = new Set(chapters.map((item) => item.number))
+
+    void Promise.all([getActiveVerse(), getHighlights()]).then(([storedActiveVerse, highlights]) => {
+      if (cancelled) return
+
+      setHighlightedIds(new Set(highlights.map((item) => makeBibleLocationId(item))))
+
+      if (
+        storedActiveVerse?.bookId === book.id &&
+        visibleChapterNumbers.has(storedActiveVerse.chapter)
+      ) {
+        const chapter = book.chapters.find((item) => item.number === storedActiveVerse.chapter)
+        const verseExists = chapter?.sections.some((section) =>
+          section.verses.some((verse) => verse.number === storedActiveVerse.verse),
+        )
+
+        if (verseExists) {
+          setActiveVerse({
+            chapter: storedActiveVerse.chapter,
+            verse: storedActiveVerse.verse,
+            anchorId: `verse-${book.id}-${storedActiveVerse.chapter}-${storedActiveVerse.verse}`,
+          })
+        }
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [book, chapters])
 
   useEffect(() => {
     if (!book || chapters.length === 0) return
@@ -143,8 +186,9 @@ export function ReaderPage() {
   }, [book, chapters, requestedChapter, routerLocation.hash])
 
   useEffect(() => {
-    if (!book || !selectedVerse) {
+    if (!book || !activeVerse) {
       setFavoriteActive(false)
+      setHighlightActive(false)
       setNoteDraft('')
       setNoteSaved(false)
       setNoteOpen(false)
@@ -155,13 +199,18 @@ export function ReaderPage() {
     let cancelled = false
     const location = {
       bookId: book.id,
-      chapter: selectedVerse.chapter,
-      verse: selectedVerse.verse,
+      chapter: activeVerse.chapter,
+      verse: activeVerse.verse,
     }
 
-    void Promise.all([isFavorite(location), getBibleNote(location)]).then(([favorite, note]) => {
+    void Promise.all([
+      isFavorite(location),
+      getBibleNote(location),
+      isHighlighted(location),
+    ]).then(([favorite, note, highlighted]) => {
       if (cancelled) return
       setFavoriteActive(favorite)
+      setHighlightActive(highlighted)
       setNoteDraft(note?.text ?? '')
       setNoteSaved(Boolean(note))
       setNoteOpen(Boolean(note))
@@ -171,7 +220,15 @@ export function ReaderPage() {
     return () => {
       cancelled = true
     }
-  }, [book, selectedVerse])
+  }, [book, activeVerse])
+
+  const activeVerseText = useMemo(() => {
+    if (!book || !activeVerse) return undefined
+    const chapter = book.chapters.find((item) => item.number === activeVerse.chapter)
+    return chapter?.sections
+      .flatMap((section) => section.verses)
+      .find((verse) => verse.number === activeVerse.verse)?.text
+  }, [book, activeVerse])
 
   if (!book || chapters.length === 0) {
     return (
@@ -182,53 +239,128 @@ export function ReaderPage() {
     )
   }
 
-  async function handleFavorite() {
-    if (!book || !selectedVerse) return
+  const activeBook = book
 
-    const active = await toggleFavorite({
-      bookId: book.id,
-      chapter: selectedVerse.chapter,
-      verse: selectedVerse.verse,
-    })
+  function getActiveLocation() {
+    if (!activeVerse) return undefined
+    return {
+      bookId: activeBook.id,
+      chapter: activeVerse.chapter,
+      verse: activeVerse.verse,
+    }
+  }
+
+  function getShareText() {
+    if (!activeVerse || !activeVerseText) return undefined
+    const reference = `${activeBook.name} ${activeVerse.chapter}:${activeVerse.verse}`
+    return {
+      reference,
+      text: `${reference}\n${activeVerseText}`,
+    }
+  }
+
+  async function handleFavorite() {
+    const location = getActiveLocation()
+    if (!location) return
+
+    const active = await toggleFavorite(location)
     setFavoriteActive(active)
     setActionMessage(active ? 'Añadido a favoritos' : 'Quitado de favoritos')
   }
 
+  async function handleHighlight() {
+    const location = getActiveLocation()
+    if (!location) return
+
+    const active = await toggleHighlight(location)
+    const id = makeBibleLocationId(location)
+
+    setHighlightActive(active)
+    setHighlightedIds((current) => {
+      const next = new Set(current)
+      if (active) next.add(id)
+      else next.delete(id)
+      return next
+    })
+    setActionMessage(active ? 'Versículo resaltado' : 'Resaltado eliminado')
+  }
+
+  async function handleCopy() {
+    const share = getShareText()
+    if (!share) return
+
+    try {
+      await navigator.clipboard.writeText(share.text)
+      setActionMessage('Copiado al portapapeles')
+    } catch {
+      setActionMessage('No se pudo copiar en este dispositivo')
+    }
+  }
+
+  async function handleShare() {
+    const share = getShareText()
+    if (!share) return
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: share.reference,
+          text: share.text,
+        })
+        setActionMessage('Compartido')
+        return
+      }
+
+      await navigator.clipboard.writeText(share.text)
+      setActionMessage('Compartir no está disponible; se copió el versículo')
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      setActionMessage('No se pudo compartir en este dispositivo')
+    }
+  }
+
   async function handleSaveNote() {
-    if (!book || !selectedVerse || !noteDraft.trim()) return
+    const location = getActiveLocation()
+    if (!location || !noteDraft.trim()) return
 
-    const saved = await saveBibleNote(
-      {
-        bookId: book.id,
-        chapter: selectedVerse.chapter,
-        verse: selectedVerse.verse,
-      },
-      noteDraft,
-    )
-
+    const saved = await saveBibleNote(location, noteDraft)
     setNoteDraft(saved?.text ?? '')
     setNoteSaved(Boolean(saved))
     setActionMessage('Nota guardada')
   }
 
   async function handleDeleteNote() {
-    if (!book || !selectedVerse) return
+    const location = getActiveLocation()
+    if (!location) return
 
-    await removeBibleNote(makeBibleLocationId({
-      bookId: book.id,
-      chapter: selectedVerse.chapter,
-      verse: selectedVerse.verse,
-    }))
+    await removeBibleNote(makeBibleLocationId(location))
     setNoteDraft('')
     setNoteSaved(false)
     setNoteOpen(false)
     setActionMessage('Nota eliminada')
   }
 
+  function activateVerse(chapter: number, verse: number, anchorId: string) {
+    const location = {
+      bookId: activeBook.id,
+      chapter,
+      verse,
+    }
+
+    setActiveVerse({ chapter, verse, anchorId })
+    setActionPanelOpen(true)
+    void saveActiveVerse(location)
+    void saveLastReading({
+      bookId: activeBook.id,
+      chapter,
+      anchorId,
+    })
+  }
+
   return (
     <div className="reader-page">
       <div className="reader-toolbar">
-        <Link to={`/biblia/${book.id}`}>← {book.name}</Link>
+        <Link to={`/biblia/${activeBook.id}`}>← {activeBook.name}</Link>
         <span>{bibleProvider.translation.label}</span>
       </div>
 
@@ -241,7 +373,7 @@ export function ReaderPage() {
         {chapters.map((chapter) => (
           <section className="chapter-section" key={chapter.number} data-chapter-section={chapter.number}>
             <header className="chapter-heading">
-              <p>{book.name}</p>
+              <p>{activeBook.name}</p>
               <h1>Capítulo {chapter.number}</h1>
             </header>
 
@@ -250,41 +382,52 @@ export function ReaderPage() {
                 {section.heading ? <h2>{section.heading}</h2> : null}
                 <div className="verse-flow">
                   {section.verses.map((verse) => {
-                    const anchorId = `verse-${book.id}-${chapter.number}-${verse.number}`
-                    const isSelected = selectedVerse?.anchorId === anchorId
-                    const reference = `${book.name} ${chapter.number}:${verse.number}`
+                    const anchorId = `verse-${activeBook.id}-${chapter.number}-${verse.number}`
+                    const locationId = makeBibleLocationId({
+                      bookId: activeBook.id,
+                      chapter: chapter.number,
+                      verse: verse.number,
+                    })
+                    const isActive = activeVerse?.anchorId === anchorId
+                    const isHighlighted = highlightedIds.has(locationId)
+                    const panelVisible = isActive && actionPanelOpen
+                    const reference = `${activeBook.name} ${chapter.number}:${verse.number}`
 
                     return (
-                      <div className={`verse-item${isSelected ? ' selected' : ''}`} key={verse.number}>
+                      <div
+                        className={[
+                          'verse-item',
+                          isActive ? 'active' : '',
+                          isHighlighted ? 'highlighted' : '',
+                        ].filter(Boolean).join(' ')}
+                        key={verse.number}
+                      >
                         <button
                           id={anchorId}
                           className="verse verse-button"
                           type="button"
                           data-reading-anchor="true"
                           data-chapter={chapter.number}
-                          aria-expanded={isSelected}
-                          aria-label={`${reference}. Tocar para opciones`}
-                          onClick={() => {
-                            setSelectedVerse((current) =>
-                              current?.anchorId === anchorId
-                                ? undefined
-                                : {
-                                    chapter: chapter.number,
-                                    verse: verse.number,
-                                    anchorId,
-                                  },
-                            )
-                          }}
+                          aria-current={isActive ? 'true' : undefined}
+                          aria-expanded={panelVisible}
+                          aria-label={`${reference}. Tocar para marcar como versículo activo y abrir opciones`}
+                          onClick={() => activateVerse(chapter.number, verse.number, anchorId)}
                         >
                           <sup>{verse.number}</sup>
                           {verse.text}
                         </button>
 
-                        {isSelected ? (
+                        {panelVisible ? (
                           <div className="verse-action-panel glass-panel" aria-label={`Opciones para ${reference}`}>
                             <div className="verse-action-header">
                               <strong>{reference}</strong>
-                              <button type="button" onClick={() => setSelectedVerse(undefined)} aria-label="Cerrar opciones">×</button>
+                              <button
+                                type="button"
+                                onClick={() => setActionPanelOpen(false)}
+                                aria-label="Cerrar opciones"
+                              >
+                                ×
+                              </button>
                             </div>
 
                             <div className="verse-action-buttons">
@@ -297,6 +440,7 @@ export function ReaderPage() {
                                 <span aria-hidden="true">{favoriteActive ? '★' : '☆'}</span>
                                 {favoriteActive ? 'En favoritos' : 'Favorito'}
                               </button>
+
                               <button
                                 className={`verse-action-button${noteOpen || noteSaved ? ' active' : ''}`}
                                 type="button"
@@ -305,6 +449,34 @@ export function ReaderPage() {
                               >
                                 <span aria-hidden="true">✎</span>
                                 {noteSaved ? 'Nota guardada' : 'Nota'}
+                              </button>
+
+                              <button
+                                className={`verse-action-button${highlightActive ? ' active' : ''}`}
+                                type="button"
+                                aria-pressed={highlightActive}
+                                onClick={() => void handleHighlight()}
+                              >
+                                <span aria-hidden="true">▰</span>
+                                {highlightActive ? 'Resaltado' : 'Resaltar'}
+                              </button>
+
+                              <button
+                                className="verse-action-button"
+                                type="button"
+                                onClick={() => void handleCopy()}
+                              >
+                                <span aria-hidden="true">⧉</span>
+                                Copiar
+                              </button>
+
+                              <button
+                                className="verse-action-button"
+                                type="button"
+                                onClick={() => void handleShare()}
+                              >
+                                <span aria-hidden="true">↗</span>
+                                Compartir
                               </button>
                             </div>
 
@@ -329,7 +501,11 @@ export function ReaderPage() {
                                     Guardar nota
                                   </button>
                                   {noteSaved ? (
-                                    <button className="button secondary" type="button" onClick={() => void handleDeleteNote()}>
+                                    <button
+                                      className="button secondary"
+                                      type="button"
+                                      onClick={() => void handleDeleteNote()}
+                                    >
                                       Eliminar
                                     </button>
                                   ) : null}
@@ -337,7 +513,11 @@ export function ReaderPage() {
                               </div>
                             ) : null}
 
-                            {actionMessage ? <p className="verse-action-message" role="status">{actionMessage}</p> : null}
+                            {actionMessage ? (
+                              <p className="verse-action-message" role="status">
+                                {actionMessage}
+                              </p>
+                            ) : null}
                           </div>
                         ) : null}
                       </div>

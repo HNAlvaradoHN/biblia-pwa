@@ -14,9 +14,22 @@
   transition: background 140ms ease, box-shadow 140ms ease;
 }
 
-.verse-button:hover,
-.verse-item.selected .verse-button {
-  background: color-mix(in srgb, var(--accent-soft) 58%, transparent);
+.verse-button:hover {
+  background: color-mix(in srgb, var(--accent-soft) 42%, transparent);
+}
+
+.verse-item.active .verse-button {
+  background: color-mix(in srgb, var(--accent-soft) 52%, transparent);
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--accent) 72%, transparent);
+}
+
+.verse-item.highlighted .verse-button {
+  background: color-mix(in srgb, var(--accent) 15%, #fffdf8);
+}
+
+.verse-item.highlighted.active .verse-button {
+  background: color-mix(in srgb, var(--accent) 21%, #fffdf8);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .verse-button:focus-visible {
@@ -60,7 +73,7 @@
 
 .verse-action-buttons {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
   gap: 8px;
 }
 
@@ -158,6 +171,10 @@
     gap: 8px;
     padding: 9px;
     border-radius: 13px;
+  }
+
+  .verse-action-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .verse-action-button {

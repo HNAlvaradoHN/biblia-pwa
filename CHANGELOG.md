@@ -196,3 +196,15 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Verificado que el paquete es Flutter, contiene datasets bíblicos locales y que su dataset español tiene 66 libros con capítulos, versículos individuales y campos de metadatos/encabezados.
 - Registrada la política de rescate: reconstruir funciones útiles con código propio, reutilizar contenido/assets solo con derechos verificados y no copiar secretos ni configuración privada.
 - El objetivo funcional activo sigue siendo D-029; el PR #8 prepara la versión `0.1.5` y permanece pendiente de validación/CI/merge/despliegue antes de considerarse terminado.
+
+
+## 2026-10-02 — Versículo activo y acciones 0.1.5
+
+- Añadida persistencia local de un único versículo activo.
+- Añadidos resaltados persistentes independientes del versículo activo.
+- Ampliado el panel contextual con `Resaltar`, `Copiar` y `Compartir`, conservando `Favorito` y `Nota`.
+- `Copiar` incluye referencia y texto; `Compartir` usa el mecanismo nativo cuando existe y copia al portapapeles como fallback.
+- Diferenciados visualmente el estado activo y el resaltado persistente.
+- El primer CI detectó un error de TypeScript relacionado con el estrechamiento de `book` dentro de handlers; se corrigió sin desactivar verificaciones.
+- La rama corrigida pasó TypeScript, ESLint, build PWA y auditoría de dependencias.
+- Build visible preparado como `0.1.5`; permanece pendiente de merge, CI de `main`, despliegue y validación publicada.

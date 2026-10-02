@@ -14,6 +14,11 @@ export interface ReadingProgress {
   updatedAt: number
 }
 
+export interface ActiveVerseRecord extends BibleLocation {
+  id: 'active-verse'
+  updatedAt: number
+}
+
 export interface FavoriteRecord extends BibleLocation {
   id: string
   createdAt: number
@@ -27,10 +32,18 @@ export interface BibleNoteRecord extends BibleLocation {
   updatedAt: number
 }
 
+export interface HighlightRecord extends BibleLocation {
+  id: string
+  createdAt: number
+  updatedAt: number
+}
+
 class BibliaDatabase extends Dexie {
   readingProgress!: Table<ReadingProgress, string>
+  activeVerse!: Table<ActiveVerseRecord, string>
   favorites!: Table<FavoriteRecord, string>
   notes!: Table<BibleNoteRecord, string>
+  highlights!: Table<HighlightRecord, string>
 
   constructor() {
     super('biblia-pwa')
@@ -43,6 +56,14 @@ class BibliaDatabase extends Dexie {
       readingProgress: 'id,bookId,chapter,updatedAt',
       favorites: 'id,bookId,chapter,verse,updatedAt',
       notes: 'id,bookId,chapter,verse,updatedAt',
+    })
+
+    this.version(3).stores({
+      readingProgress: 'id,bookId,chapter,updatedAt',
+      activeVerse: 'id,bookId,chapter,verse,updatedAt',
+      favorites: 'id,bookId,chapter,verse,updatedAt',
+      notes: 'id,bookId,chapter,verse,updatedAt',
+      highlights: 'id,bookId,chapter,verse,updatedAt',
     })
   }
 }
@@ -63,6 +84,18 @@ export async function saveLastReading(
   await db.readingProgress.put({
     id: 'last-reading',
     ...reading,
+    updatedAt: Date.now(),
+  })
+}
+
+export async function getActiveVerse() {
+  return db.activeVerse.get('active-verse')
+}
+
+export async function saveActiveVerse(location: BibleLocation) {
+  await db.activeVerse.put({
+    id: 'active-verse',
+    ...location,
     updatedAt: Date.now(),
   })
 }
@@ -140,4 +173,32 @@ export async function saveBibleNote(location: BibleLocation, text: string) {
 
 export async function removeBibleNote(id: string) {
   await db.notes.delete(id)
+}
+
+export async function getHighlights() {
+  return db.highlights.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function isHighlighted(location: BibleLocation) {
+  const record = await db.highlights.get(makeBibleLocationId(location))
+  return Boolean(record)
+}
+
+export async function toggleHighlight(location: BibleLocation) {
+  const id = makeBibleLocationId(location)
+  const existing = await db.highlights.get(id)
+
+  if (existing) {
+    await db.highlights.delete(id)
+    return false
+  }
+
+  const now = Date.now()
+  await db.highlights.put({
+    id,
+    ...location,
+    createdAt: now,
+    updatedAt: now,
+  })
+  return true
 }
