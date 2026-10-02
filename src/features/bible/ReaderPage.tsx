@@ -30,8 +30,11 @@ export function ReaderPage() {
   const book = bibleProvider.getBook(bookId)
   const requestedChapter = Number(chapterParam)
   const saveTimer = useRef<number | undefined>(undefined)
+  const actionPanelRef = useRef<HTMLDivElement | null>(null)
   const [activeVerse, setActiveVerse] = useState<ActiveVerse | undefined>()
   const [actionPanelOpen, setActionPanelOpen] = useState(false)
+  const [selectionMode, setSelectionMode] = useState(false)
+  const [selectedVerseIds, setSelectedVerseIds] = useState<Set<string>>(() => new Set())
   const [favoriteActive, setFavoriteActive] = useState(false)
   const [highlightActive, setHighlightActive] = useState(false)
   const [highlightedIds, setHighlightedIds] = useState<Set<string>>(() => new Set())
@@ -222,6 +225,18 @@ export function ReaderPage() {
     }
   }, [book, activeVerse])
 
+  useEffect(() => {
+    if (!actionPanelOpen) return
+
+    function closeOnOutsidePress(event: PointerEvent) {
+      if (actionPanelRef.current?.contains(event.target as Node)) return
+      setActionPanelOpen(false)
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePress)
+    return () => document.removeEventListener('pointerdown', closeOnOutsidePress)
+  }, [actionPanelOpen])
+
   const activeVerseText = useMemo(() => {
     if (!book || !activeVerse) return undefined
     const chapter = book.chapters.find((item) => item.number === activeVerse.chapter)
@@ -257,6 +272,66 @@ export function ReaderPage() {
       reference,
       text: `${reference}\n${activeVerseText}`,
     }
+  }
+
+  function getSelectedVerses() {
+    return chapters.flatMap((chapter) =>
+      chapter.sections.flatMap((section) =>
+        section.verses
+          .map((verse) => {
+            const location = {
+              bookId: activeBook.id,
+              chapter: chapter.number,
+              verse: verse.number,
+            }
+            const id = makeBibleLocationId(location)
+            if (!selectedVerseIds.has(id)) return undefined
+            return {
+              id,
+              location,
+              reference: `${activeBook.name} ${chapter.number}:${verse.number}`,
+              text: verse.text,
+            }
+          })
+          .filter((item): item is NonNullable<typeof item> => Boolean(item)),
+      ),
+    )
+  }
+
+  function getSelectedShareText() {
+    const selected = getSelectedVerses()
+    if (selected.length === 0) return undefined
+    return {
+      reference:
+        selected.length === 1
+          ? selected[0].reference
+          : `${activeBook.name} · ${selected.length} versículos`,
+      text: selected.map((item) => `${item.reference}\n${item.text}`).join('\n\n'),
+    }
+  }
+
+  function startMultiSelect() {
+    const location = getActiveLocation()
+    if (!location) return
+    setSelectedVerseIds(new Set([makeBibleLocationId(location)]))
+    setSelectionMode(true)
+    setActionPanelOpen(false)
+    setActionMessage('')
+  }
+
+  function stopMultiSelect() {
+    setSelectionMode(false)
+    setSelectedVerseIds(new Set())
+    setActionMessage('')
+  }
+
+  function toggleSelectedVerse(locationId: string) {
+    setSelectedVerseIds((current) => {
+      const next = new Set(current)
+      if (next.has(locationId)) next.delete(locationId)
+      else next.add(locationId)
+      return next
+    })
   }
 
   async function handleFavorite() {
@@ -319,6 +394,72 @@ export function ReaderPage() {
     }
   }
 
+  async function handleBulkFavorite() {
+    const selected = getSelectedVerses()
+    if (selected.length === 0) return
+
+    await Promise.all(
+      selected.map(async ({ location }) => {
+        if (!(await isFavorite(location))) await toggleFavorite(location)
+      }),
+    )
+    setActionMessage(
+      `${selected.length} versículo${selected.length === 1 ? '' : 's'} añadido${selected.length === 1 ? '' : 's'} a favoritos`,
+    )
+  }
+
+  async function handleBulkHighlight() {
+    const selected = getSelectedVerses()
+    if (selected.length === 0) return
+
+    const newlyHighlighted = await Promise.all(
+      selected.map(async ({ id, location }) => {
+        if (!(await isHighlighted(location))) await toggleHighlight(location)
+        return id
+      }),
+    )
+
+    setHighlightedIds((current) => {
+      const next = new Set(current)
+      newlyHighlighted.forEach((id) => next.add(id))
+      return next
+    })
+    setActionMessage(
+      `${selected.length} versículo${selected.length === 1 ? '' : 's'} resaltado${selected.length === 1 ? '' : 's'}`,
+    )
+  }
+
+  async function handleBulkCopy() {
+    const share = getSelectedShareText()
+    if (!share) return
+
+    try {
+      await navigator.clipboard.writeText(share.text)
+      setActionMessage('Selección copiada al portapapeles')
+    } catch {
+      setActionMessage('No se pudo copiar en este dispositivo')
+    }
+  }
+
+  async function handleBulkShare() {
+    const share = getSelectedShareText()
+    if (!share) return
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: share.reference, text: share.text })
+        setActionMessage('Selección compartida como texto')
+        return
+      }
+
+      await navigator.clipboard.writeText(share.text)
+      setActionMessage('Compartir no está disponible; se copió la selección')
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      setActionMessage('No se pudo compartir en este dispositivo')
+    }
+  }
+
   async function handleSaveNote() {
     const location = getActiveLocation()
     if (!location || !noteDraft.trim()) return
@@ -348,7 +489,7 @@ export function ReaderPage() {
     }
 
     setActiveVerse({ chapter, verse, anchorId })
-    setActionPanelOpen(true)
+    setActionPanelOpen(false)
     void saveActiveVerse(location)
     void saveLastReading({
       bookId: activeBook.id,
@@ -390,7 +531,8 @@ export function ReaderPage() {
                     })
                     const isActive = activeVerse?.anchorId === anchorId
                     const isHighlighted = highlightedIds.has(locationId)
-                    const panelVisible = isActive && actionPanelOpen
+                    const isSelected = selectedVerseIds.has(locationId)
+                    const panelVisible = isActive && actionPanelOpen && !selectionMode
                     const reference = `${activeBook.name} ${chapter.number}:${verse.number}`
 
                     return (
@@ -399,6 +541,7 @@ export function ReaderPage() {
                           'verse-item',
                           isActive ? 'active' : '',
                           isHighlighted ? 'highlighted' : '',
+                          isSelected ? 'selected' : '',
                         ].filter(Boolean).join(' ')}
                         key={verse.number}
                       >
@@ -410,15 +553,45 @@ export function ReaderPage() {
                           data-chapter={chapter.number}
                           aria-current={isActive ? 'true' : undefined}
                           aria-expanded={panelVisible}
-                          aria-label={`${reference}. Tocar para marcar como versículo activo y abrir opciones`}
-                          onClick={() => activateVerse(chapter.number, verse.number, anchorId)}
+                          aria-pressed={selectionMode ? isSelected : undefined}
+                          aria-label={
+                            selectionMode
+                              ? `${reference}. ${isSelected ? 'Seleccionado' : 'No seleccionado'}`
+                              : `${reference}. Tocar para marcar como versículo activo`
+                          }
+                          onClick={() => {
+                            if (selectionMode) {
+                              toggleSelectedVerse(locationId)
+                              return
+                            }
+                            activateVerse(chapter.number, verse.number, anchorId)
+                          }}
                         >
                           <sup>{verse.number}</sup>
                           {verse.text}
                         </button>
 
+                        {isActive && !selectionMode ? (
+                          <button
+                            className="verse-menu-trigger"
+                            type="button"
+                            aria-label={`Abrir opciones para ${reference}`}
+                            aria-expanded={panelVisible}
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              setActionPanelOpen((current) => !current)
+                            }}
+                          >
+                            ⋯
+                          </button>
+                        ) : null}
+
                         {panelVisible ? (
-                          <div className="verse-action-panel glass-panel" aria-label={`Opciones para ${reference}`}>
+                          <div
+                            ref={actionPanelRef}
+                            className="verse-action-panel glass-panel"
+                            aria-label={`Opciones para ${reference}`}
+                          >
                             <div className="verse-action-header">
                               <strong>{reference}</strong>
                               <button
@@ -478,6 +651,15 @@ export function ReaderPage() {
                                 <span aria-hidden="true">↗</span>
                                 Compartir
                               </button>
+
+                              <button
+                                className="verse-action-button"
+                                type="button"
+                                onClick={startMultiSelect}
+                              >
+                                <span aria-hidden="true">☑</span>
+                                Seleccionar varios
+                              </button>
                             </div>
 
                             {noteOpen ? (
@@ -529,6 +711,54 @@ export function ReaderPage() {
           </section>
         ))}
       </article>
+
+      {selectionMode ? (
+        <div className="verse-selection-bar glass-panel" aria-label="Acciones para selección múltiple">
+          <div className="verse-selection-header">
+            <strong>{selectedVerseIds.size} seleccionado{selectedVerseIds.size === 1 ? '' : 's'}</strong>
+            <button type="button" onClick={stopMultiSelect} aria-label="Cerrar selección múltiple">×</button>
+          </div>
+          <div className="verse-action-buttons">
+            <button
+              className="verse-action-button"
+              type="button"
+              disabled={selectedVerseIds.size === 0}
+              onClick={() => void handleBulkFavorite()}
+            >
+              <span aria-hidden="true">☆</span>
+              Favoritos
+            </button>
+            <button
+              className="verse-action-button"
+              type="button"
+              disabled={selectedVerseIds.size === 0}
+              onClick={() => void handleBulkHighlight()}
+            >
+              <span aria-hidden="true">▰</span>
+              Resaltar
+            </button>
+            <button
+              className="verse-action-button"
+              type="button"
+              disabled={selectedVerseIds.size === 0}
+              onClick={() => void handleBulkCopy()}
+            >
+              <span aria-hidden="true">⧉</span>
+              Copiar
+            </button>
+            <button
+              className="verse-action-button"
+              type="button"
+              disabled={selectedVerseIds.size === 0}
+              onClick={() => void handleBulkShare()}
+            >
+              <span aria-hidden="true">↗</span>
+              Compartir texto
+            </button>
+          </div>
+          {actionMessage ? <p className="verse-action-message" role="status">{actionMessage}</p> : null}
+        </div>
+      ) : null}
     </div>
   )
 }
