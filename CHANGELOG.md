@@ -186,3 +186,15 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Las demás ramas públicas revisadas corresponden a trabajo histórico de Biblia y no mostraron archivos adicionales de credenciales o datos personales en sus diferencias actuales.
 - Confirmado que `main` no tiene branch protection/rulesets configurados; queda como endurecimiento recomendable, no como fallo de la aplicación.
 - `SECURITY.md` y `PROJECT_STATE.md` se actualizaron para reflejar la visibilidad pública real y las reglas de seguridad posteriores a la auditoría.
+
+
+## 2026-10-02 — Versículo activo y acciones 0.1.5
+
+- Añadida persistencia local de un único versículo activo.
+- Añadidos resaltados persistentes independientes del versículo activo.
+- Ampliado el panel contextual con `Resaltar`, `Copiar` y `Compartir`, conservando `Favorito` y `Nota`.
+- `Copiar` incluye referencia y texto; `Compartir` usa el mecanismo nativo cuando existe y copia al portapapeles como fallback.
+- Diferenciados visualmente el estado activo y el resaltado persistente.
+- El primer CI detectó un error de TypeScript relacionado con el estrechamiento de `book` dentro de handlers; se corrigió sin desactivar verificaciones.
+- La rama corrigida pasó TypeScript, ESLint, build PWA y auditoría de dependencias.
+- Build visible preparado como `0.1.5`; permanece pendiente de merge, CI de `main`, despliegue y validación publicada.
