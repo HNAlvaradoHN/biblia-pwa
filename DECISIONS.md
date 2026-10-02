@@ -322,12 +322,29 @@ Reglas:
 Esta distinción evita confundir la guía temporal de lectura con los resaltados que el usuario decide conservar como guardados permanentes.
 
 ## D-030 — Protocolo estricto de continuidad y repositorio publicable
-Estado: APROBADA
+Estado: SUPERSEDIDA EN SU MECÁNICA POR AGENTS.md v4
 
 Todo chat nuevo debe tratar la lectura del estado y reglas del repositorio como una puerta obligatoria antes de trabajar. No puede responder sobre implementación ni editar hasta leer y verificar `AGENTS.md`, `PROJECT_BRIEF.md`, `PROJECT_STATE.md`, `DECISIONS.md`, `SECURITY.md`, `UI_RULES.md`, `RELEASE_RULES.md` y el `CHANGELOG.md` reciente, comprobar el repositorio oficial/privado y reservar su número secuencial.
 
-La primera respuesta de trabajo del chat nuevo debe comenzar exactamente como `Ing. Bibia 📖 #N`. Mostrar esa identidad certifica que terminó el protocolo y dejó `NEXT_SESSION` preparado para el chat siguiente. Si no puede completar la lectura/verificación, no puede identificarse ni editar.
+Desde 2026-10-02, la mecánica de identidad secuencial anterior queda sustituida por el protocolo vigente de `AGENTS.md` v4: todo chat nuevo comienza en `LOCKED_READ_ONLY`, sincroniza contra GitHub, emite el `LOCKED_READ_ONLY_REPORT` y solo escribe con una tarea autorizada. Las obligaciones de seguridad, continuidad y repositorio público se mantienen.
 
 Además, el repositorio se desarrollará desde ahora como potencialmente público: no puede contener secretos, credenciales, tokens, claves privadas, URLs firmadas temporales, datos personales reales, bases de datos personales ni otros valores cuya exposición comprometa al usuario. Los secretos nunca pueden depender de permanecer ocultos dentro del frontend/PWA.
 
 Antes de cada merge debe revisarse el diff por secretos y datos personales. Antes de hacer público el repositorio será obligatoria una auditoría separada del árbol actual y del historial completo de Git, además de licencias y configuración externa. La visibilidad no se cambiará sin autorización explícita del usuario después de esa auditoría.
+
+
+## D-031 — APK externa como referencia/donante
+Estado: APROBADA
+
+La aplicación Android externa aportada por el usuario se utilizará como fuente de análisis para identificar estructura, funciones y patrones de UX que puedan mejorar Biblia PWA.
+
+Reglas:
+
+- Biblia PWA sigue siendo la base oficial; no se sustituye por el proyecto Flutter compilado de la APK.
+- Se pueden reconstruir con código propio funciones observadas en la APK cuando encajen con el alcance y arquitectura aprobados.
+- La estructura de datos de libros, capítulos, versículos y encabezados puede estudiarse y servir como referencia técnica.
+- No copiar ni reutilizar secretos, tokens, credenciales, configuración privada o servicios externos innecesarios encontrados dentro del paquete.
+- No incorporar automáticamente RVR60, encabezados editoriales, fuentes, iconos, imágenes u otros recursos sin verificar procedencia y derechos de redistribución.
+- Todo elemento candidato debe clasificarse antes de integrarlo como: `REUTILIZABLE VERIFICADO`, `RECONSTRUIBLE`, `REQUIERE LICENCIA` o `NO REUTILIZAR`.
+- Los hallazgos de la APK no cambian por sí solos el objetivo activo; las funciones se incorporan por fases y sin mezclar tareas.
+- El inventario y las conclusiones relevantes deben quedar documentados para que un chat nuevo pueda continuar sin depender de esta conversación.
