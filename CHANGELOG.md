@@ -2,6 +2,18 @@
 
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
+
+## 2026-10-02 — Ajuste de interacción del lector 0.1.6
+
+- Tocar un versículo ahora solo mueve el `versículo activo`; ya no abre automáticamente el panel de acciones.
+- El versículo activo incorpora un control discreto de opciones para abrir/cerrar el menú bajo demanda.
+- El panel contextual puede cerrarse con `X` o tocando fuera.
+- Añadido modo temporal de selección múltiple de versículos.
+- La selección múltiple permite añadir a Favoritos, Resaltar, Copiar y Compartir como texto.
+- Las notas continúan siendo individuales.
+- Registrada la regla futura para compartir como imagen: si la selección no cabe de forma legible, se advertirá y deberá reducirse en lugar de forzar una imagen saturada.
+- Build visible actualizado a `0.1.6`.
+
 ## 2026-09-09 — Inicialización del proyecto
 
 - Creado el repositorio privado oficial `HNAlvaradoHN/biblia-pwa`.
