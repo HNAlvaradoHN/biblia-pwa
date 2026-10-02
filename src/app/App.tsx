@@ -6,6 +6,7 @@ import { BookPage } from '../features/bible/BookPage'
 import { ReaderPage } from '../features/bible/ReaderPage'
 import { FavoritesPage, NotesPage } from '../features/saved/SavedPages'
 import { ComingSoonPage } from '../features/placeholders/ComingSoonPage'
+import { SearchPage } from '../features/search/SearchPage'
 
 export function App() {
   return (
@@ -26,15 +27,7 @@ export function App() {
             />
           }
         />
-        <Route
-          path="buscar"
-          element={
-            <ComingSoonPage
-              title="Buscar"
-              description="La búsqueda de palabras y frases bíblicas pertenece a la siguiente etapa del lector."
-            />
-          }
-        />
+        <Route path="buscar" element={<SearchPage />} />
         <Route
           path="*"
           element={
