@@ -1,4 +1,5 @@
 .verse-item {
+  position: relative;
   display: grid;
   gap: 8px;
 }
@@ -27,6 +28,11 @@
   background: color-mix(in srgb, var(--accent) 15%, #fffdf8);
 }
 
+.verse-item.selected .verse-button {
+  outline: 2px solid color-mix(in srgb, var(--nav-accent) 58%, transparent);
+  outline-offset: 1px;
+}
+
 .verse-item.highlighted.active .verse-button {
   background: color-mix(in srgb, var(--accent) 21%, #fffdf8);
   box-shadow: inset 3px 0 0 var(--accent);
@@ -35,6 +41,29 @@
 .verse-button:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
   outline-offset: 2px;
+}
+
+.verse-menu-trigger {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  z-index: 2;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.verse-item.active .verse-button {
+  padding-right: 42px;
 }
 
 .verse-action-panel {
@@ -181,4 +210,44 @@
     min-height: 38px;
     font-size: 0.74rem;
   }
+}
+
+.verse-selection-bar {
+  position: sticky;
+  bottom: calc(74px + env(safe-area-inset-bottom));
+  z-index: 12;
+  display: grid;
+  gap: 9px;
+  margin: 12px;
+  padding: 10px;
+  border-radius: 14px;
+}
+
+.verse-selection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.verse-selection-header strong {
+  font-size: 0.82rem;
+}
+
+.verse-selection-header button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.verse-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }

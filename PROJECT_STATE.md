@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Versículo activo y acciones 0.1.5 — implementado pendiente de validación
+### Versículo activo y acciones 0.1.5 — publicado; ajuste 0.1.6 en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -128,7 +128,10 @@ Pendiente específico:
 - La versión visible del build pasa a `0.1.5`.
 - El primer CI del PR falló en TypeScript; la causa fue el estrechamiento de tipo de `book` dentro de handlers anidados.
 - La corrección posterior pasó TypeScript, ESLint, build PWA y auditoría de dependencias en verde en la rama.
-- Estado actual: `IMPLEMENTADO_PENDIENTE_VALIDACIÓN`. PR #8 ya fue fusionado a `main` y el CI de `main` pasó TypeScript, ESLint, build PWA y auditoría de dependencias. El artefacto verificado `biblia-pwa-dist` quedó retenido por GitHub Actions. Falta despliegue/verificación publicada y prueba física del usuario.
+- `0.1.5` quedó publicada en `https://biblia-pwa.vercel.app/` y el usuario confirmó que la versión visible es `0.1.5`. Durante la validación física pidió ajustar la interacción antes de cerrar D-029.
+- Ajuste `0.1.6` en implementación: tocar un versículo solo mueve el activo; el menú se abre mediante un control discreto, se cierra con `X` o tocando fuera y se añade selección múltiple temporal.
+- La selección múltiple aplica inicialmente Favoritos, Resaltar, Copiar y Compartir como texto. Las notas permanecen individuales.
+- Compartir como imagen sigue reservado a una fase posterior, con la regla de advertir/reducir selección cuando el contenido no quepa de forma legible.
 
 ## Objetivo activo
 
@@ -180,13 +183,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Desplegar el artefacto verificado de `main` correspondiente a `0.1.5`.
-2. Verificar que la aplicación publicada carga la versión visible `0.1.5`.
-3. Pedir prueba física al usuario y confirmar versículo activo, Resaltar, Copiar, Compartir, Favorito y Nota.
-4. Solo después de esa validación cerrar D-029 y mover el siguiente objetivo funcional.
+1. Completar CI y revisión del ajuste `0.1.6` del lector.
+2. Fusionar y desplegar `0.1.6` si todas las verificaciones pasan.
+3. Pedir prueba física: toque normal solo marca activo, menú bajo demanda, cierre exterior/X, selección múltiple y acciones por lote.
+4. Solo después de esa validación cerrar D-029/D-032 y mover el siguiente objetivo funcional.
 5. Continuar el inventario comparativo de la APK externa para seleccionar la próxima función útil, sin mezclar funciones no relacionadas.
 
-Estado de despliegue actual: el usuario conectó el proyecto de Vercel con el repositorio oficial `HNAlvaradoHN/biblia-pwa` el 2026-10-02. Los deployments visibles en producción seguían siendo anteriores a la conexión y `https://biblia-pwa.vercel.app/` continuaba mostrando `v0.1.4`. Se crea un commit posterior a la conexión para disparar el primer deployment automático desde `main`; la versión `0.1.5` seguirá como `IMPLEMENTADO_PENDIENTE_VALIDACIÓN` hasta verificar el deployment y la prueba física.
+Estado de despliegue actual: Vercel ya está conectado y producción sirve `0.1.5` en `https://biblia-pwa.vercel.app/`. El ajuste `0.1.6` permanece en rama hasta completar CI, revisión, merge, despliegue y validación física.
 
 ## Después de este objetivo
 

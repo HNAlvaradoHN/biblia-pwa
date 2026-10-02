@@ -348,3 +348,21 @@ Reglas:
 - Todo elemento candidato debe clasificarse antes de integrarlo como: `REUTILIZABLE VERIFICADO`, `RECONSTRUIBLE`, `REQUIERE LICENCIA` o `NO REUTILIZAR`.
 - Los hallazgos de la APK no cambian por sí solos el objetivo activo; las funciones se incorporan por fases y sin mezclar tareas.
 - El inventario y las conclusiones relevantes deben quedar documentados para que un chat nuevo pueda continuar sin depender de esta conversación.
+
+## D-032 — Versículo activo, menú bajo demanda y selección múltiple
+Estado: APROBADA
+
+El toque normal sobre un versículo sirve únicamente para mover el `versículo activo` y no debe abrir automáticamente el menú contextual.
+
+Reglas:
+
+- el versículo activo seguirá siendo único y persistente como guía de lectura;
+- el versículo activo mostrará un control discreto de opciones en una esquina para abrir el menú contextual solo cuando el usuario lo necesite;
+- el menú podrá cerrarse con una `X` o tocando fuera del panel;
+- existirá un modo temporal de selección múltiple para aplicar acciones razonables a varios versículos a la vez;
+- en selección múltiple se admiten como acciones iniciales `Favoritos`, `Resaltar`, `Copiar` y `Compartir texto`; las notas siguen siendo individuales;
+- compartir varios versículos como texto sí está permitido mientras el sistema operativo acepte el contenido;
+- compartir como imagen se implementará en una fase visual posterior y no deberá intentar meter automáticamente todos los versículos seleccionados;
+- cuando la selección exceda lo que el diseño de imagen pueda mostrar de forma legible, la app deberá advertir al usuario y pedir reducir la selección;
+- el límite de imagen deberá depender del espacio/layout real de la plantilla, tipografía y contenido, no de un número fijo arbitrario de versículos.
+
