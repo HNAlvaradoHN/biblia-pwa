@@ -186,3 +186,13 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 - Las demás ramas públicas revisadas corresponden a trabajo histórico de Biblia y no mostraron archivos adicionales de credenciales o datos personales en sus diferencias actuales.
 - Confirmado que `main` no tiene branch protection/rulesets configurados; queda como endurecimiento recomendable, no como fallo de la aplicación.
 - `SECURITY.md` y `PROJECT_STATE.md` se actualizaron para reflejar la visibilidad pública real y las reglas de seguridad posteriores a la auditoría.
+
+
+## 2026-10-02 — Gobernanza v4 y APK externa como referencia
+
+- Reemplazado `AGENTS.md` por el paquete maestro general v4 de autonomía controlada y revisores automáticos, conservando `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md`.
+- Documentado que la mecánica anterior de identidad secuencial queda sustituida por `LOCKED_READ_ONLY`, sincronización y autorización por objetivo.
+- Analizado el paquete externo `Santa Biblia Reina Valera_0.1.4.apks` como fuente de referencia, no como nueva base de la aplicación.
+- Verificado que el paquete es Flutter, contiene datasets bíblicos locales y que su dataset español tiene 66 libros con capítulos, versículos individuales y campos de metadatos/encabezados.
+- Registrada la política de rescate: reconstruir funciones útiles con código propio, reutilizar contenido/assets solo con derechos verificados y no copiar secretos ni configuración privada.
+- El objetivo funcional activo sigue siendo D-029; el PR #8 prepara la versión `0.1.5` y permanece pendiente de validación/CI/merge/despliegue antes de considerarse terminado.
