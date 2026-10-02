@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Versículo activo y acciones 0.1.5 — publicado; ajuste 0.1.6 en implementación
+### Versículo activo y acciones 0.1.6 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -129,7 +129,7 @@ Pendiente específico:
 - El primer CI del PR falló en TypeScript; la causa fue el estrechamiento de tipo de `book` dentro de handlers anidados.
 - La corrección posterior pasó TypeScript, ESLint, build PWA y auditoría de dependencias en verde en la rama.
 - `0.1.5` quedó publicada en `https://biblia-pwa.vercel.app/` y el usuario confirmó que la versión visible es `0.1.5`. Durante la validación física pidió ajustar la interacción antes de cerrar D-029.
-- Ajuste `0.1.6` en implementación: tocar un versículo solo mueve el activo; el menú se abre mediante un control discreto, se cierra con `X` o tocando fuera y se añade selección múltiple temporal.
+- Ajuste `0.1.6` implementado y publicado: tocar un versículo solo mueve el activo; el menú se abre mediante un control discreto, se cierra con `X` o tocando fuera y se añade selección múltiple temporal.
 - La selección múltiple aplica inicialmente Favoritos, Resaltar, Copiar y Compartir como texto. Las notas permanecen individuales.
 - Compartir como imagen sigue reservado a una fase posterior, con la regla de advertir/reducir selección cuando el contenido no quepa de forma legible.
 
@@ -183,13 +183,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI y revisión del ajuste `0.1.6` del lector.
-2. Fusionar y desplegar `0.1.6` si todas las verificaciones pasan.
-3. Pedir prueba física: toque normal solo marca activo, menú bajo demanda, cierre exterior/X, selección múltiple y acciones por lote.
-4. Solo después de esa validación cerrar D-029/D-032 y mover el siguiente objetivo funcional.
+1. Pedir prueba física de `0.1.6`: toque normal solo marca activo, menú bajo demanda, cierre exterior/X, selección múltiple y acciones por lote.
+2. Confirmar específicamente Favoritos, Resaltar, Copiar y Compartir texto con selección múltiple.
+3. Solo después de esa validación cerrar D-029/D-032 y mover el siguiente objetivo funcional.
 5. Continuar el inventario comparativo de la APK externa para seleccionar la próxima función útil, sin mezclar funciones no relacionadas.
 
-Estado de despliegue actual: Vercel ya está conectado y producción sirve `0.1.5` en `https://biblia-pwa.vercel.app/`. El ajuste `0.1.6` permanece en rama hasta completar CI, revisión, merge, despliegue y validación física.
+Estado de despliegue actual: `0.1.6` fue fusionada a `main` en `c5e3c94f447ecf36fc4776bd51e30cea20b0ff6d`. El CI de `main` (run `37077225037`) terminó en `success`, Vercel marcó el deployment de producción como `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.6`. La previsualización fue verificada con navegador automatizado: toque normal sin apertura automática del menú, control de opciones, cierre con `X`, selección múltiple y barra con Favoritos, Resaltar, Copiar y Compartir texto. Falta únicamente la validación física del usuario antes de cerrar D-029/D-032.
 
 ## Después de este objetivo
 
