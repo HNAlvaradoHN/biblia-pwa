@@ -24,6 +24,13 @@ type ActiveVerse = {
   anchorId: string
 }
 
+type ShareTarget = 'single' | 'multi'
+
+type ShareItem = {
+  reference: string
+  text: string
+}
+
 export function ReaderPage() {
   const { bookId = '', chapter: chapterParam = '1' } = useParams()
   const routerLocation = useLocation()
@@ -41,6 +48,7 @@ export function ReaderPage() {
   const [noteOpen, setNoteOpen] = useState(false)
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
+  const [shareTarget, setShareTarget] = useState<ShareTarget | undefined>()
   const [actionMessage, setActionMessage] = useState('')
 
   const chapters = useMemo(() => {
@@ -300,6 +308,16 @@ export function ReaderPage() {
     )
   }
 
+  function getSelectedShareItems(): ShareItem[] {
+    return getSelectedVerses().map(({ reference, text }) => ({ reference, text }))
+  }
+
+  function getSingleShareItems(): ShareItem[] {
+    const share = getShareText()
+    if (!share || !activeVerseText) return []
+    return [{ reference: share.reference, text: activeVerseText }]
+  }
+
   function getSelectedShareText() {
     const selected = getSelectedVerses()
     if (selected.length === 0) return undefined
@@ -309,6 +327,154 @@ export function ReaderPage() {
           ? selected[0].reference
           : `${activeBook.name} · ${selected.length} versículos`,
       text: selected.map((item) => `${item.reference}\n${item.text}`).join('\n\n'),
+    }
+  }
+
+  function openShareChooser(target: ShareTarget) {
+    setShareTarget(target)
+    setActionMessage('')
+  }
+
+  function closeShareChooser() {
+    setShareTarget(undefined)
+  }
+
+  function getSharePayload(target: ShareTarget) {
+    return target === 'multi' ? getSelectedShareText() : getShareText()
+  }
+
+  function getShareItems(target: ShareTarget) {
+    return target === 'multi' ? getSelectedShareItems() : getSingleShareItems()
+  }
+
+  function wrapCanvasText(
+    context: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number,
+  ) {
+    const words = text.split(/\s+/).filter(Boolean)
+    const lines: string[] = []
+    let line = ''
+
+    for (const word of words) {
+      const test = line ? `${line} ${word}` : word
+      if (context.measureText(test).width <= maxWidth) {
+        line = test
+        continue
+      }
+      if (line) lines.push(line)
+      line = word
+    }
+
+    if (line) lines.push(line)
+    return lines
+  }
+
+  async function createShareImage(items: ShareItem[]) {
+    const canvas = document.createElement('canvas')
+    canvas.width = 1080
+    canvas.height = 1350
+    const context = canvas.getContext('2d')
+    if (!context) return undefined
+
+    const padding = 92
+    const maxWidth = canvas.width - padding * 2
+    const bottomLimit = canvas.height - 120
+    let y = 130
+
+    context.fillStyle = '#f7f1e6'
+    context.fillRect(0, 0, canvas.width, canvas.height)
+
+    context.fillStyle = '#173a2a'
+    context.font = '700 34px system-ui, sans-serif'
+    context.fillText('Biblia', padding, y)
+    y += 76
+
+    for (const item of items) {
+      context.fillStyle = '#b88845'
+      context.font = '700 30px system-ui, sans-serif'
+      const referenceLines = wrapCanvasText(context, item.reference, maxWidth)
+
+      for (const line of referenceLines) {
+        if (y + 44 > bottomLimit) return undefined
+        context.fillText(line, padding, y)
+        y += 44
+      }
+
+      y += 12
+      context.fillStyle = '#202821'
+      context.font = '44px Georgia, serif'
+      const verseLines = wrapCanvasText(context, item.text, maxWidth)
+
+      for (const line of verseLines) {
+        if (y + 62 > bottomLimit) return undefined
+        context.fillText(line, padding, y)
+        y += 62
+      }
+
+      y += 48
+    }
+
+    return new Promise<Blob | undefined>((resolve) => {
+      canvas.toBlob((blob) => resolve(blob ?? undefined), 'image/png', 0.95)
+    })
+  }
+
+  async function shareAsText(target: ShareTarget) {
+    const share = getSharePayload(target)
+    if (!share) return
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: share.reference, text: share.text })
+        setActionMessage(target === 'multi' ? 'Selección compartida como texto' : 'Compartido como texto')
+      } else {
+        await navigator.clipboard.writeText(share.text)
+        setActionMessage('Compartir no está disponible; se copió el texto')
+      }
+      closeShareChooser()
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      setActionMessage('No se pudo compartir en este dispositivo')
+    }
+  }
+
+  async function shareAsImage(target: ShareTarget) {
+    const items = getShareItems(target)
+    if (items.length === 0) return
+
+    const blob = await createShareImage(items)
+    if (!blob) {
+      setActionMessage(
+        'La selección no cabe de forma legible en una imagen. Reducí los versículos seleccionados.',
+      )
+      return
+    }
+
+    const file = new File([blob], 'versiculos.png', { type: 'image/png' })
+
+    try {
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          title: items.length === 1 ? items[0].reference : 'Versículos seleccionados',
+          files: [file],
+        })
+        setActionMessage('Imagen compartida')
+        closeShareChooser()
+        return
+      }
+
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = file.name
+      link.click()
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+      setActionMessage('Imagen creada y descargada')
+      closeShareChooser()
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      setActionMessage('No se pudo compartir la imagen en este dispositivo')
     }
   }
 
@@ -374,28 +540,6 @@ export function ReaderPage() {
     }
   }
 
-  async function handleShare() {
-    const share = getShareText()
-    if (!share) return
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: share.reference,
-          text: share.text,
-        })
-        setActionMessage('Compartido')
-        return
-      }
-
-      await navigator.clipboard.writeText(share.text)
-      setActionMessage('Compartir no está disponible; se copió el versículo')
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return
-      setActionMessage('No se pudo compartir en este dispositivo')
-    }
-  }
-
   async function handleBulkFavorite() {
     const selected = getSelectedVerses()
     if (selected.length === 0) return
@@ -443,25 +587,6 @@ export function ReaderPage() {
     }
   }
 
-  async function handleBulkShare() {
-    const share = getSelectedShareText()
-    if (!share) return
-
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: share.reference, text: share.text })
-        setActionMessage('Selección compartida como texto')
-        return
-      }
-
-      await navigator.clipboard.writeText(share.text)
-      setActionMessage('Compartir no está disponible; se copió la selección')
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return
-      setActionMessage('No se pudo compartir en este dispositivo')
-    }
-  }
-
   async function handleSaveNote() {
     const location = getActiveLocation()
     if (!location || !noteDraft.trim()) return
@@ -491,6 +616,9 @@ export function ReaderPage() {
     }
 
     setActiveVerse({ chapter, verse, anchorId })
+    setSelectedVerseIds(new Set())
+    setSelectionMode(false)
+    setShareTarget(undefined)
     setActionPanelOpen(false)
     void saveActiveVerse(location)
     void saveLastReading({
@@ -648,7 +776,7 @@ export function ReaderPage() {
                               <button
                                 className="verse-action-button"
                                 type="button"
-                                onClick={() => void handleShare()}
+                                onClick={() => openShareChooser('single')}
                               >
                                 <span aria-hidden="true">↗</span>
                                 Compartir
@@ -752,13 +880,40 @@ export function ReaderPage() {
               className="verse-action-button"
               type="button"
               disabled={selectedVerseIds.size === 0}
-              onClick={() => void handleBulkShare()}
+              onClick={() => openShareChooser('multi')}
             >
               <span aria-hidden="true">↗</span>
-              Compartir texto
+              Compartir
             </button>
           </div>
           {actionMessage ? <p className="verse-action-message" role="status">{actionMessage}</p> : null}
+        </div>
+      ) : null}
+
+      {shareTarget ? (
+        <div className="share-choice-backdrop" role="presentation" onClick={closeShareChooser}>
+          <section
+            className="share-choice-card glass-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="share-choice-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="verse-action-header">
+              <strong id="share-choice-title">¿Cómo querés compartir?</strong>
+              <button type="button" onClick={closeShareChooser} aria-label="Cerrar">×</button>
+            </div>
+            <p>Elegí texto o imagen. Si la selección es demasiado grande para una imagen legible, te pediré reducirla.</p>
+            <div className="share-choice-actions">
+              <button className="button secondary" type="button" onClick={() => void shareAsText(shareTarget)}>
+                Compartir como texto
+              </button>
+              <button className="button primary" type="button" onClick={() => void shareAsImage(shareTarget)}>
+                Compartir como imagen
+              </button>
+            </div>
+            {actionMessage ? <p className="verse-action-message" role="status">{actionMessage}</p> : null}
+          </section>
         </div>
       ) : null}
     </div>

@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Versículo activo y acciones 0.1.6 — publicado pendiente de validación física
+### Versículo activo y acciones — ajuste 0.1.7 en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -183,12 +183,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Pedir prueba física de `0.1.6`: toque normal solo marca activo, menú bajo demanda, cierre exterior/X, selección múltiple y acciones por lote.
-2. Confirmar específicamente Favoritos, Resaltar, Copiar y Compartir texto con selección múltiple.
-3. Solo después de esa validación cerrar D-029/D-032 y mover el siguiente objetivo funcional.
-5. Continuar el inventario comparativo de la APK externa para seleccionar la próxima función útil, sin mezclar funciones no relacionadas.
+1. Completar CI/revisión de `0.1.7`.
+2. Desplegar y validar físicamente el comportamiento de versículo activo y Compartir Texto/Imagen.
+3. Validar la búsqueda por palabras/frases y apertura al versículo exacto.
+4. Cerrar D-029/D-032/D-033 si la prueba real pasa.
+5. Continuar el inventario comparativo de la APK externa y preparar el siguiente objetivo sin volver a estancarse en la validación anterior.
 
-Estado de despliegue actual: `0.1.6` fue fusionada a `main` en `c5e3c94f447ecf36fc4776bd51e30cea20b0ff6d`. El CI de `main` (run `37077225037`) terminó en `success`, Vercel marcó el deployment de producción como `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.6`. La previsualización fue verificada con navegador automatizado: toque normal sin apertura automática del menú, control de opciones, cierre con `X`, selección múltiple y barra con Favoritos, Resaltar, Copiar y Compartir texto. Falta únicamente la validación física del usuario antes de cerrar D-029/D-032.
+Estado de despliegue actual: producción sirve `0.1.6`. La validación física detectó dos ajustes: evitar cualquier marca transitoria anterior al cambiar de versículo fuera de selección múltiple y convertir Compartir en un selector Texto/Imagen. Ambos se trabajan en `0.1.7` junto con el siguiente objetivo funcional, la búsqueda bíblica por palabras/frases.
 
 ## Después de este objetivo
 
