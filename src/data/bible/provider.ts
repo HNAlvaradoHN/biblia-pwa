@@ -12,6 +12,37 @@ export const bibleProvider: BibleProvider = {
   getChapter(bookId, chapter) {
     return this.getBook(bookId)?.chapters.find((item) => item.number === chapter)
   },
+  searchVerses(query) {
+    const normalized = query
+      .trim()
+      .toLocaleLowerCase('es')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+
+    if (!normalized) return []
+
+    return demoBible.books.flatMap((book) =>
+      book.chapters.flatMap((chapter) =>
+        chapter.sections.flatMap((section) =>
+          section.verses
+            .filter((verse) =>
+              verse.text
+                .toLocaleLowerCase('es')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .includes(normalized),
+            )
+            .map((verse) => ({
+              bookId: book.id,
+              bookName: book.name,
+              chapter: chapter.number,
+              verse: verse.number,
+              text: verse.text,
+            })),
+        ),
+      ),
+    )
+  },
 }
 
 export function getDemoDailyVerse() {
