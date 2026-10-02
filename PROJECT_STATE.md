@@ -12,9 +12,9 @@ Visibilidad actual: pública desde el 2026-09-16 por autorización explícita de
 
 La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cerró Favoritos y Notas reales.
 
-Antes de continuar la siguiente función del lector, el usuario pidió endurecer la continuidad entre chats y la seguridad del repositorio. Durante ese trabajo el usuario autorizó y realizó el cambio de visibilidad a público, por lo que la revisión preventiva se convirtió en una auditoría real del repositorio público. El endurecimiento queda documentado como D-030 y no cambia la versión ejecutable.
+El 2026-10-02 el usuario reemplazó `AGENTS.md` por el paquete maestro general de reglas v4. El nuevo protocolo obliga a iniciar cada chat en `LOCKED_READ_ONLY`, sincronizar contra GitHub y obtener autorización por objetivo antes de modificar. Las reglas específicas `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` se conservaron.
 
-El objetivo funcional activo continúa siendo completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto.
+El objetivo funcional activo continúa siendo completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto. Existe el PR #8 con una implementación `0.1.5` de este objetivo; todavía no debe tratarse como terminada ni lista para probar hasta que complete CI, merge, verificación de `main` y despliegue según `RELEASE_RULES.md`.
 
 ## Completado
 
@@ -27,17 +27,16 @@ El objetivo funcional activo continúa siendo completar las acciones básicas de
 - RVR60 sigue siendo la traducción deseada, pero no se incorporará ni redistribuirá contenido sin procedencia y permisos verificables.
 - La aplicación puede publicarse para terceros en el futuro, por lo que las licencias del corpus y encabezados son requisito real.
 
-### Continuidad y seguridad endurecidas
+### Continuidad y seguridad vigentes
 
-- `AGENTS.md` exige a todo chat nuevo leer todos los documentos obligatorios y verificar el estado actualizado antes de responder sobre implementación o editar.
-- Un chat que no puede completar esa verificación queda bloqueado y no puede identificarse como ingeniero ni editar.
-- La identidad secuencial futura usa el formato exacto `Ing. Bibia 📖 #N` y solo puede mostrarse después de reservar `CURRENT_SESSION`/`NEXT_SESSION` y volver a verificar `AGENTS.md`.
-- Mostrar esa identidad certifica que el chat leyó reglas, estado, decisiones, seguridad, UI, entregas y changelog reciente.
+- `AGENTS.md` contiene el paquete maestro general v4 de autonomía controlada y revisores automáticos.
+- Todo chat nuevo comienza en `LOCKED_READ_ONLY`; puede leer, revisar y diagnosticar, pero no escribir hasta sincronizar y tener una tarea autorizada.
+- La primera respuesta sincronizada debe usar el formato `LOCKED_READ_ONLY_REPORT` definido por `AGENTS.md`.
+- Si cambia `AGENTS.md`, `protocol_version` o una regla fundamental durante una sesión, el chat vuelve a `LOCKED_READ_ONLY / UNSYNCED` y debe resincronizar.
+- `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` siguen vigentes como reglas específicas del proyecto.
 - `SECURITY.md` trata todo contenido versionado, ramas e historial como públicamente accesibles.
 - Se prohíben secretos, tokens, credenciales, claves privadas, URLs firmadas temporales, datos personales reales, bases personales y material privado en Git.
-- Se documentó explícitamente que cualquier secreto incorporado al frontend/PWA debe considerarse públicamente visible y no puede usarse como secreto real.
-- Antes de cada merge debe revisarse el diff por secretos/datos personales y también cualquier rama o referencia auxiliar creada por el cambio.
-- `.gitignore` se amplió para bloquear claves/certificados privados comunes, archivos de credenciales, bases locales, dumps y backups.
+- Antes de cada merge debe revisarse el diff por secretos/datos personales y cualquier referencia auxiliar creada por el cambio.
 
 ### Auditoría del repositorio público — 2026-09-16
 
@@ -85,6 +84,40 @@ El objetivo funcional activo continúa siendo completar las acciones básicas de
 - Build visible identificado como `0.1.4`.
 - Rama, PR #6 y `main` pasaron instalación bloqueada, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
 - El usuario confirmó en un dispositivo real que la publicación `v0.1.4` se ve correctamente; entrega cerrada.
+
+## APK externa como referencia técnica
+
+Estado: VERIFICADO / USO COMO REFERENCIA, NO COMO BASE DE CÓDIGO.
+
+El usuario aportó el paquete Android `Santa Biblia Reina Valera_0.1.4.apks` para estudiar qué elementos útiles pueden rescatarse o reconstruirse en Biblia PWA.
+
+Hallazgos verificados del paquete analizado:
+
+- es un bundle `.apks` con una aplicación Flutter compilada;
+- incluye datos bíblicos locales y puede funcionar con el corpus empaquetado sin depender de una consulta remota para leer esos archivos;
+- contiene tres datasets bíblicos locales: español (`bible_rvr.json`), inglés KJV y portugués;
+- el dataset español contiene 66 libros;
+- cada libro incluye identificadores, nombre, grupo, autor, indicador de Antiguo/Nuevo Testamento, capítulos y versículos;
+- cada versículo está estructurado individualmente y puede incluir un campo `title`;
+- se verificó, por ejemplo, que Génesis 1:1 contiene un encabezado de sección en `title`;
+- el paquete contiene recursos visuales, tipografías y librerías/servicios de terceros que deben evaluarse individualmente antes de reutilizar;
+- se observaron valores de configuración/credenciales dentro de recursos empaquetados de la app externa. No deben copiarse, publicarse ni reutilizarse en este repositorio.
+
+Decisión de uso:
+
+- Biblia PWA sigue siendo el proyecto principal; no se reemplaza por Flutter ni por el APK externo;
+- la app externa se trata como referencia/donante para identificar funciones, estructura de datos, organización y UX que puedan mejorar el proyecto;
+- funciones útiles se reconstruyen con código propio dentro de la arquitectura actual cuando tengan sentido;
+- no se copiará código compilado, secretos, configuración privada ni dependencias externas innecesarias;
+- texto RVR60, títulos editoriales, iconos, fuentes u otros assets solo podrán incorporarse si su licencia/procedencia permite redistribución pública;
+- la estructura de datos sí puede inspirar el modelo interno, siempre manteniendo corpus y datos personales separados;
+- antes de integrar algo proveniente de la app externa, clasificarlo como: `REUTILIZABLE VERIFICADO`, `RECONSTRUIBLE`, `REQUIERE LICENCIA` o `NO REUTILIZAR`.
+
+Pendiente específico:
+
+- completar un inventario comparativo entre la APK externa y Biblia PWA para identificar funciones útiles que aún falten;
+- verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
+- no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
 ### Versículo activo y acciones 0.1.5 — implementado pendiente de validación
 
@@ -147,17 +180,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Cerrar mediante PR el endurecimiento documental/seguridad ya actualizado para la visibilidad pública.
-2. Confirmar CI verde del PR después de los últimos cambios y fusionarlo.
-3. Confirmar `main` verde después del merge.
-4. Retomar D-029 sin mezclar más objetivos.
-5. Implementar persistencia local del versículo activo y de resaltados.
-6. Hacer que el toque normal seleccione visualmente un único versículo activo y reemplace al anterior.
-7. Añadir `Resaltar`, `Copiar` y `Compartir` al panel contextual existente junto con `Favorito` y `Nota`.
-8. Exigir TypeScript, lint, build PWA y auditoría en verde.
-9. Revisar diferencias, incluyendo revisión de secretos/datos personales, y limpiar cualquier resto no relacionado.
-10. Integrar mediante PR solo si todo queda verde.
-11. Confirmar nuevamente `main`, desplegar y verificar la nueva versión antes de pedir prueba al usuario.
+1. Revisar el diff final del PR #8 y confirmar que no contiene secretos, datos personales ni cambios fuera de alcance.
+2. Integrar el PR #8 porque la rama ya pasó TypeScript, ESLint, build PWA y auditoría de dependencias.
+3. Confirmar CI de `main` en verde.
+4. Desplegar/verificar la versión publicada `0.1.5` y solo entonces pedir prueba al usuario.
+5. Cerrar D-029 y mover el siguiente objetivo funcional.
+6. Continuar el inventario comparativo de la APK externa para seleccionar la próxima función útil, sin mezclar funciones no relacionadas.
 
 ## Después de este objetivo
 
