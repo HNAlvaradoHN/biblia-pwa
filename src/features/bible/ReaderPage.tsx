@@ -229,7 +229,9 @@ export function ReaderPage() {
     if (!actionPanelOpen) return
 
     function closeOnOutsidePress(event: PointerEvent) {
-      if (actionPanelRef.current?.contains(event.target as Node)) return
+      const target = event.target as Node
+      if (actionPanelRef.current?.contains(target)) return
+      if (target instanceof Element && target.closest('.verse-menu-trigger')) return
       setActionPanelOpen(false)
     }
 
