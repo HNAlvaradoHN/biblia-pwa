@@ -128,7 +128,7 @@ Pendiente específico:
 - La versión visible del build pasa a `0.1.5`.
 - El primer CI del PR falló en TypeScript; la causa fue el estrechamiento de tipo de `book` dentro de handlers anidados.
 - La corrección posterior pasó TypeScript, ESLint, build PWA y auditoría de dependencias en verde en la rama.
-- Estado actual: `IMPLEMENTADO_PENDIENTE_VALIDACIÓN` hasta merge, CI de `main`, despliegue y comprobación publicada.
+- Estado actual: `IMPLEMENTADO_PENDIENTE_VALIDACIÓN`. PR #8 ya fue fusionado a `main` y el CI de `main` pasó TypeScript, ESLint, build PWA y auditoría de dependencias. El artefacto verificado `biblia-pwa-dist` quedó retenido por GitHub Actions. Falta despliegue/verificación publicada y prueba física del usuario.
 
 ## Objetivo activo
 
@@ -180,12 +180,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Revisar el diff final del PR #8 y confirmar que no contiene secretos, datos personales ni cambios fuera de alcance.
-2. Integrar el PR #8 porque la rama ya pasó TypeScript, ESLint, build PWA y auditoría de dependencias.
-3. Confirmar CI de `main` en verde.
-4. Desplegar/verificar la versión publicada `0.1.5` y solo entonces pedir prueba al usuario.
-5. Cerrar D-029 y mover el siguiente objetivo funcional.
-6. Continuar el inventario comparativo de la APK externa para seleccionar la próxima función útil, sin mezclar funciones no relacionadas.
+1. Desplegar el artefacto verificado de `main` correspondiente a `0.1.5`.
+2. Verificar que la aplicación publicada carga la versión visible `0.1.5`.
+3. Pedir prueba física al usuario y confirmar versículo activo, Resaltar, Copiar, Compartir, Favorito y Nota.
+4. Solo después de esa validación cerrar D-029 y mover el siguiente objetivo funcional.
+5. Continuar el inventario comparativo de la APK externa para seleccionar la próxima función útil, sin mezclar funciones no relacionadas.
+
+Bloqueo externo actual: desde la conexión disponible no aparece ningún equipo/proyecto de Vercel accesible, por lo que no se puede ejecutar ni verificar el despliegue desde este entorno. Esto no afecta el CI ni el artefacto ya verificado en GitHub.
 
 ## Después de este objetivo
 
