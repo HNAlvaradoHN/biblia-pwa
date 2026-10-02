@@ -366,3 +366,19 @@ Reglas:
 - cuando la selección exceda lo que el diseño de imagen pueda mostrar de forma legible, la app deberá advertir al usuario y pedir reducir la selección;
 - el límite de imagen deberá depender del espacio/layout real de la plantilla, tipografía y contenido, no de un número fijo arbitrario de versículos.
 
+## D-033 — Compartir por formato y búsqueda bíblica
+Estado: APROBADA
+
+Al ejecutar `Compartir`, la aplicación debe preguntar primero si el usuario desea compartir como `Texto` o como `Imagen`.
+
+Reglas:
+
+- la elección de formato aplica tanto a un versículo como a una selección múltiple;
+- texto puede incluir todos los versículos seleccionados mientras el dispositivo acepte el contenido;
+- imagen se genera localmente y debe conservar referencia y legibilidad;
+- si el contenido no cabe de forma legible en la plantilla de imagen, la aplicación no debe recortarlo ni reducirlo de forma extrema: debe advertir y pedir una selección menor;
+- el cálculo de capacidad de imagen depende del texto real y del espacio disponible, no de un número fijo de versículos;
+- si el dispositivo permite compartir archivos mediante Web Share, la imagen se comparte directamente; si no, se ofrece como archivo descargable.
+
+La siguiente función activa después de estabilizar estas acciones es la búsqueda bíblica de palabras o frases sobre todo el corpus disponible, con resultados que abren el versículo exacto.
+
