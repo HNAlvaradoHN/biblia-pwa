@@ -30,9 +30,18 @@ export interface BibleTranslation {
   books: BibleBook[]
 }
 
+export interface BibleSearchResult {
+  bookId: string
+  bookName: string
+  chapter: number
+  verse: number
+  text: string
+}
+
 export interface BibleProvider {
   translation: BibleTranslation
   listBooks(): BibleBook[]
   getBook(bookId: string): BibleBook | undefined
   getChapter(bookId: string, chapter: number): BibleChapter | undefined
+  searchVerses(query: string): BibleSearchResult[]
 }
