@@ -357,9 +357,9 @@ export function SermonEditorPage() {
             onChange={(event) => markDirty(setTitle, event.target.value)}
             placeholder="Título de la prédica"
           />
-        </label>
+        </div>
 
-        <label className="sermon-field">
+        <div className="sermon-field">
           <span>Introducción</span>
           <SermonRichTextField
             ref={introductionRef}
@@ -370,9 +370,9 @@ export function SermonEditorPage() {
             placeholder="Idea de apertura, contexto o propósito..."
             ariaLabel="Introducción"
           />
-        </label>
+        </div>
 
-        <label className="sermon-field">
+        <div className="sermon-field">
           <span>Bosquejo y puntos</span>
           <SermonRichTextField
             ref={outlineRef}
@@ -384,9 +384,9 @@ export function SermonEditorPage() {
             placeholder={"1. Punto principal\n   - Subpunto\n   - Aplicación\n\n2. Siguiente punto..."}
             ariaLabel="Bosquejo y puntos"
           />
-        </label>
+        </div>
 
-        <label className="sermon-field">
+        <div className="sermon-field">
           <span>Conclusión</span>
           <SermonRichTextField
             ref={conclusionRef}
@@ -397,7 +397,7 @@ export function SermonEditorPage() {
             placeholder="Cierre, llamado o idea final..."
             ariaLabel="Conclusión"
           />
-        </label>
+        </div>
 
         <aside className="sermon-editor-note">
           <strong>Referencias inteligentes activas</strong>
