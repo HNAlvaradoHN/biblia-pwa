@@ -4,6 +4,7 @@ import { bibleProvider } from '../../data/bible/provider'
 import './focused-reader.css'
 
 type FocusMode = 'chapter' | 'verse'
+type PageMotion = 'next' | 'previous'
 
 type FlatVerse = {
   chapter: number
@@ -20,7 +21,10 @@ export function FocusedReaderPage() {
   const requestedChapter = Number(chapterParam)
   const mode: FocusMode = searchParams.get('mode') === 'verse' ? 'verse' : 'chapter'
   const touchStart = useRef<{ x: number; y: number } | undefined>(undefined)
+  const motionTimer = useRef<number | undefined>(undefined)
   const [entryPulse, setEntryPulse] = useState(true)
+  const [showGestureHint, setShowGestureHint] = useState(true)
+  const [pageMotion, setPageMotion] = useState<PageMotion | undefined>()
 
   const returnAnchor = searchParams.get('returnAnchor') ?? ''
   const returnChapter = Number(searchParams.get('returnChapter') ?? requestedChapter)
@@ -61,10 +65,15 @@ export function FocusedReaderPage() {
   const [verseIndex, setVerseIndex] = useState(initialVerseIndex)
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setEntryPulse(false), 1500)
-    return () => window.clearTimeout(timer)
-  }, [])
+    const pulseTimer = window.setTimeout(() => setEntryPulse(false), 1500)
+    const hintTimer = window.setTimeout(() => setShowGestureHint(false), 4200)
 
+    return () => {
+      window.clearTimeout(pulseTimer)
+      window.clearTimeout(hintTimer)
+      if (motionTimer.current) window.clearTimeout(motionTimer.current)
+    }
+  }, [])
 
   const chapter = book?.chapters[chapterIndex]
   const verse = flatVerses[verseIndex]
@@ -106,8 +115,15 @@ export function FocusedReaderPage() {
     )
   }
 
+  function startPageMotion(direction: PageMotion) {
+    setPageMotion(direction)
+    if (motionTimer.current) window.clearTimeout(motionTimer.current)
+    motionTimer.current = window.setTimeout(() => setPageMotion(undefined), 460)
+  }
+
   function goPrevious() {
     if (!canGoPrevious) return
+    startPageMotion('previous')
     if (mode === 'verse') {
       setVerseIndex((current) => current - 1)
       return
@@ -117,6 +133,7 @@ export function FocusedReaderPage() {
 
   function goNext() {
     if (!canGoNext) return
+    startPageMotion('next')
     if (mode === 'verse') {
       setVerseIndex((current) => current + 1)
       return
@@ -176,6 +193,14 @@ export function FocusedReaderPage() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        <div
+          key={
+            mode === 'verse' && verse
+              ? `verse-${verse.chapter}-${verse.number}`
+              : `chapter-${chapter?.number ?? 0}`
+          }
+          className={`focus-reader-page${pageMotion ? ` page-turn-${pageMotion}` : ''}`}
+        >
         {mode === 'chapter' && chapter ? (
           <>
             <div className="focus-reader-heading">
@@ -215,9 +240,14 @@ export function FocusedReaderPage() {
             </p>
             <h1>{book.name} {verse.chapter}:{verse.number}</h1>
             <blockquote>{verse.text}</blockquote>
-            <p className="focus-verse-hint">Deslizá a izquierda o derecha, o usá Anterior/Siguiente.</p>
+            {showGestureHint ? (
+              <p className="focus-verse-hint" role="status">
+                Deslizá a izquierda o derecha, o usá Anterior/Siguiente.
+              </p>
+            ) : null}
           </article>
         ) : null}
+        </div>
       </main>
 
       <footer className="focus-reader-controls">
