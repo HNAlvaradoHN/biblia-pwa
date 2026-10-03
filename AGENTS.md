@@ -2,8 +2,8 @@ PAQUETE MAESTRO GENERAL DE REGLAS PARA PROYECTOS CON CHATGPT + GITHUB
 Versión del paquete: 4 — autonomía controlada y revisores automáticos
 PROTOCOL_VERSION: 4
 PROJECT_PROTOCOL: BIBLIA_PWA
-CURRENT_SESSION: 2
-NEXT_SESSION: 3
+CURRENT_SESSION: 3
+NEXT_SESSION: 4
 Uso: reutilizable en cualquier proyecto.
 Objetivo: que un chat/agente nuevo pueda comprender el estado real de un proyecto desde GitHub, trabajar con seguridad y continuidad, y completar una tarea autorizada sin que el usuario tenga que microgestionar archivos, pruebas, memoria o handoff.
 
