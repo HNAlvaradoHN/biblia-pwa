@@ -1,40 +1,38 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './appearance.css'
 
-type ThemeName = 'light' | 'sepia' | 'forest' | 'night'
+type ThemeName = 'light' | 'sepia' | 'forest' | 'ocean' | 'wine' | 'violet' | 'night'
 type FontChoice = 'serif' | 'sans' | 'rounded'
 
 type AppearancePreferences = {
   theme: ThemeName
   fontScale: number
   fontFamily: FontChoice
-  readerText: string
-  background: string
 }
 
-const storageKey = 'biblia-appearance-v1'
+type ThemeTokens = {
+  label: string
+  bg: string
+  surface: string
+  surfaceStrong: string
+  readerSurface: string
+  ink: string
+  muted: string
+  line: string
+  brand: string
+  accent: string
+  accentSoft: string
+  glass: string
+  glassStrong: string
+  glassBorder: string
+  readerText: string
+  onBrand: string
+}
 
-const themes: Record<
-  ThemeName,
-  {
-    label: string
-    bg: string
-    surface: string
-    surfaceStrong: string
-    readerSurface: string
-    ink: string
-    muted: string
-    line: string
-    brand: string
-    accent: string
-    accentSoft: string
-    glass: string
-    glassStrong: string
-    glassBorder: string
-    readerText: string
-    onBrand: string
-  }
-> = {
+const storageKey = 'biblia-appearance-v2'
+const legacyStorageKey = 'biblia-appearance-v1'
+
+const themes: Record<ThemeName, ThemeTokens> = {
   light: {
     label: 'Claro',
     bg: '#eee9df',
@@ -42,69 +40,123 @@ const themes: Record<
     surfaceStrong: '#ffffff',
     readerSurface: '#fffdf8',
     ink: '#17251f',
-    muted: '#637068',
-    line: '#ded8cc',
+    muted: '#59675f',
+    line: '#d7d1c5',
     brand: '#173a2a',
-    accent: '#b88845',
-    accentSoft: '#f2e7d5',
-    glass: 'rgba(255, 255, 255, 0.56)',
-    glassStrong: 'rgba(255, 255, 255, 0.72)',
-    glassBorder: 'rgba(255, 255, 255, 0.62)',
+    accent: '#a87334',
+    accentSoft: '#efe2cf',
+    glass: 'rgba(255, 255, 255, 0.62)',
+    glassStrong: 'rgba(255, 255, 255, 0.82)',
+    glassBorder: 'rgba(255, 255, 255, 0.72)',
     readerText: '#202821',
     onBrand: '#ffffff',
   },
   sepia: {
     label: 'Sepia',
-    bg: '#dfd2bc',
-    surface: '#f5ecdd',
-    surfaceStrong: '#fff8eb',
-    readerSurface: '#fff7e8',
-    ink: '#3e3024',
-    muted: '#786857',
-    line: '#cdbfa9',
-    brand: '#594129',
-    accent: '#a16e35',
-    accentSoft: '#ead8bc',
-    glass: 'rgba(255, 248, 235, 0.58)',
-    glassStrong: 'rgba(255, 248, 235, 0.76)',
-    glassBorder: 'rgba(255, 250, 240, 0.64)',
-    readerText: '#33291f',
-    onBrand: '#fffaf1',
+    bg: '#dfd0b8',
+    surface: '#f4eadb',
+    surfaceStrong: '#fff7e9',
+    readerSurface: '#fff6e6',
+    ink: '#3d2f23',
+    muted: '#6f604f',
+    line: '#c9baa2',
+    brand: '#5c4128',
+    accent: '#9a642f',
+    accentSoft: '#e8d3b4',
+    glass: 'rgba(255, 248, 235, 0.64)',
+    glassStrong: 'rgba(255, 250, 240, 0.84)',
+    glassBorder: 'rgba(255, 251, 244, 0.74)',
+    readerText: '#33281f',
+    onBrand: '#fffaf2',
   },
   forest: {
     label: 'Verde',
-    bg: '#d8e1da',
-    surface: '#edf3ee',
-    surfaceStrong: '#f8fbf8',
+    bg: '#d7e3db',
+    surface: '#edf4ef',
+    surfaceStrong: '#f8fbf9',
     readerSurface: '#f8fbf7',
     ink: '#183126',
-    muted: '#5e7067',
-    line: '#c8d4cb',
+    muted: '#526b60',
+    line: '#c2d1c7',
     brand: '#174a35',
-    accent: '#8e7042',
-    accentSoft: '#e1e7d7',
-    glass: 'rgba(245, 251, 247, 0.58)',
-    glassStrong: 'rgba(248, 252, 249, 0.75)',
-    glassBorder: 'rgba(255, 255, 255, 0.62)',
+    accent: '#5e8e70',
+    accentSoft: '#dce9df',
+    glass: 'rgba(244, 251, 247, 0.64)',
+    glassStrong: 'rgba(249, 253, 250, 0.84)',
+    glassBorder: 'rgba(255, 255, 255, 0.72)',
     readerText: '#1d3026',
+    onBrand: '#ffffff',
+  },
+  ocean: {
+    label: 'Azul',
+    bg: '#dbe7f1',
+    surface: '#edf4f9',
+    surfaceStrong: '#f9fcff',
+    readerSurface: '#f8fbfe',
+    ink: '#172d3d',
+    muted: '#526b7c',
+    line: '#c5d6e2',
+    brand: '#245b7a',
+    accent: '#3f84b2',
+    accentSoft: '#dcecf6',
+    glass: 'rgba(242, 249, 253, 0.64)',
+    glassStrong: 'rgba(249, 253, 255, 0.84)',
+    glassBorder: 'rgba(255, 255, 255, 0.72)',
+    readerText: '#1b2f3d',
+    onBrand: '#ffffff',
+  },
+  wine: {
+    label: 'Rojo',
+    bg: '#eadcdb',
+    surface: '#f7eeee',
+    surfaceStrong: '#fffafa',
+    readerSurface: '#fffafa',
+    ink: '#3b2022',
+    muted: '#76595c',
+    line: '#dbc6c8',
+    brand: '#7f3036',
+    accent: '#b84d55',
+    accentSoft: '#f0dddf',
+    glass: 'rgba(253, 246, 246, 0.66)',
+    glassStrong: 'rgba(255, 251, 251, 0.86)',
+    glassBorder: 'rgba(255, 255, 255, 0.72)',
+    readerText: '#392426',
+    onBrand: '#ffffff',
+  },
+  violet: {
+    label: 'Morado',
+    bg: '#e7e0ef',
+    surface: '#f4f0f8',
+    surfaceStrong: '#fcfaff',
+    readerSurface: '#fcfaff',
+    ink: '#2f2638',
+    muted: '#685d73',
+    line: '#d3c9dd',
+    brand: '#65437b',
+    accent: '#8a62a6',
+    accentSoft: '#eadff1',
+    glass: 'rgba(249, 246, 252, 0.66)',
+    glassStrong: 'rgba(253, 251, 255, 0.86)',
+    glassBorder: 'rgba(255, 255, 255, 0.72)',
+    readerText: '#31283a',
     onBrand: '#ffffff',
   },
   night: {
     label: 'Noche',
-    bg: '#0f171c',
-    surface: '#162126',
-    surfaceStrong: '#1d2b31',
-    readerSurface: '#142127',
-    ink: '#f2f6f4',
-    muted: '#b8c5c0',
-    line: '#3b4d53',
-    brand: '#8fd8b7',
-    accent: '#f0bd67',
-    accentSoft: '#27373a',
-    glass: 'rgba(25, 39, 45, 0.74)',
-    glassStrong: 'rgba(34, 51, 57, 0.88)',
-    glassBorder: 'rgba(222, 240, 232, 0.22)',
-    readerText: '#f5f8f6',
+    bg: '#0e171b',
+    surface: '#162229',
+    surfaceStrong: '#1d2d34',
+    readerSurface: '#142229',
+    ink: '#f3f7f5',
+    muted: '#bac8c2',
+    line: '#41535a',
+    brand: '#9ce1c1',
+    accent: '#f1bf69',
+    accentSoft: '#293b3e',
+    glass: 'rgba(23, 37, 43, 0.78)',
+    glassStrong: 'rgba(31, 48, 55, 0.9)',
+    glassBorder: 'rgba(222, 240, 232, 0.24)',
+    readerText: '#f6f9f7',
     onBrand: '#102019',
   },
 }
@@ -124,34 +176,12 @@ const fonts: Record<FontChoice, { label: string; stack: string }> = {
   },
 }
 
-function hexToRgb(hex: string) {
-  const value = hex.replace('#', '')
-  if (!/^[0-9a-fA-F]{6}$/.test(value)) return undefined
-  return {
-    r: Number.parseInt(value.slice(0, 2), 16),
-    g: Number.parseInt(value.slice(2, 4), 16),
-    b: Number.parseInt(value.slice(4, 6), 16),
-  }
+function isThemeName(value: unknown): value is ThemeName {
+  return typeof value === 'string' && value in themes
 }
 
-function luminance(hex: string) {
-  const rgb = hexToRgb(hex)
-  if (!rgb) return 0
-  const channels = [rgb.r, rgb.g, rgb.b].map((channel) => {
-    const normalized = channel / 255
-    return normalized <= 0.03928
-      ? normalized / 12.92
-      : ((normalized + 0.055) / 1.055) ** 2.4
-  })
-  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722
-}
-
-function contrastRatio(foreground: string, background: string) {
-  const a = luminance(foreground)
-  const b = luminance(background)
-  const lighter = Math.max(a, b)
-  const darker = Math.min(a, b)
-  return (lighter + 0.05) / (darker + 0.05)
+function isFontChoice(value: unknown): value is FontChoice {
+  return typeof value === 'string' && value in fonts
 }
 
 function readStoredPreferences(): AppearancePreferences {
@@ -159,40 +189,35 @@ function readStoredPreferences(): AppearancePreferences {
     theme: 'light',
     fontScale: 100,
     fontFamily: 'serif',
-    readerText: themes.light.readerText,
-    background: themes.light.bg,
   }
 
-  try {
-    const raw = window.localStorage.getItem(storageKey)
-    if (!raw) return fallback
-    const parsed = JSON.parse(raw) as Partial<AppearancePreferences>
-    const theme = parsed.theme && parsed.theme in themes ? parsed.theme : fallback.theme
-    const fontFamily =
-      parsed.fontFamily && parsed.fontFamily in fonts ? parsed.fontFamily : fallback.fontFamily
+  for (const key of [storageKey, legacyStorageKey]) {
+    try {
+      const raw = window.localStorage.getItem(key)
+      if (!raw) continue
+      const parsed = JSON.parse(raw) as Partial<AppearancePreferences>
 
-    return {
-      theme,
-      fontScale:
-        typeof parsed.fontScale === 'number'
-          ? Math.min(145, Math.max(85, parsed.fontScale))
-          : fallback.fontScale,
-      fontFamily,
-      readerText:
-        typeof parsed.readerText === 'string' ? parsed.readerText : themes[theme].readerText,
-      background:
-        typeof parsed.background === 'string' ? parsed.background : themes[theme].bg,
+      return {
+        theme: isThemeName(parsed.theme) ? parsed.theme : fallback.theme,
+        fontScale:
+          typeof parsed.fontScale === 'number'
+            ? Math.min(145, Math.max(85, parsed.fontScale))
+            : fallback.fontScale,
+        fontFamily: isFontChoice(parsed.fontFamily) ? parsed.fontFamily : fallback.fontFamily,
+      }
+    } catch {
+      continue
     }
-  } catch {
-    return fallback
   }
+
+  return fallback
 }
 
 function applyPreferences(preferences: AppearancePreferences) {
   const root = document.documentElement
   const theme = themes[preferences.theme]
 
-  root.style.setProperty('--bg', preferences.background)
+  root.style.setProperty('--bg', theme.bg)
   root.style.setProperty('--surface', theme.surface)
   root.style.setProperty('--surface-strong', theme.surfaceStrong)
   root.style.setProperty('--reader-surface', theme.readerSurface)
@@ -207,7 +232,7 @@ function applyPreferences(preferences: AppearancePreferences) {
   root.style.setProperty('--glass-surface', theme.glass)
   root.style.setProperty('--glass-surface-strong', theme.glassStrong)
   root.style.setProperty('--glass-border', theme.glassBorder)
-  root.style.setProperty('--reader-text', preferences.readerText)
+  root.style.setProperty('--reader-text', theme.readerText)
   root.style.setProperty('--on-brand', theme.onBrand)
   root.style.setProperty('--reader-font-scale', String(preferences.fontScale / 100))
   root.style.setProperty('--reader-font-family', fonts[preferences.fontFamily].stack)
@@ -219,7 +244,6 @@ export function AppearanceControl() {
   const [preferences, setPreferences] = useState<AppearancePreferences>(() =>
     readStoredPreferences(),
   )
-  const [message, setMessage] = useState('')
 
   useEffect(() => {
     applyPreferences(preferences)
@@ -237,32 +261,6 @@ export function AppearanceControl() {
     }
   }, [open])
 
-  const currentTheme = themes[preferences.theme]
-  const contrast = useMemo(
-    () => contrastRatio(preferences.readerText, currentTheme.readerSurface),
-    [preferences.readerText, currentTheme.readerSurface],
-  )
-
-  function chooseTheme(themeName: ThemeName) {
-    const theme = themes[themeName]
-    setPreferences((current) => ({
-      ...current,
-      theme: themeName,
-      background: theme.bg,
-      readerText: theme.readerText,
-    }))
-    setMessage('')
-  }
-
-  function chooseReaderText(color: string) {
-    if (contrastRatio(color, currentTheme.readerSurface) < 4.5) {
-      setMessage('Ese color no tiene suficiente contraste para leer con comodidad.')
-      return
-    }
-    setPreferences((current) => ({ ...current, readerText: color }))
-    setMessage('')
-  }
-
   return (
     <>
       <button
@@ -277,9 +275,9 @@ export function AppearanceControl() {
       </button>
 
       {open ? (
-        <div className="appearance-backdrop" role="presentation" onClick={() => setOpen(false)}>
+        <div className="appearance-backdrop submenu-backdrop" role="presentation" onClick={() => setOpen(false)}>
           <section
-            className="appearance-panel"
+            className="appearance-panel submenu-surface"
             role="dialog"
             aria-modal="true"
             aria-labelledby="appearance-title"
@@ -294,19 +292,29 @@ export function AppearanceControl() {
             </div>
 
             <div className="appearance-section">
-              <strong>Tema general</strong>
+              <strong>Temas predefinidos</strong>
+              <p className="appearance-help">Cada tema ya incluye colores de fondo, tarjetas y texto ajustados para conservar contraste.</p>
               <div className="theme-grid">
                 {(Object.keys(themes) as ThemeName[]).map((themeName) => (
                   <button
                     key={themeName}
                     className={preferences.theme === themeName ? 'active' : ''}
                     type="button"
-                    onClick={() => chooseTheme(themeName)}
+                    onClick={() =>
+                      setPreferences((current) => ({ ...current, theme: themeName }))
+                    }
                   >
                     <span
-                      className="theme-dot"
-                      style={{ background: themes[themeName].bg, color: themes[themeName].brand }}
-                    />
+                      className="theme-preview"
+                      style={{
+                        background: themes[themeName].bg,
+                        color: themes[themeName].brand,
+                        borderColor: themes[themeName].line,
+                      }}
+                    >
+                      <i style={{ background: themes[themeName].brand }} />
+                      <i style={{ background: themes[themeName].accent }} />
+                    </span>
                     {themes[themeName].label}
                   </button>
                 ))}
@@ -353,38 +361,6 @@ export function AppearanceControl() {
               </div>
             </div>
 
-            <div className="appearance-section appearance-colors">
-              <label>
-                <span>
-                  <strong>Color del texto bíblico</strong>
-                  <small>Contraste actual: {contrast.toFixed(1)}:1</small>
-                </span>
-                <input
-                  type="color"
-                  value={preferences.readerText}
-                  onChange={(event) => chooseReaderText(event.target.value)}
-                />
-              </label>
-              <label>
-                <span>
-                  <strong>Fondo general</strong>
-                  <small>Las tarjetas conservan su propia superficie legible.</small>
-                </span>
-                <input
-                  type="color"
-                  value={preferences.background}
-                  onChange={(event) =>
-                    setPreferences((current) => ({
-                      ...current,
-                      background: event.target.value,
-                    }))
-                  }
-                />
-              </label>
-            </div>
-
-            {message ? <p className="appearance-message" role="status">{message}</p> : null}
-
             <button
               className="appearance-reset"
               type="button"
@@ -393,8 +369,6 @@ export function AppearanceControl() {
                   theme: 'light',
                   fontScale: 100,
                   fontFamily: 'serif',
-                  readerText: themes.light.readerText,
-                  background: themes.light.bg,
                 })
               }
             >
