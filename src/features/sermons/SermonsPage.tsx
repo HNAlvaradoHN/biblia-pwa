@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import {
   createSermon,
@@ -172,6 +172,83 @@ export function SermonsPage() {
   )
 }
 
+
+type OutlineFormat = 'h1' | 'h2' | 'h3' | 'bold' | 'italic' | 'numbered' | 'bullets' | 'quote' | 'indent' | 'divider'
+
+const outlineTools: Array<{ format: OutlineFormat; label: string; title: string }> = [
+  { format: 'h1', label: 'H1', title: 'Título principal' },
+  { format: 'h2', label: 'H2', title: 'Título secundario' },
+  { format: 'h3', label: 'H3', title: 'Título menor' },
+  { format: 'bold', label: 'B', title: 'Negrita' },
+  { format: 'italic', label: 'I', title: 'Cursiva' },
+  { format: 'numbered', label: '1.', title: 'Lista numerada' },
+  { format: 'bullets', label: '•', title: 'Lista con viñetas' },
+  { format: 'quote', label: '❝', title: 'Cita' },
+  { format: 'indent', label: '→', title: 'Sangría' },
+  { format: 'divider', label: '—', title: 'Separador' },
+]
+
+function transformOutlineSelection(value: string, start: number, end: number, format: OutlineFormat) {
+  const selected = value.slice(start, end)
+  const lineStart = value.lastIndexOf('\n', Math.max(0, start - 1)) + 1
+  const nextLineBreak = value.indexOf('\n', end)
+  const lineEnd = nextLineBreak === -1 ? value.length : nextLineBreak
+  const lineFormats: OutlineFormat[] = ['h1', 'h2', 'h3', 'numbered', 'bullets', 'quote', 'indent']
+  const blockStart = lineFormats.includes(format) ? lineStart : start
+  const blockEnd = lineFormats.includes(format) ? lineEnd : end
+  const block = value.slice(blockStart, blockEnd)
+
+  let replacement = block
+  if (format === 'bold') replacement = '**' + (selected || 'texto') + '**'
+  if (format === 'italic') replacement = '*' + (selected || 'texto') + '*'
+  if (format === 'divider') replacement = selected + (selected && !selected.endsWith('\n') ? '\n' : '') + '---\n'
+  if (format === 'h1') replacement = block.replace(/^#{1,3}\s*/, '# ')
+  if (format === 'h2') replacement = block.replace(/^#{1,3}\s*/, '## ')
+  if (format === 'h3') replacement = block.replace(/^#{1,3}\s*/, '### ')
+  if (format === 'quote') replacement = block.split('\n').map((line) => '> ' + line.replace(/^>\s?/, '')).join('\n')
+  if (format === 'indent') replacement = block.split('\n').map((line) => '   ' + line).join('\n')
+  if (format === 'bullets') replacement = block.split('\n').map((line) => '- ' + line.replace(/^(?:[-*]\s+|\d+\.\s+)/, '')).join('\n')
+  if (format === 'numbered') replacement = block.split('\n').map((line, index) => (index + 1) + '. ' + line.replace(/^(?:[-*]\s+|\d+\.\s+)/, '')).join('\n')
+
+  const nextValue = value.slice(0, blockStart) + replacement + value.slice(blockEnd)
+  return { value: nextValue, selectionStart: blockStart, selectionEnd: blockStart + replacement.length }
+}
+
+function OutlineToolbar({ textareaRef, value, onChange }: {
+  textareaRef: RefObject<HTMLTextAreaElement | null>
+  value: string
+  onChange: (value: string) => void
+}) {
+  function applyFormat(format: OutlineFormat) {
+    const textarea = textareaRef.current
+    if (!textarea) return
+    const result = transformOutlineSelection(value, textarea.selectionStart, textarea.selectionEnd, format)
+    onChange(result.value)
+    window.requestAnimationFrame(() => {
+      textarea.focus()
+      textarea.setSelectionRange(result.selectionStart, result.selectionEnd)
+    })
+  }
+
+  return (
+    <div className="sermon-format-toolbar" role="toolbar" aria-label="Formato del bosquejo">
+      {outlineTools.map((tool) => (
+        <button
+          key={tool.format}
+          type="button"
+          title={tool.title}
+          aria-label={tool.title}
+          className={tool.format === 'bold' ? 'format-bold' : tool.format === 'italic' ? 'format-italic' : ''}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => applyFormat(tool.format)}
+        >
+          {tool.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export function SermonEditorPage() {
   const { sermonId = '' } = useParams()
   const navigate = useNavigate()
@@ -182,6 +259,7 @@ export function SermonEditorPage() {
   const [conclusion, setConclusion] = useState('')
   const [savedAt, setSavedAt] = useState<number>()
   const [dirty, setDirty] = useState(false)
+  const outlineRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -297,14 +375,23 @@ export function SermonEditorPage() {
           />
         </label>
 
-        <label className="sermon-field">
+        <label className="sermon-field sermon-outline-field">
           <span>Bosquejo y puntos</span>
+          <OutlineToolbar
+            textareaRef={outlineRef}
+            value={outline}
+            onChange={(value) => markDirty(setOutline, value)}
+          />
           <textarea
+            ref={outlineRef}
             value={outline}
             onChange={(event) => markDirty(setOutline, event.target.value)}
             placeholder={"1. Punto principal\n   - Subpunto\n   - Aplicación\n\n2. Siguiente punto..."}
             rows={14}
           />
+          <small className="sermon-format-hint">
+            Seleccioná texto o colocá el cursor y usá la barra para títulos, listas, citas y énfasis.
+          </small>
         </label>
 
         <label className="sermon-field">
@@ -318,7 +405,7 @@ export function SermonEditorPage() {
         </label>
 
         <aside className="sermon-editor-note">
-          <strong>Primera etapa del editor</strong>
+          <strong>Formato rápido del bosquejo</strong>
           <p>
             El bosquejo se guarda automáticamente en este dispositivo. Las referencias
             bíblicas inteligentes y la vista rápida se incorporarán en la siguiente fase
