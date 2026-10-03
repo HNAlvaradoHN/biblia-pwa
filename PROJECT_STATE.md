@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Menús inteligentes y personalización global 0.1.11 — en implementación
+### Menús inteligentes y personalización global 0.1.11 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar la entrega `0.1.11`: corregir el menú contextual en los extremos de pantalla, mejorar la navegación enfocada con transición tipo página y ayuda temporal, y avanzar a la personalización global inicial de lectura.
+Completar la validación física de `0.1.11`: menú contextual inteligente, transición tipo página, ayuda temporal y personalización global inicial. Implementación, CI, merge y despliegue ya están completos.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,13 +185,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI/revisión de `0.1.11`.
-2. Validar físicamente el menú de los tres puntos cerca del primer y último versículo de la pantalla.
-3. Validar transición tipo página, gesto horizontal y desaparición automática de la ayuda.
-4. Validar temas, tamaño, fuente, color de texto y fondo general en lector continuo y modos enfocados.
-5. Si la prueba real pasa, cerrar D-038/D-039 y elegir el siguiente objetivo del roadmap/inventario APK.
+1. Validar físicamente el menú de los tres puntos cerca del primer y último versículo de la pantalla.
+2. Validar transición tipo página, gesto horizontal y desaparición automática de la ayuda.
+3. Validar temas, tamaño, fuente, color de texto y fondo general en lector continuo y modos enfocados.
+4. Si la prueba real pasa, cerrar D-038/D-039 y elegir el siguiente objetivo del roadmap/inventario APK.
 
-Estado de despliegue actual: producción sirve `0.1.10`. El usuario confirmó físicamente que el gesto horizontal ya funciona. La entrega `0.1.11` está en rama con menú contextual inteligente, transición tipo página, ayuda temporal y primera etapa de personalización global. No debe marcarse como lista hasta completar CI, revisión, merge, deployment y validación física.
+Estado de despliegue actual: `0.1.11` fue fusionada a `main` en `655900a646c3ada88f527184ecb289a2d225a550`. El CI de `main` (run `37092796822`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.11`. La previsualización automatizada confirmó que el menú contextual se recoloca para permanecer visible cerca del borde inferior, la navegación enfocada usa transición tipo página, la ayuda desaparece automáticamente y el panel `Aa` contiene temas, tamaño, fuentes, color del texto y fondo general. Falta la validación física del usuario.
 
 ## Después de este objetivo
 
