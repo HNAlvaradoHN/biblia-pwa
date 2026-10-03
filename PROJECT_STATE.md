@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Versículo activo, compartir y búsqueda 0.1.7 — publicado pendiente de validación física
+### Compartir, búsqueda y lector enfocado 0.1.8 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,9 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar el comportamiento del versículo en el lector normal con dos capas claramente distintas:
+Completar la entrega `0.1.8` con tres mejoras coordinadas: personalización inicial de compartir como imagen, búsqueda unificada de libros + texto y lector capítulo por capítulo.
+
+La base del versículo activo mantiene dos capas claramente distintas:
 
 1. `Versículo activo` por defecto para seguir visualmente la lectura.
 2. Acciones contextuales persistentes o utilitarias: `Favorito`, `Nota`, `Resaltar`, `Copiar` y `Compartir`.
@@ -150,7 +152,7 @@ Reglas de alcance:
 - `Copiar` debe copiar referencia y texto de forma clara;
 - `Compartir` debe usar el mecanismo nativo del dispositivo cuando exista y un fallback razonable cuando no exista;
 - el panel contextual debe mantener el lector limpio y no cubrir innecesariamente el texto;
-- no abrir todavía búsqueda bíblica completa, lector capítulo por capítulo, prédicas, sincronización, fondos o personalizaciones avanzadas dentro de este objetivo.
+- la personalización avanzada global, prédicas y sincronización siguen fuera de este objetivo; sí entran los fondos propios de la composición de compartir y el lector capítulo por capítulo ya aprobado.
 
 La decisión completa está registrada como D-029 en `DECISIONS.md`.
 
@@ -183,17 +185,17 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente `0.1.7`: cambio de versículo activo, selector Compartir Texto/Imagen y generación/compartición de imagen.
-2. Validar búsqueda por palabra/frase en el dispositivo y apertura al versículo exacto.
-3. Cerrar D-029/D-032/D-033 si la prueba real pasa.
-4. Continuar de inmediato con el lector capítulo por capítulo ya aprobado, salvo que la validación revele un defecto relevante.
-5. Mantener en paralelo el inventario comparativo de la APK externa como referencia, sin bloquear el avance funcional.
+1. Completar CI y revisión de `0.1.8`.
+2. Desplegar y validar físicamente fondos/colores/foto personal al compartir imagen.
+3. Validar búsqueda por libro y resaltado de la coincidencia, además de búsqueda textual.
+4. Validar lector capítulo por capítulo: anterior/siguiente, gesto horizontal y regreso exacto con indicador temporal.
+5. Tras cerrar esta entrega, continuar el inventario comparativo de la APK externa y abrir el siguiente objetivo funcional sin detener el avance.
 
-Estado de despliegue actual: `0.1.7` fue fusionada a `main` en `a96116e16203838fde4a154c1ed2102ce312833e`. El CI de `main` (run `37078904573`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.7`. La previsualización automatizada confirmó que al mover el versículo activo el anterior deja de verse activo, Compartir pregunta Texto/Imagen y la búsqueda devuelve coincidencias y abre el versículo exacto. Falta validación física del usuario, especialmente compartir imagen en su dispositivo.
+Estado de despliegue actual: producción sirve `0.1.7`. La entrega `0.1.8` está en rama de implementación e incorpora fondos predeterminados/color/foto personal para compartir imagen, búsqueda por nombre de libro con coincidencia resaltada y el lector capítulo por capítulo aprobado. No debe marcarse como lista hasta completar CI, revisión, merge, deployment y validación física.
 
 ## Después de este objetivo
 
-El siguiente objetivo funcional previsto es la búsqueda bíblica completa por palabras/frases. Después se retomará el lector capítulo por capítulo ya aprobado, salvo que una revisión real revele una corrección prioritaria.
+Después de `0.1.8`, el siguiente objetivo se elegirá del inventario comparativo de la APK y del roadmap ya aprobado, evitando volver a dejar la búsqueda o el lector enfocado como pendientes abiertos.
 
 ## Regla de actualización
 
