@@ -281,13 +281,13 @@ export function ReaderPage() {
 
       const rect = trigger.getBoundingClientRect()
       const panelHeight = actionPanelRef.current?.getBoundingClientRect().height ?? 330
-      const viewportPadding = 12
-      const bottomNavigationReserve = 92
-      const maxWidth = Math.min(360, window.innerWidth - viewportPadding * 2)
-      const availableBelow =
-        window.innerHeight - rect.bottom - bottomNavigationReserve - viewportPadding
+      const viewportPadding = 14
+      const maxWidth = Math.min(390, window.innerWidth - viewportPadding * 2)
+      const availableBelow = window.innerHeight - rect.bottom - viewportPadding
       const availableAbove = rect.top - viewportPadding
-      const placeAbove = availableBelow < Math.min(panelHeight, 280) && availableAbove > availableBelow
+      const placeAbove =
+        availableBelow < Math.min(panelHeight, 320) && availableAbove > availableBelow
+      const availableSide = placeAbove ? availableAbove : availableBelow
       const left = Math.min(
         Math.max(viewportPadding, rect.right - maxWidth),
         window.innerWidth - maxWidth - viewportPadding,
@@ -299,13 +299,7 @@ export function ReaderPage() {
         left,
         top: placeAbove ? undefined : rect.bottom + 8,
         bottom: placeAbove ? window.innerHeight - rect.top + 8 : undefined,
-        maxHeight: Math.max(
-          180,
-          Math.min(
-            panelHeight,
-            placeAbove ? availableAbove - 8 : availableBelow - 8,
-          ),
-        ),
+        maxHeight: Math.max(220, Math.min(panelHeight, availableSide - 8)),
       })
     }
 
@@ -975,10 +969,16 @@ export function ReaderPage() {
 
                         {panelVisible ? (
                           <div
+                            className="verse-action-backdrop submenu-backdrop"
+                            role="presentation"
+                            onClick={() => setActionPanelOpen(false)}
+                          >
+                          <div
                             ref={actionPanelRef}
-                            className="verse-action-panel verse-action-floating glass-panel"
+                            className="verse-action-panel verse-action-floating submenu-surface"
                             style={actionPanelPosition}
                             aria-label={`Opciones para ${reference}`}
+                            onClick={(event) => event.stopPropagation()}
                           >
                             <div className="verse-action-header">
                               <strong>{reference}</strong>
@@ -1123,6 +1123,7 @@ export function ReaderPage() {
                               </p>
                             ) : null}
                           </div>
+                          </div>
                         ) : null}
                       </div>
                     )
@@ -1217,12 +1218,12 @@ export function ReaderPage() {
 
       {readingModeOpen ? (
         <div
-          className="share-choice-backdrop"
+          className="share-choice-backdrop submenu-backdrop"
           role="presentation"
           onClick={() => setReadingModeOpen(false)}
         >
           <section
-            className="reading-mode-card glass-panel"
+            className="reading-mode-card submenu-surface"
             role="dialog"
             aria-modal="true"
             aria-labelledby="reading-mode-title"
@@ -1266,7 +1267,7 @@ export function ReaderPage() {
       {shareTarget ? (
         <div className="share-choice-backdrop" role="presentation" onClick={closeShareChooser}>
           <section
-            className="share-choice-card glass-panel"
+            className="share-choice-card submenu-surface"
             role="dialog"
             aria-modal="true"
             aria-labelledby="share-choice-title"
