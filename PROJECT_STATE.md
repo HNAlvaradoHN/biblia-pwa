@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Compartir, búsqueda y lector enfocado 0.1.8 — en implementación
+### Compartir, búsqueda y lector enfocado 0.1.8 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -185,13 +185,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI y revisión de `0.1.8`.
-2. Desplegar y validar físicamente fondos/colores/foto personal al compartir imagen.
-3. Validar búsqueda por libro y resaltado de la coincidencia, además de búsqueda textual.
-4. Validar lector capítulo por capítulo: anterior/siguiente, gesto horizontal y regreso exacto con indicador temporal.
-5. Tras cerrar esta entrega, continuar el inventario comparativo de la APK externa y abrir el siguiente objetivo funcional sin detener el avance.
+1. Validar físicamente `0.1.8`: fondos/colores/foto personal al compartir imagen, búsqueda por libro/texto y resaltado de coincidencias.
+2. Validar lector capítulo por capítulo: anterior/siguiente, gesto horizontal y regreso exacto con indicador temporal.
+3. Si la prueba real pasa, cerrar la entrega y D-034.
+4. Continuar el inventario comparativo de la APK externa y elegir el siguiente objetivo funcional sin detener el avance.
 
-Estado de despliegue actual: producción sirve `0.1.7`. La entrega `0.1.8` está en rama de implementación e incorpora fondos predeterminados/color/foto personal para compartir imagen, búsqueda por nombre de libro con coincidencia resaltada y el lector capítulo por capítulo aprobado. No debe marcarse como lista hasta completar CI, revisión, merge, deployment y validación física.
+Estado de despliegue actual: `0.1.8` fue fusionada a `main` en `86a29467e13c216f4bf7fd1887583bf39c23678b`. El CI de `main` (run `37085359630`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.8`. La previsualización automatizada confirmó búsqueda por libro con coincidencia resaltada, búsqueda textual resaltada, fondos predeterminados/color/foto personal visibles en el flujo de compartir imagen y el lector capítulo por capítulo con anterior/siguiente y retorno al lector normal. Falta únicamente la validación física del usuario.
 
 ## Después de este objetivo
 
