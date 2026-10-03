@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { bibleProvider } from '../../data/bible/provider'
 import {
@@ -754,6 +754,13 @@ export function ReaderPage() {
   }
 
   function getNearestReadingPoint() {
+    if (activeVerse) {
+      return {
+        chapter: activeVerse.chapter,
+        anchorId: activeVerse.anchorId,
+      }
+    }
+
     const anchors = Array.from(
       document.querySelectorAll<HTMLElement>('[data-reading-anchor="true"]'),
     )
@@ -856,6 +863,10 @@ export function ReaderPage() {
                     })
                     const isActive = activeVerse?.anchorId === anchorId
                     const isHighlighted = highlightedIds.has(locationId)
+                    const highlightColor = highlightColors.get(locationId)
+                    const highlightValue = highlightPalette.find(
+                      (item) => item.id === highlightColor,
+                    )?.value
                     const isSelected = selectedVerseIds.has(locationId)
                     const panelVisible = isActive && actionPanelOpen && !selectionMode
                     const reference = `${activeBook.name} ${chapter.number}:${verse.number}`
@@ -869,6 +880,11 @@ export function ReaderPage() {
                           isSelected ? 'selected' : '',
                         ].filter(Boolean).join(' ')}
                         key={verse.number}
+                        style={
+                          highlightValue
+                            ? ({ '--highlight-color': highlightValue } as CSSProperties)
+                            : undefined
+                        }
                       >
                         <button
                           id={anchorId}
@@ -953,10 +969,15 @@ export function ReaderPage() {
                                 className={`verse-action-button${highlightActive ? ' active' : ''}`}
                                 type="button"
                                 aria-pressed={highlightActive}
-                                onClick={() => void handleHighlight()}
+                                aria-expanded={highlightPickerTarget === 'single'}
+                                onClick={() =>
+                                  setHighlightPickerTarget((current) =>
+                                    current === 'single' ? undefined : 'single',
+                                  )
+                                }
                               >
                                 <span aria-hidden="true">▰</span>
-                                {highlightActive ? 'Resaltado' : 'Resaltar'}
+                                {highlightActive ? 'Cambiar resaltado' : 'Resaltar'}
                               </button>
 
                               <button
@@ -986,6 +1007,35 @@ export function ReaderPage() {
                                 Seleccionar varios
                               </button>
                             </div>
+
+                            {highlightPickerTarget === 'single' ? (
+                              <div className="highlight-picker" aria-label="Color de resaltado">
+                                <div className="highlight-palette">
+                                  {highlightPalette.map((color) => (
+                                    <button
+                                      key={color.id}
+                                      className="highlight-color-button"
+                                      type="button"
+                                      style={{ '--swatch-color': color.value } as CSSProperties}
+                                      aria-label={`Resaltar en ${color.label}`}
+                                      onClick={() => void applySingleHighlight(color.id)}
+                                    >
+                                      <span aria-hidden="true" />
+                                      {color.label}
+                                    </button>
+                                  ))}
+                                </div>
+                                {highlightActive ? (
+                                  <button
+                                    className="button secondary"
+                                    type="button"
+                                    onClick={() => void removeSingleHighlight()}
+                                  >
+                                    Quitar resaltado
+                                  </button>
+                                ) : null}
+                              </div>
+                            ) : null}
 
                             {noteOpen ? (
                               <div className="verse-note-editor">
@@ -1057,7 +1107,12 @@ export function ReaderPage() {
               className="verse-action-button"
               type="button"
               disabled={selectedVerseIds.size === 0}
-              onClick={() => void handleBulkHighlight()}
+              aria-expanded={highlightPickerTarget === 'multi'}
+              onClick={() =>
+                setHighlightPickerTarget((current) =>
+                  current === 'multi' ? undefined : 'multi',
+                )
+              }
             >
               <span aria-hidden="true">▰</span>
               Resaltar
@@ -1081,6 +1136,34 @@ export function ReaderPage() {
               Compartir
             </button>
           </div>
+          {highlightPickerTarget === 'multi' ? (
+            <div className="highlight-picker" aria-label="Color para la selección">
+              <div className="highlight-palette">
+                {highlightPalette.map((color) => (
+                  <button
+                    key={color.id}
+                    className="highlight-color-button"
+                    type="button"
+                    style={{ '--swatch-color': color.value } as CSSProperties}
+                    aria-label={`Resaltar selección en ${color.label}`}
+                    onClick={() => void applyBulkHighlight(color.id)}
+                  >
+                    <span aria-hidden="true" />
+                    {color.label}
+                  </button>
+                ))}
+              </div>
+              {getCommonSelectedHighlightColor() ? (
+                <button
+                  className="button secondary"
+                  type="button"
+                  onClick={() => void removeCommonBulkHighlight()}
+                >
+                  Quitar resaltado común
+                </button>
+              ) : null}
+            </div>
+          ) : null}
           {actionMessage ? <p className="verse-action-message" role="status">{actionMessage}</p> : null}
         </div>
       ) : null}
