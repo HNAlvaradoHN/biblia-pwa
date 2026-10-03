@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Versículos separados o corridos 0.1.16 — publicado pendiente de validación física
+### Lectura corrida tipo Biblia impresa 0.1.17 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Validar físicamente `0.1.16`, ya integrada y publicada: preferencia persistente `versículos separados / versículos corridos` en Apariencia, conservando acciones por versículo y respetando la disposición también en lectura enfocada por capítulo.
+Completar `0.1.17`: refinar `Corridos` para que se vea como una Biblia impresa, manteniendo `Separados` sin cambios y aclarando que `Tipo de letra de la Biblia` solo modifica el texto bíblico.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -184,16 +184,16 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente el cambio entre `Separados` y `Corridos` en lector continuo.
-2. Confirmar que resaltados, versículo activo, tres puntos y selección múltiple siguen funcionando en `Corridos`.
-3. Confirmar que capítulo por capítulo respeta la preferencia y versículo por versículo sigue individual.
-4. Si pasa, cerrar D-043 y elegir el siguiente objetivo funcional del roadmap usando `APK_INVENTORY.md` como referencia.
+1. Completar PR/CI/merge/deployment de `0.1.17`.
+2. Validar físicamente que `Corridos` se vea como texto bíblico continuo con números discretos y que `Separados` conserve su diseño.
+3. Confirmar que activo, resaltados y menú de tres puntos siguen siendo utilizables en `Corridos`.
+4. Al quedar estable, cerrar la Fase 3 del lector y avanzar a Fase 4: editor de Prédicas.
 
-Estado de despliegue actual: `0.1.16` fue fusionada a `main` en `7d14322a0c93a94800b86b1303df735e9b062328`. Su CI de `main` (run `37129777781`) terminó en `success`, Vercel dejó producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.16`. La previsualización automatizada confirmó `Separados`/`Corridos`, cambio inmediato, menú de tres puntos en modo corrido, resaltado individual y respeto de la preferencia en capítulo por capítulo; versículo por versículo permanece individual. Falta la validación física del usuario.
+Estado de despliegue actual: producción sirve `0.1.16`. El usuario confirmó que el resto de la experiencia se ve bien y pidió que `Corridos` adopte una presentación más parecida a una Biblia impresa. `0.1.17` está en rama con esa corrección y con el rótulo de tipografía aclarado. Pendiente CI, merge, deployment y validación física.
 
 ## Después de este objetivo
 
-Después de `0.1.16`, el siguiente objetivo funcional se elegirá del roadmap pendiente y del inventario APK, priorizando funciones ya aprobadas que no dependan de licencias externas.
+Después de estabilizar `0.1.17`, el siguiente objetivo oficial será iniciar Fase 4: Editor de Prédicas, comenzando por almacenamiento local y gestión básica de documentos antes de referencias inteligentes.
 
 ## Regla de actualización
 

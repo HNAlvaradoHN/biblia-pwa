@@ -552,7 +552,7 @@ La apariencia de lectura permite elegir entre dos disposiciones sin cambiar el c
 Opciones:
 
 - `Separados`: un versículo por bloque, comportamiento visual actual.
-- `Corridos`: los versículos fluyen como texto continuo manteniendo visible su número y conservando interacción individual.
+- `Corridos`: los versículos fluyen como un párrafo de Biblia impresa, con números de versículo discretos en superíndice y sin tarjetas separadas, conservando interacción individual.
 
 Reglas:
 
@@ -562,5 +562,6 @@ Reglas:
 - el modo versículo por versículo permanece individual por definición;
 - favoritos, notas, resaltados, versículo activo y selección múltiple siguen asociados a cada versículo, independientemente de la disposición;
 - el menú de acciones debe seguir accesible en modo corrido;
+- el resaltado y el versículo activo en modo corrido deben marcar solo el texto del versículo de forma sutil, sin convertirlo en una tarjeta completa;
 - títulos/encabezados de sección siguen separando bloques temáticos.
 
