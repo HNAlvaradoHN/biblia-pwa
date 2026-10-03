@@ -41,12 +41,26 @@ export interface HighlightRecord extends BibleLocation {
   updatedAt: number
 }
 
+export type SermonStatus = 'active' | 'archived'
+
+export interface SermonRecord {
+  id: string
+  title: string
+  introduction: string
+  outline: string
+  conclusion: string
+  status: SermonStatus
+  createdAt: number
+  updatedAt: number
+}
+
 class BibliaDatabase extends Dexie {
   readingProgress!: Table<ReadingProgress, string>
   activeVerse!: Table<ActiveVerseRecord, string>
   favorites!: Table<FavoriteRecord, string>
   notes!: Table<BibleNoteRecord, string>
   highlights!: Table<HighlightRecord, string>
+  sermons!: Table<SermonRecord, string>
 
   constructor() {
     super('biblia-pwa')
@@ -67,6 +81,15 @@ class BibliaDatabase extends Dexie {
       favorites: 'id,bookId,chapter,verse,updatedAt',
       notes: 'id,bookId,chapter,verse,updatedAt',
       highlights: 'id,bookId,chapter,verse,updatedAt',
+    })
+
+    this.version(4).stores({
+      readingProgress: 'id,bookId,chapter,updatedAt',
+      activeVerse: 'id,bookId,chapter,verse,updatedAt',
+      favorites: 'id,bookId,chapter,verse,updatedAt',
+      notes: 'id,bookId,chapter,verse,updatedAt',
+      highlights: 'id,bookId,chapter,verse,updatedAt',
+      sermons: 'id,status,updatedAt,title',
     })
   }
 }
@@ -221,4 +244,91 @@ export async function toggleHighlight(location: BibleLocation) {
 
   await setHighlight(location, 'amber')
   return true
+}
+
+
+function makeSermonId() {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return crypto.randomUUID()
+  }
+
+  return `sermon-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+export async function getSermons(status?: SermonStatus) {
+  const records = await db.sermons.orderBy('updatedAt').reverse().toArray()
+  return status ? records.filter((record) => record.status === status) : records
+}
+
+export async function getSermon(id: string) {
+  return db.sermons.get(id)
+}
+
+export async function createSermon() {
+  const now = Date.now()
+  const record: SermonRecord = {
+    id: makeSermonId(),
+    title: 'Nueva prédica',
+    introduction: '',
+    outline: '',
+    conclusion: '',
+    status: 'active',
+    createdAt: now,
+    updatedAt: now,
+  }
+
+  await db.sermons.add(record)
+  return record
+}
+
+export async function saveSermon(
+  id: string,
+  content: Pick<SermonRecord, 'title' | 'introduction' | 'outline' | 'conclusion'>,
+) {
+  const existing = await db.sermons.get(id)
+  if (!existing) return undefined
+
+  const record: SermonRecord = {
+    ...existing,
+    title: content.title.trim() || 'Sin título',
+    introduction: content.introduction,
+    outline: content.outline,
+    conclusion: content.conclusion,
+    updatedAt: Date.now(),
+  }
+
+  await db.sermons.put(record)
+  return record
+}
+
+export async function duplicateSermon(id: string) {
+  const existing = await db.sermons.get(id)
+  if (!existing) return undefined
+
+  const now = Date.now()
+  const record: SermonRecord = {
+    ...existing,
+    id: makeSermonId(),
+    title: `${existing.title} — copia`,
+    status: 'active',
+    createdAt: now,
+    updatedAt: now,
+  }
+
+  await db.sermons.add(record)
+  return record
+}
+
+export async function setSermonArchived(id: string, archived: boolean) {
+  const existing = await db.sermons.get(id)
+  if (!existing) return undefined
+
+  const record: SermonRecord = {
+    ...existing,
+    status: archived ? 'archived' : 'active',
+    updatedAt: Date.now(),
+  }
+
+  await db.sermons.put(record)
+  return record
 }
