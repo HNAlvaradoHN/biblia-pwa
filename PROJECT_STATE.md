@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Menús inteligentes y personalización global 0.1.11 — publicado pendiente de validación física
+### Apariencia móvil y limpieza 0.1.12 — preparado para integración
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar la validación física de `0.1.11`: menú contextual inteligente, transición tipo página, ayuda temporal y personalización global inicial. Implementación, CI, merge y despliegue ya están completos.
+Integrar y validar `0.1.12`, que corrige específicamente el panel `Aa` reportado físicamente: debe permanecer completo dentro del viewport móvil, sobre todo el contenido y con scroll interno seguro. También consolida estilos duplicados del lector sin cambiar su comportamiento.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,12 +185,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente el menú de los tres puntos cerca del primer y último versículo de la pantalla.
-2. Validar transición tipo página, gesto horizontal y desaparición automática de la ayuda.
-3. Validar temas, tamaño, fuente, color de texto y fondo general en lector continuo y modos enfocados.
-4. Si la prueba real pasa, cerrar D-038/D-039 y elegir el siguiente objetivo del roadmap/inventario APK.
+1. Completar PR/CI/merge/deployment de `0.1.12`.
+2. Validar físicamente que el panel `Aa` se vea completo, con encabezado accesible y scroll interno en móvil.
+3. Reconfirmar que los temas/tamaño/fuente/color/fondo siguen funcionando después de la corrección.
+4. Después elegir el siguiente objetivo del roadmap/inventario APK sin reabrir trabajo ya validado.
 
-Estado de despliegue actual: `0.1.11` fue fusionada a `main` en `655900a646c3ada88f527184ecb289a2d225a550`. El CI de `main` (run `37092796822`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.11`. La previsualización automatizada confirmó que el menú contextual se recoloca para permanecer visible cerca del borde inferior, la navegación enfocada usa transición tipo página, la ayuda desaparece automáticamente y el panel `Aa` contiene temas, tamaño, fuentes, color del texto y fondo general. Falta la validación física del usuario.
+Estado de despliegue actual: producción sigue en `0.1.11`. El usuario confirmó que el panel `Aa` podía aparecer desplazado hacia arriba y quedar parcialmente fuera de pantalla. La rama `fix/appearance-sheet-and-cleanup-0112` corrige el problema con límites `100dvh`, safe areas, overlay superior, header sticky, bloqueo de scroll de fondo y limpieza de estilos duplicados. La tarea nocturna programada se ejecutó desde las 11:45 p. m. hasta las 5:45 a. m.; no hubo commits nuevos durante esa ventana ni cambios fuera del alcance autorizado. `0.1.12` queda pendiente de PR/CI/merge/deployment al iniciar este cierre de mañana.
 
 ## Después de este objetivo
 
