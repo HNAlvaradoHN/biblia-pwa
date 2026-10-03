@@ -130,7 +130,7 @@
 
 .verse-action-button.active {
   border-color: color-mix(in srgb, var(--nav-accent) 22%, var(--glass-border));
-  background: color-mix(in srgb, var(--nav-accent) 12%, rgba(255, 255, 255, 0.62));
+  background: color-mix(in srgb, var(--nav-accent) 12%, var(--surface-strong));
   color: var(--nav-accent);
 }
 
@@ -266,9 +266,9 @@
   display: grid;
   place-items: end center;
   padding: 18px;
-  background: rgba(23, 37, 31, 0.24);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: color-mix(in srgb, var(--bg) 28%, rgba(8, 18, 14, 0.46));
+  backdrop-filter: blur(10px) saturate(118%);
+  -webkit-backdrop-filter: blur(10px) saturate(118%);
 }
 
 .share-choice-card {
@@ -308,6 +308,7 @@
 .reader-focus-link {
   appearance: none;
   display: inline-flex;
+  color: var(--ink);
   align-items: center;
   min-height: 32px;
   padding: 0 10px;
@@ -324,7 +325,7 @@
 
 @keyframes return-focus-pulse {
   0%, 25% {
-    background: color-mix(in srgb, var(--accent) 32%, #fffdf8);
+    background: color-mix(in srgb, var(--accent) 24%, var(--reader-surface));
     box-shadow: inset 4px 0 0 var(--accent);
   }
   100% {
@@ -526,9 +527,9 @@
   height: 18px;
   flex: 0 0 18px;
   border-radius: 7px;
-  background: color-mix(in srgb, var(--swatch-color) 38%, var(--surface-strong));
-  border: 1px solid color-mix(in srgb, var(--swatch-color) 42%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  background: color-mix(in srgb, var(--swatch-color) 34%, var(--surface-strong));
+  border: 1px solid color-mix(in srgb, var(--swatch-color) 46%, var(--line));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--glass-border) 78%, transparent);
 }
 
 @media (max-width: 520px) {
@@ -546,4 +547,20 @@
   box-shadow:
     0 18px 48px rgba(23, 36, 29, 0.2),
     inset 0 1px 0 color-mix(in srgb, var(--surface-strong) 72%, transparent);
+}
+
+
+.verse-action-backdrop {
+  z-index: 9300;
+}
+
+.verse-action-floating {
+  color: var(--ink);
+}
+
+.verse-action-floating .verse-action-button,
+.verse-action-floating .button,
+.reading-mode-card,
+.share-choice-card {
+  color: var(--ink);
 }
