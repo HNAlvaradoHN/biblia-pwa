@@ -189,7 +189,7 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 3. Confirmar persistencia tras recargar/cerrar y volver a abrir la PWA.
 4. Después iniciar referencias bíblicas inteligentes y vista rápida, manteniendo regreso exacto a la prédica.
 
-Estado de despliegue actual: `0.1.17` fue fusionada a `main` en `7418ea37abf54c9aba9b7845659bed883cc483f9`. Su CI de `main` (run `37131582566`) terminó en `success` y Vercel dejó producción en `READY`. La previsualización móvil confirmó que `Corridos` se muestra como párrafo continuo tipo Biblia impresa y que `Separados` conserva bloques individuales; también confirmó el nuevo rótulo `Tipo de letra de la Biblia`. El usuario autorizó continuar, por lo que `0.1.18` abre Fase 4 con la base local de Prédicas.
+Estado de despliegue actual: `0.1.17` fue fusionada a `main` en `7418ea37abf54c9aba9b7845659bed883cc483f9`. Su CI de `main` (run `37131582566`) terminó en `success` y Vercel dejó producción en `READY`. La previsualización móvil confirmó que `Corridos` se muestra como párrafo continuo tipo Biblia impresa y que `Separados` conserva bloques individuales; también confirmó el nuevo rótulo `Tipo de letra de la Biblia`. El usuario autorizó continuar, por lo que `0.1.18` abre Fase 4 con la base local de Prédicas. Vercel volvió a aceptar previews; se inició una nueva validación completa del head actual del PR #33 antes de merge.
 
 ## Después de este objetivo
 
