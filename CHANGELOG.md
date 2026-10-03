@@ -3,6 +3,19 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Base local de Prédicas 0.1.18
+
+- La pestaña `Prédicas` deja de ser placeholder y abre `Mis prédicas`.
+- Añadida tabla local `sermons` en IndexedDB/Dexie, separada de notas bíblicas y corpus.
+- Se pueden crear, buscar, abrir, duplicar, archivar y restaurar prédicas.
+- El editor inicial incluye Título, Introducción, Bosquejo y puntos, y Conclusión.
+- Los cambios del editor se guardan automáticamente en el dispositivo y también existe botón Guardar.
+- Las prédicas funcionan offline y no requieren cuenta.
+- No se añade borrado destructivo en esta etapa; archivar protege mejor contra pérdidas accidentales.
+- Referencias bíblicas inteligentes y vista rápida quedan como siguiente fase sobre esta base.
+- La entrega anterior `0.1.17` quedó publicada con lectura corrida tipo Biblia impresa y el control renombrado a `Tipo de letra de la Biblia`.
+- Build visible actualizado a `0.1.18`.
+
 ## 2026-10-03 — Lectura corrida tipo Biblia impresa 0.1.17
 
 - Refinado el modo `Corridos` para que los versículos se lean como un párrafo continuo de Biblia impresa.
