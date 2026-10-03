@@ -53,7 +53,8 @@ export function AppShell() {
   const location = useLocation()
   const sermonReadingMode =
     location.pathname.startsWith('/biblia/') &&
-    new URLSearchParams(location.search).get('fromSermon') === '1'
+    new URLSearchParams(location.search).get('fromSermon') === '1' &&
+    Boolean(window.sessionStorage.getItem('biblia-sermon-return-v1'))
 
   return (
     <div className={sermonReadingMode ? 'app-shell sermon-reader-shell' : 'app-shell'}>
