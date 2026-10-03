@@ -32,6 +32,7 @@ const themes: Record<
     glassStrong: string
     glassBorder: string
     readerText: string
+    onBrand: string
   }
 > = {
   light: {
@@ -50,6 +51,7 @@ const themes: Record<
     glassStrong: 'rgba(255, 255, 255, 0.72)',
     glassBorder: 'rgba(255, 255, 255, 0.62)',
     readerText: '#202821',
+    onBrand: '#ffffff',
   },
   sepia: {
     label: 'Sepia',
@@ -67,6 +69,7 @@ const themes: Record<
     glassStrong: 'rgba(255, 248, 235, 0.76)',
     glassBorder: 'rgba(255, 250, 240, 0.64)',
     readerText: '#33291f',
+    onBrand: '#fffaf1',
   },
   forest: {
     label: 'Verde',
@@ -84,23 +87,25 @@ const themes: Record<
     glassStrong: 'rgba(248, 252, 249, 0.75)',
     glassBorder: 'rgba(255, 255, 255, 0.62)',
     readerText: '#1d3026',
+    onBrand: '#ffffff',
   },
   night: {
     label: 'Noche',
-    bg: '#111b22',
-    surface: '#18262e',
-    surfaceStrong: '#20313a',
-    readerSurface: '#1a2a31',
-    ink: '#edf3f0',
-    muted: '#aab8b2',
-    line: '#34474f',
-    brand: '#cfe8da',
-    accent: '#d3ab68',
-    accentSoft: '#293d40',
-    glass: 'rgba(28, 44, 51, 0.72)',
-    glassStrong: 'rgba(33, 51, 59, 0.84)',
-    glassBorder: 'rgba(223, 238, 231, 0.16)',
-    readerText: '#f1f5f2',
+    bg: '#0f171c',
+    surface: '#162126',
+    surfaceStrong: '#1d2b31',
+    readerSurface: '#142127',
+    ink: '#f2f6f4',
+    muted: '#b8c5c0',
+    line: '#3b4d53',
+    brand: '#8fd8b7',
+    accent: '#f0bd67',
+    accentSoft: '#27373a',
+    glass: 'rgba(25, 39, 45, 0.74)',
+    glassStrong: 'rgba(34, 51, 57, 0.88)',
+    glassBorder: 'rgba(222, 240, 232, 0.22)',
+    readerText: '#f5f8f6',
+    onBrand: '#102019',
   },
 }
 
@@ -203,6 +208,7 @@ function applyPreferences(preferences: AppearancePreferences) {
   root.style.setProperty('--glass-surface-strong', theme.glassStrong)
   root.style.setProperty('--glass-border', theme.glassBorder)
   root.style.setProperty('--reader-text', preferences.readerText)
+  root.style.setProperty('--on-brand', theme.onBrand)
   root.style.setProperty('--reader-font-scale', String(preferences.fontScale / 100))
   root.style.setProperty('--reader-font-family', fonts[preferences.fontFamily].stack)
   root.dataset.theme = preferences.theme
