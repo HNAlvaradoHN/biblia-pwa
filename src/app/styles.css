@@ -23,6 +23,10 @@
   --radius-md: 18px;
   --radius-sm: 13px;
   --content: 980px;
+  --reader-surface: #fffdf8;
+  --reader-text: #202821;
+  --reader-font-scale: 1;
+  --reader-font-family: Georgia, "Times New Roman", serif;
 }
 
 * {
@@ -150,6 +154,12 @@ input:focus-visible {
   white-space: nowrap;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .app-content {
@@ -632,7 +642,7 @@ input:focus-visible {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: clamp(18px, 4vw, 30px);
-  background: #fffdf8;
+  background: var(--reader-surface);
   box-shadow: var(--shadow);
 }
 
@@ -687,9 +697,9 @@ input:focus-visible {
 .verse {
   scroll-margin-top: 150px;
   margin: 0;
-  color: #202821;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.08rem, 3.4vw, 1.28rem);
+  color: var(--reader-text);
+  font-family: var(--reader-font-family);
+  font-size: calc(clamp(1.08rem, 3.4vw, 1.28rem) * var(--reader-font-scale));
   line-height: 1.72;
 }
 
