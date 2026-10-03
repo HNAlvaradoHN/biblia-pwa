@@ -3,6 +3,17 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Toque directo y base de Modo Predicación 0.1.21
+
+- Las referencias inline responden a un toque normal, sin requerir mantener presionado.
+- La vista rápida vuelve a abrirse centrada también en móvil.
+- Las acciones de la vista rápida se reducen a controles discretos: `Seguir escribiendo` y `Leer capítulo`.
+- Añadido acceso `Predicar` desde el editor.
+- Primera base de Modo Predicación: vista de solo lectura, sin navegación principal, con título, Introducción, Bosquejo/puntos y Conclusión en tipografía amplia.
+- Las referencias bíblicas permanecen resaltadas y consultables dentro del Modo Predicación.
+- El modo conserva una salida explícita `Volver a editar` y no modifica el contenido de la prédica.
+- Build visible actualizado a `0.1.21`.
+
 ## 2026-10-03 — Referencias inline en Prédicas 0.1.20
 
 - Las referencias bíblicas dejan de mostrarse como controles separados debajo del campo.
