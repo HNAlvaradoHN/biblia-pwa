@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, type PointerEvent } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
 import { bibleProvider } from '../../data/bible/provider'
 import './focused-reader.css'
@@ -43,12 +43,12 @@ export function FocusedReaderPage() {
     if (canGoNext) setChapterIndex((current) => current + 1)
   }
 
-  function handlePointerDown(event: React.PointerEvent<HTMLElement>) {
+  function handlePointerDown(event: PointerEvent<HTMLElement>) {
     if (event.pointerType === 'mouse') return
     pointerStartX.current = event.clientX
   }
 
-  function handlePointerUp(event: React.PointerEvent<HTMLElement>) {
+  function handlePointerUp(event: PointerEvent<HTMLElement>) {
     const startX = pointerStartX.current
     pointerStartX.current = undefined
     if (startX === undefined) return
