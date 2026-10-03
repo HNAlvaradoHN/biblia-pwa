@@ -28,7 +28,9 @@ export function detectBibleReferences(
   for (const book of bibleProvider.listBooks()) {
     const bookPattern = escapeRegExp(book.name)
     const expression = new RegExp(
-      \`\\b(\${bookPattern})\\s+(\\d{1,3})\\s*:\\s*(\\d{1,3})(?:\\s*[-–—]\\s*(\\d{1,3}))?\`,
+      '\\b(' +
+        bookPattern +
+        ')\\s+(\\d{1,3})\\s*:\\s*(\\d{1,3})(?:\\s*[-–—]\\s*(\\d{1,3}))?',
       'giu',
     )
 
@@ -52,7 +54,13 @@ export function detectBibleReferences(
       const startIndex = match.index ?? 0
       const sourceText = match[0]
       references.push({
-        id: \`\${field}:\${startIndex}:\${book.id}:\${chapter}:\${verseStart}-\${verseEnd}\`,
+        id: [
+          field,
+          startIndex,
+          book.id,
+          chapter,
+          verseStart + '-' + verseEnd,
+        ].join(':'),
         field,
         sourceText,
         bookId: book.id,
