@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Referencias bíblicas inteligentes 0.1.19 — publicada y verificada automáticamente
+### Referencias bíblicas inteligentes 0.1.19 — publicada; refinamiento físico solicitado
 
 - PR #36 implementó detección y persistencia estructurada de referencias bíblicas dentro de Introducción, Bosquejo/puntos y Conclusión.
 - Soporta inicialmente referencias disponibles en el corpus con formato `Libro capítulo:versículo` y rangos del mismo capítulo.
@@ -131,12 +131,12 @@ Pendiente específico:
 - PR #36 fue fusionado a `main`; el CI de `main` pasó TypeScript, ESLint, build PWA y auditoría en verde.
 - GitHub Pages quedó habilitado y publicó correctamente `0.1.19` en `https://hnalvaradohn.github.io/biblia-pwa/`.
 - Vercel queda como respaldo y ya no es requisito para continuar el desarrollo.
-- Falta la validación física del usuario en su dispositivo.
+- El usuario confirmó físicamente que la referencia se detecta y se ve, pero pidió refinar la interacción: verla remarcada dentro del texto, tocarla allí mismo y usar una lectura bíblica enfocada con regreso exclusivo a la prédica.
 
 
 ## Objetivo activo
 
-Validar físicamente `0.1.19` publicada en GitHub Pages: referencias detectadas, vista rápida, `Abrir en Biblia`, `Volver a prédica` y conservación del contenido.
+Completar `0.1.20`: referencias remarcadas dentro del texto editable, apertura directa de vista rápida al tocarlas y lectura de capítulo enfocada con `Volver a prédica` como única acción.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,17 +185,18 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente `0.1.19` desde `https://hnalvaradohn.github.io/biblia-pwa/`.
-2. Confirmar en dispositivo real detección de referencias, vista rápida, apertura en Biblia y regreso exacto sin perder contenido.
-3. Si la prueba física pasa, cerrar D-045.
-4. Después iniciar el refinamiento del editor de Prédicas y preparación de Modo Predicación según el roadmap.
+1. Completar implementación y CI de `0.1.20`.
+2. Publicar mediante GitHub Pages.
+3. Validar automáticamente que la referencia aparece remarcada dentro del editor y abre la vista rápida desde el propio texto.
+4. Validar que `Leer capítulo completo` entra a una lectura sin navegación/acciones adicionales y deja únicamente `Volver a prédica`.
+5. Pedir validación física del usuario antes de cerrar D-047.
 
-Estado de despliegue actual: `0.1.19` está fusionada a `main` en `b8ab6fc5feb1d6a22ea42f18c7b115676d96c191`. El CI de `main` terminó en `success`. El workflow de GitHub Pages completó correctamente build, auditoría, publicación y confirmó la URL `https://hnalvaradohn.github.io/biblia-pwa/`. Una comprobación automatizada posterior confirmó que esa publicación muestra `v0.1.19`, carga la navegación principal y expone la interfaz de referencias inteligentes. Vercel queda disponible únicamente como respaldo.
+Estado de despliegue actual: producción continúa en `0.1.19` sobre GitHub Pages. `0.1.20` está en implementación en la rama `feature/inline-sermon-references-0120` y todavía no debe presentarse como lista para probar hasta completar CI, merge, CI de main, publicación y verificación del build servido.
 
 
 ## Después de este objetivo
 
-Después de `0.1.19`, el siguiente objetivo oficial será refinar el editor de Prédicas y preparar Modo Predicación, manteniendo referencias rápidas y retorno seguro como base.
+Después de estabilizar `0.1.20`, el siguiente objetivo oficial será continuar el refinamiento del editor de Prédicas y preparar Modo Predicación.
 
 ## Regla de actualización
 
