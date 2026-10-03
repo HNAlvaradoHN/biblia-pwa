@@ -291,3 +291,24 @@ html[data-verse-layout='flow'] .focus-mode-chapter .focus-reader-verses p {
 html[data-verse-layout='flow'] .focus-mode-chapter .focus-reader-verses sup {
   min-width: 1.45em;
 }
+
+
+/* Ajuste de lectura corrida con apariencia similar a una Biblia impresa. */
+html[data-verse-layout='flow'] .focus-mode-chapter .focus-reader-verses {
+  font-family: var(--reader-font-family);
+  font-size: calc(clamp(1.1rem, 3.5vw, 1.32rem) * var(--reader-font-scale));
+  line-height: 1.82;
+}
+
+html[data-verse-layout='flow'] .focus-mode-chapter .focus-reader-verses p {
+  margin: 0 0.32em 0 0;
+  font: inherit;
+  line-height: inherit;
+}
+
+html[data-verse-layout='flow'] .focus-mode-chapter .focus-reader-verses sup {
+  min-width: 0;
+  margin-right: 0.16em;
+  font-size: 0.58em;
+  vertical-align: super;
+}
