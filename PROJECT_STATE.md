@@ -1,6 +1,6 @@
 # PROJECT_STATE.md — ESTADO ACTUAL
 
-Última actualización: 2026-10-02
+Última actualización: 2026-10-03
 
 ## Estado general
 
@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Lectura corrida tipo Biblia impresa 0.1.17 — en implementación
+### Base local de Prédicas 0.1.18 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.17`: refinar `Corridos` para que se vea como una Biblia impresa, manteniendo `Separados` sin cambios y aclarando que `Tipo de letra de la Biblia` solo modifica el texto bíblico.
+Completar `0.1.18`: iniciar Fase 4 reemplazando el placeholder de `Prédicas` por almacenamiento local y gestión básica de documentos con crear, buscar, editar, autosave, duplicar, archivar y restaurar.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -184,16 +184,16 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar PR/CI/merge/deployment de `0.1.17`.
-2. Validar físicamente que `Corridos` se vea como texto bíblico continuo con números discretos y que `Separados` conserve su diseño.
-3. Confirmar que activo, resaltados y menú de tres puntos siguen siendo utilizables en `Corridos`.
-4. Al quedar estable, cerrar la Fase 3 del lector y avanzar a Fase 4: editor de Prédicas.
+1. Completar PR/CI/merge/deployment de `0.1.18`.
+2. Validar físicamente creación, autosave, edición, búsqueda, duplicado y archivado/restauración de una prédica.
+3. Confirmar persistencia tras recargar/cerrar y volver a abrir la PWA.
+4. Después iniciar referencias bíblicas inteligentes y vista rápida, manteniendo regreso exacto a la prédica.
 
-Estado de despliegue actual: producción sirve `0.1.16`. El usuario confirmó que el resto de la experiencia se ve bien y pidió que `Corridos` adopte una presentación más parecida a una Biblia impresa. `0.1.17` está en rama con esa corrección y con el rótulo de tipografía aclarado. Pendiente CI, merge, deployment y validación física.
+Estado de despliegue actual: `0.1.17` fue fusionada a `main` en `7418ea37abf54c9aba9b7845659bed883cc483f9`. Su CI de `main` (run `37131582566`) terminó en `success` y Vercel dejó producción en `READY`. La previsualización móvil confirmó que `Corridos` se muestra como párrafo continuo tipo Biblia impresa y que `Separados` conserva bloques individuales; también confirmó el nuevo rótulo `Tipo de letra de la Biblia`. El usuario autorizó continuar, por lo que `0.1.18` abre Fase 4 con la base local de Prédicas.
 
 ## Después de este objetivo
 
-Después de estabilizar `0.1.17`, el siguiente objetivo oficial será iniciar Fase 4: Editor de Prédicas, comenzando por almacenamiento local y gestión básica de documentos antes de referencias inteligentes.
+Después de `0.1.18`, el siguiente objetivo oficial será Fase 5: referencias bíblicas inteligentes, vista rápida de pasajes y regreso exacto a la posición previa de la prédica.
 
 ## Regla de actualización
 
