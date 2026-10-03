@@ -25,6 +25,7 @@ type ActiveVerse = {
 }
 
 type ShareTarget = 'single' | 'multi'
+type ShareTheme = 'paper' | 'forest' | 'night' | 'sand' | 'custom-color' | 'custom-image'
 
 type ShareItem = {
   reference: string
@@ -49,6 +50,9 @@ export function ReaderPage() {
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
   const [shareTarget, setShareTarget] = useState<ShareTarget | undefined>()
+  const [shareTheme, setShareTheme] = useState<ShareTheme>('paper')
+  const [shareCustomColor, setShareCustomColor] = useState('#173a2a')
+  const [shareCustomImage, setShareCustomImage] = useState<string | undefined>()
   const [actionMessage, setActionMessage] = useState('')
 
   const chapters = useMemo(() => {
@@ -116,6 +120,10 @@ export function ReaderPage() {
           if (!target) return
 
           target.scrollIntoView({ block: 'center' })
+          if (new URLSearchParams(routerLocation.search).get('returnFromFocus') === '1') {
+            target.classList.add('return-focus')
+            window.setTimeout(() => target.classList.remove('return-focus'), 2000)
+          }
           const targetChapter = Number(target.dataset.chapter)
           if (Number.isFinite(targetChapter)) {
             void saveLastReading({
@@ -194,7 +202,7 @@ export function ReaderPage() {
       }
       saveNearestReadingAnchor()
     }
-  }, [book, chapters, requestedChapter, routerLocation.hash])
+  }, [book, chapters, requestedChapter, routerLocation.hash, routerLocation.search])
 
   useEffect(() => {
     if (!book || !activeVerse) {
@@ -370,6 +378,15 @@ export function ReaderPage() {
     return lines
   }
 
+  async function loadShareBackground(src: string) {
+    return new Promise<HTMLImageElement>((resolve, reject) => {
+      const image = new Image()
+      image.onload = () => resolve(image)
+      image.onerror = reject
+      image.src = src
+    })
+  }
+
   async function createShareImage(items: ShareItem[]) {
     const canvas = document.createElement('canvas')
     canvas.width = 1080
@@ -377,21 +394,50 @@ export function ReaderPage() {
     const context = canvas.getContext('2d')
     if (!context) return undefined
 
+    const themes = {
+      paper: { background: '#f7f1e6', title: '#173a2a', reference: '#b88845', text: '#202821' },
+      forest: { background: '#173a2a', title: '#f9f5ea', reference: '#e7be7d', text: '#fffdf8' },
+      night: { background: '#15202b', title: '#f6f2e8', reference: '#d6b16f', text: '#f8f9fb' },
+      sand: { background: '#d9bea0', title: '#3f2f23', reference: '#704f2b', text: '#2a211b' },
+    } as const
+
+    const palette =
+      shareTheme === 'custom-color'
+        ? { background: shareCustomColor, title: '#ffffff', reference: '#f3d39a', text: '#ffffff' }
+        : shareTheme === 'custom-image'
+          ? { background: '#24342c', title: '#ffffff', reference: '#f3d39a', text: '#ffffff' }
+          : themes[shareTheme]
+
+    context.fillStyle = palette.background
+    context.fillRect(0, 0, canvas.width, canvas.height)
+
+    if (shareTheme === 'custom-image' && shareCustomImage) {
+      try {
+        const image = await loadShareBackground(shareCustomImage)
+        const scale = Math.max(canvas.width / image.width, canvas.height / image.height)
+        const width = image.width * scale
+        const height = image.height * scale
+        context.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height)
+        context.fillStyle = 'rgba(10, 20, 16, 0.48)'
+        context.fillRect(0, 0, canvas.width, canvas.height)
+      } catch {
+        setActionMessage('No se pudo usar esa imagen como fondo')
+        return undefined
+      }
+    }
+
     const padding = 92
     const maxWidth = canvas.width - padding * 2
     const bottomLimit = canvas.height - 120
     let y = 130
 
-    context.fillStyle = '#f7f1e6'
-    context.fillRect(0, 0, canvas.width, canvas.height)
-
-    context.fillStyle = '#173a2a'
+    context.fillStyle = palette.title
     context.font = '700 34px system-ui, sans-serif'
     context.fillText('Biblia', padding, y)
     y += 76
 
     for (const item of items) {
-      context.fillStyle = '#b88845'
+      context.fillStyle = palette.reference
       context.font = '700 30px system-ui, sans-serif'
       const referenceLines = wrapCanvasText(context, item.reference, maxWidth)
 
@@ -402,7 +448,7 @@ export function ReaderPage() {
       }
 
       y += 12
-      context.fillStyle = '#202821'
+      context.fillStyle = palette.text
       context.font = '44px Georgia, serif'
       const verseLines = wrapCanvasText(context, item.text, maxWidth)
 
@@ -476,6 +522,24 @@ export function ReaderPage() {
       if (error instanceof DOMException && error.name === 'AbortError') return
       setActionMessage('No se pudo compartir la imagen en este dispositivo')
     }
+  }
+
+  function handleCustomBackground(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setActionMessage('Elegí un archivo de imagen válido')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') return
+      setShareCustomImage(reader.result)
+      setShareTheme('custom-image')
+      setActionMessage('')
+    }
+    reader.readAsDataURL(file)
   }
 
   function startMultiSelect() {
@@ -632,7 +696,15 @@ export function ReaderPage() {
     <div className="reader-page">
       <div className="reader-toolbar">
         <Link to={`/biblia/${activeBook.id}`}>← {activeBook.name}</Link>
-        <span>{bibleProvider.translation.label}</span>
+        <div className="reader-toolbar-actions">
+          <Link
+            className="reader-focus-link"
+            to={`/biblia/${activeBook.id}/${activeVerse?.chapter ?? requestedChapter}/foco?returnChapter=${activeVerse?.chapter ?? requestedChapter}&returnAnchor=${encodeURIComponent(activeVerse?.anchorId ?? '')}`}
+          >
+            Leer capítulo
+          </Link>
+          <span>{bibleProvider.translation.label}</span>
+        </div>
       </div>
 
       <aside className="reader-demo-notice">
@@ -903,7 +975,42 @@ export function ReaderPage() {
               <strong id="share-choice-title">¿Cómo querés compartir?</strong>
               <button type="button" onClick={closeShareChooser} aria-label="Cerrar">×</button>
             </div>
-            <p>Elegí texto o imagen. Si la selección es demasiado grande para una imagen legible, te pediré reducirla.</p>
+            <p>Elegí texto o imagen. Para imagen podés usar un fondo predeterminado, un color propio o una foto personal.</p>
+            <div className="share-background-options" aria-label="Fondo para compartir como imagen">
+              {([
+                ['paper', 'Claro'],
+                ['forest', 'Bosque'],
+                ['night', 'Noche'],
+                ['sand', 'Arena'],
+              ] as const).map(([theme, label]) => (
+                <button
+                  key={theme}
+                  className={`share-background-swatch ${shareTheme === theme ? 'active' : ''} theme-${theme}`}
+                  type="button"
+                  aria-pressed={shareTheme === theme}
+                  onClick={() => setShareTheme(theme)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <div className="share-custom-backgrounds">
+              <label>
+                <span>Color personal</span>
+                <input
+                  type="color"
+                  value={shareCustomColor}
+                  onChange={(event) => {
+                    setShareCustomColor(event.target.value)
+                    setShareTheme('custom-color')
+                  }}
+                />
+              </label>
+              <label className={`share-file-label ${shareTheme === 'custom-image' ? 'active' : ''}`}>
+                <span>Imagen personal</span>
+                <input type="file" accept="image/*" onChange={handleCustomBackground} />
+              </label>
+            </div>
             <div className="share-choice-actions">
               <button className="button secondary" type="button" onClick={() => void shareAsText(shareTarget)}>
                 Compartir como texto
