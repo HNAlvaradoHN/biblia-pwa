@@ -136,7 +136,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Validar físicamente `0.1.20`: referencias remarcadas dentro del texto editable, apertura directa de vista rápida al tocarlas y lectura de capítulo enfocada con `Volver a prédica` como única acción.
+Completar `0.1.21`: corregir el toque de referencias inline, hacer menos intrusiva la vista rápida y avanzar al siguiente objetivo oficial con la primera base de Modo Predicación.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,18 +185,18 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente `0.1.20` desde `https://hnalvaradohn.github.io/biblia-pwa/`.
-2. Confirmar que `Juan 1:1` o una referencia válida queda remarcada dentro del mismo campo mientras se escribe.
-3. Tocar la referencia inline y confirmar la vista rápida con `Leer capítulo completo`.
-4. Confirmar que la lectura completa oculta navegación/acciones y deja únicamente `Volver a prédica`.
-5. Confirmar que al volver se conserva la prédica y el punto de edición.
+1. Completar CI y publicación de `0.1.21`.
+2. Verificar que un toque normal sobre una referencia abre la vista rápida centrada.
+3. Verificar que los controles de la vista rápida son compactos y no dominan el contenido.
+4. Verificar la primera base de Modo Predicación: entrada desde `Predicar`, vista de solo lectura, referencias consultables y `Volver a editar`.
+5. Pedir validación física del usuario antes de cerrar D-047 y D-048.
 
-Estado de despliegue actual: `0.1.20` fue fusionada a `main` en `27875f05e797f58459ae0604f5bc5c18a938cb78`. El CI de `main` terminó en `success` y GitHub Pages completó correctamente instalación, TypeScript, ESLint, build PWA, auditoría, artefacto y publicación. La comprobación automatizada del sitio confirmó que la versión visible es `0.1.20`, que Prédicas abre y guarda, pero la automatización de navegador no logró interactuar de forma fiable con los nuevos campos `contenteditable`; por eso la validación funcional completa de la interacción inline queda pendiente de la prueba física del usuario. No se interpreta ese límite de automatización como validación física ni como confirmación del flujo completo.
+Estado de despliegue actual: producción continúa en `0.1.20` sobre GitHub Pages mientras `0.1.21` se valida en la rama `feature/sermon-tap-presentation-0121`. No debe presentarse como lista para probar hasta completar PR/CI, merge, CI de main, publicación en GitHub Pages y verificación del build servido.
 
 
 ## Después de este objetivo
 
-Después de estabilizar `0.1.20`, el siguiente objetivo oficial será continuar el refinamiento del editor de Prédicas y preparar Modo Predicación.
+Después de estabilizar `0.1.21`, el siguiente objetivo oficial será refinar la experiencia de Modo Predicación según la validación física y continuar el roadmap de Prédicas.
 
 ## Regla de actualización
 
