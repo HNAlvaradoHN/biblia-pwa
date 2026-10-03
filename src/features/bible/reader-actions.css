@@ -605,3 +605,41 @@
     padding-bottom: 2px;
   }
 }
+
+
+/* Preferencia de disposición del texto bíblico. */
+html[data-verse-layout='flow'] .verse-flow {
+  display: block;
+}
+
+html[data-verse-layout='flow'] .verse-item {
+  display: inline;
+}
+
+html[data-verse-layout='flow'] .verse-button {
+  display: inline;
+  width: auto;
+  margin-right: 0.28em;
+  padding: 2px 3px;
+  line-height: 1.72;
+}
+
+html[data-verse-layout='flow'] .verse-item.active .verse-button {
+  padding-right: 4px;
+}
+
+html[data-verse-layout='flow'] .verse-menu-trigger {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: inline-grid;
+  width: 27px;
+  height: 27px;
+  margin: 0 5px 2px 0;
+  vertical-align: middle;
+}
+
+html[data-verse-layout='flow'] .verse-item.highlighted .verse-button,
+html[data-verse-layout='flow'] .verse-item.highlighted.active .verse-button {
+  border-radius: 7px;
+}
