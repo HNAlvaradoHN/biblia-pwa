@@ -34,6 +34,30 @@ type ShareItem = {
   text: string
 }
 
+type SermonReturnPoint = {
+  sermonId: string
+  field: 'introduction' | 'outline' | 'conclusion'
+  startIndex: number
+}
+
+function readSermonReturnPoint(): SermonReturnPoint | undefined {
+  try {
+    const raw = window.sessionStorage.getItem('biblia-sermon-return-v1')
+    if (!raw) return undefined
+    const parsed = JSON.parse(raw) as Partial<SermonReturnPoint>
+    if (
+      typeof parsed.sermonId !== 'string' ||
+      !['introduction', 'outline', 'conclusion'].includes(parsed.field ?? '') ||
+      typeof parsed.startIndex !== 'number'
+    ) {
+      return undefined
+    }
+    return parsed as SermonReturnPoint
+  } catch {
+    return undefined
+  }
+}
+
 const highlightPalette: Array<{
   id: HighlightColor
   label: string
@@ -77,6 +101,11 @@ export function ReaderPage() {
   const [shareCustomImage, setShareCustomImage] = useState<string | undefined>()
   const [readingModeOpen, setReadingModeOpen] = useState(false)
   const [actionMessage, setActionMessage] = useState('')
+  const [sermonReturnPoint] = useState<SermonReturnPoint | undefined>(() =>
+    new URLSearchParams(window.location.search).get('fromSermon') === '1'
+      ? readSermonReturnPoint()
+      : undefined,
+  )
 
   const chapters = useMemo(() => {
     if (!book) return []
@@ -838,6 +867,14 @@ export function ReaderPage() {
     )
   }
 
+  function returnToSermon() {
+    if (!sermonReturnPoint) return
+    window.sessionStorage.removeItem('biblia-sermon-return-v1')
+    navigate(
+      `/predicas/${sermonReturnPoint.sermonId}?returnField=${sermonReturnPoint.field}&returnAt=${sermonReturnPoint.startIndex}`,
+    )
+  }
+
   function activateVerse(chapter: number, verse: number, anchorId: string) {
     const location = {
       bookId: activeBook.id,
@@ -875,6 +912,18 @@ export function ReaderPage() {
           <span>{bibleProvider.translation.label}</span>
         </div>
       </div>
+
+      {sermonReturnPoint ? (
+        <div className="sermon-return-bar glass-panel">
+          <div>
+            <span>Referencia abierta desde una prédica</span>
+            <strong>Podés volver exactamente al punto donde estabas escribiendo.</strong>
+          </div>
+          <button className="button primary" type="button" onClick={returnToSermon}>
+            Volver a prédica
+          </button>
+        </div>
+      ) : null}
 
       <aside className="reader-demo-notice">
         <strong>Contenido ficticio de prueba</strong>
