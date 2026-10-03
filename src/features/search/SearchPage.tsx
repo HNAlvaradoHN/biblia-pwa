@@ -14,15 +14,32 @@ function highlightMatch(text: string, query: string) {
   const trimmed = query.trim()
   if (!trimmed) return text
 
-  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const matcher = new RegExp(`(${escaped})`, 'gi')
-  const parts = text.split(matcher)
+  const normalizedText = normalize(text)
+  const normalizedQuery = normalize(trimmed)
+  const parts: Array<{ text: string; match: boolean }> = []
+  let cursor = 0
+
+  while (cursor < text.length) {
+    const matchIndex = normalizedText.indexOf(normalizedQuery, cursor)
+    if (matchIndex < 0) {
+      parts.push({ text: text.slice(cursor), match: false })
+      break
+    }
+
+    if (matchIndex > cursor) {
+      parts.push({ text: text.slice(cursor, matchIndex), match: false })
+    }
+
+    const matchEnd = matchIndex + normalizedQuery.length
+    parts.push({ text: text.slice(matchIndex, matchEnd), match: true })
+    cursor = matchEnd
+  }
 
   return parts.map((part, index) =>
-    part.toLocaleLowerCase('es') === trimmed.toLocaleLowerCase('es') ? (
-      <mark key={`${part}-${index}`}>{part}</mark>
+    part.match ? (
+      <mark key={`${part.text}-${index}`}>{part.text}</mark>
     ) : (
-      <Fragment key={`${part}-${index}`}>{part}</Fragment>
+      <Fragment key={`${part.text}-${index}`}>{part.text}</Fragment>
     ),
   )
 }
