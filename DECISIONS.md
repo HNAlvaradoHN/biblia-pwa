@@ -504,3 +504,29 @@ Reglas:
 - el resaltado sigue siendo translúcido/suave tipo vidrio esmerilado y nunca debe convertirse en un bloque saturado que opaque el texto;
 - cambiar de tema debe conservar legibilidad de tarjetas, navegación, avisos, botones y lector.
 
+## D-041 — Temas curados y submenús modales con blur
+Estado: APROBADA
+
+La personalización de tema no debe exponer combinaciones libres de fondo/texto que puedan producir resultados visuales feos o ilegibles. La primera versión estable usa temas completos predefinidos, cada uno con sus propios tokens de contraste.
+
+Temas iniciales curados:
+
+- Claro;
+- Sepia;
+- Verde;
+- Azul;
+- Rojo;
+- Morado;
+- Noche.
+
+Reglas:
+
+- cada tema define conjuntamente fondo general, superficies, superficie del lector, texto principal, texto secundario, bordes, marca, acento y colores glass;
+- no mostrar selectores libres de color de texto o fondo general dentro de esta etapa;
+- tamaño de texto y fuente siguen siendo personalizables;
+- todos los textos que hereden color global deben usar `--ink` o una variable temática equivalente, evitando colores estáticos que desaparezcan en Noche;
+- títulos de libros, marca `Biblia`, botones, avisos y navegación deben comprobarse explícitamente en tema Noche;
+- los submenús contextuales deben aparecer por encima del contenido y navegación, con fondo desenfocado;
+- si un submenú no cabe completo, debe tener desplazamiento interno y permanecer accesible dentro del viewport;
+- el menú de los tres puntos mantiene posicionamiento inteligente arriba/abajo, pero siempre sobre un backdrop blur.
+
