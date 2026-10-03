@@ -3,6 +3,17 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Referencias inline en Prédicas 0.1.20
+
+- Las referencias bíblicas dejan de mostrarse como controles separados debajo del campo.
+- Las referencias detectadas quedan remarcadas dentro del mismo texto de Introducción, Bosquejo/puntos y Conclusión.
+- Tocar una referencia remarcada abre directamente la vista rápida del pasaje.
+- La vista rápida mantiene el pasaje breve y ofrece `Leer capítulo completo`.
+- Al leer el capítulo desde una prédica, la interfaz oculta navegación, ajustes y acciones bíblicas: la única acción disponible es `Volver a prédica`.
+- La lectura completa se limita al capítulo de la referencia y conserva el regreso al mismo campo/punto de edición.
+- El editor mantiene texto plano en persistencia; el marcado visual de referencias se genera en la interfaz y no incrusta HTML en la prédica.
+- Build visible actualizado a `0.1.20`.
+
 ## 2026-10-03 — Referencias bíblicas inteligentes 0.1.19
 
 - Detección automática de referencias bíblicas en Introducción, Bosquejo/puntos y Conclusión de una prédica.

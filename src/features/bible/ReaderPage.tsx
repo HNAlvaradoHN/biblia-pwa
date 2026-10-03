@@ -77,6 +77,7 @@ export function ReaderPage() {
   const navigate = useNavigate()
   const book = bibleProvider.getBook(bookId)
   const requestedChapter = Number(chapterParam)
+  const openedFromSermon = new URLSearchParams(routerLocation.search).get('fromSermon') === '1'
   const saveTimer = useRef<number | undefined>(undefined)
   const actionPanelRef = useRef<HTMLDivElement | null>(null)
   const actionTriggerRef = useRef<HTMLButtonElement | null>(null)
@@ -102,17 +103,17 @@ export function ReaderPage() {
   const [readingModeOpen, setReadingModeOpen] = useState(false)
   const [actionMessage, setActionMessage] = useState('')
   const [sermonReturnPoint] = useState<SermonReturnPoint | undefined>(() =>
-    new URLSearchParams(window.location.search).get('fromSermon') === '1'
-      ? readSermonReturnPoint()
-      : undefined,
+    openedFromSermon ? readSermonReturnPoint() : undefined,
   )
 
   const chapters = useMemo(() => {
     if (!book) return []
     const startIndex = book.chapters.findIndex((item) => item.number === requestedChapter)
     if (startIndex < 0) return []
-    return book.chapters.slice(startIndex)
-  }, [book, requestedChapter])
+    return sermonReturnPoint
+      ? book.chapters.slice(startIndex, startIndex + 1)
+      : book.chapters.slice(startIndex)
+  }, [book, requestedChapter, sermonReturnPoint])
 
   useEffect(() => {
     if (!book || chapters.length === 0) return
@@ -896,8 +897,8 @@ export function ReaderPage() {
   }
 
   return (
-    <div className="reader-page">
-      <div className="reader-toolbar">
+    <div className={sermonReturnPoint ? "reader-page sermon-reading-mode" : "reader-page"}>
+      {!sermonReturnPoint ? <div className="reader-toolbar">
         <Link to={`/biblia/${activeBook.id}`}>← {activeBook.name}</Link>
         <div className="reader-toolbar-actions">
           <button
@@ -911,7 +912,7 @@ export function ReaderPage() {
           </button>
           <span>{bibleProvider.translation.label}</span>
         </div>
-      </div>
+      </div> : null}
 
       {sermonReturnPoint ? (
         <div className="sermon-return-bar glass-panel">
@@ -925,10 +926,12 @@ export function ReaderPage() {
         </div>
       ) : null}
 
-      <aside className="reader-demo-notice">
-        <strong>Contenido ficticio de prueba</strong>
-        <span>No es RVR60. Estamos validando estructura, navegación y modo offline.</span>
-      </aside>
+      {!sermonReturnPoint ? (
+        <aside className="reader-demo-notice">
+          <strong>Contenido ficticio de prueba</strong>
+          <span>No es RVR60. Estamos validando estructura, navegación y modo offline.</span>
+        </aside>
+      ) : null}
 
       <article className="reading-sheet">
         {chapters.map((chapter) => (
@@ -958,6 +961,21 @@ export function ReaderPage() {
                     const isSelected = selectedVerseIds.has(locationId)
                     const panelVisible = isActive && actionPanelOpen && !selectionMode
                     const reference = `${activeBook.name} ${chapter.number}:${verse.number}`
+
+                    if (sermonReturnPoint) {
+                      return (
+                        <p
+                          id={anchorId}
+                          className="verse sermon-reading-verse"
+                          data-reading-anchor="true"
+                          data-chapter={chapter.number}
+                          key={verse.number}
+                        >
+                          <sup>{verse.number}</sup>
+                          {verse.text}
+                        </p>
+                      )
+                    }
 
                     return (
                       <div

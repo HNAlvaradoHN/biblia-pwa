@@ -630,3 +630,20 @@ Reglas:
 - Vercel puede usarse como preview o respaldo cuando esté disponible, pero no es requisito para fusionar o publicar si GitHub Pages ya ofrece una validación equivalente;
 - no introducir dependencias específicas del proveedor que dificulten mover la PWA a otro host estático en el futuro;
 - datos personales, prédicas, notas, favoritos y resaltados continúan siendo locales al dispositivo y no se publican en GitHub Pages.
+
+
+## D-047 — Referencias inline y lectura enfocada desde Prédicas
+Estado: APROBADA
+
+Las referencias bíblicas detectadas dentro de una prédica deben sentirse parte del texto que el usuario está escribiendo, no como una lista separada debajo del campo.
+
+Reglas:
+
+- una referencia válida se remarca visualmente dentro del mismo contenido de Introducción, Bosquejo/puntos o Conclusión;
+- tocar la referencia remarcada abre la vista rápida del pasaje;
+- la vista rápida conserva una acción para seguir escribiendo y otra para leer el capítulo completo;
+- al entrar a la lectura completa desde una prédica, la interfaz bíblica pasa a un modo enfocado sin navegación principal, ajustes, menús de versículo ni otras acciones;
+- durante ese modo enfocado la única acción de salida visible es `Volver a prédica`;
+- el regreso restaura la misma prédica y el campo/punto de edición de origen;
+- el contenido persistido de la prédica sigue siendo texto plano; el marcado visual de referencias es una capa de interfaz y no HTML guardado;
+- la detección sigue limitada a referencias realmente disponibles en el corpus actual y no inventa contenido.

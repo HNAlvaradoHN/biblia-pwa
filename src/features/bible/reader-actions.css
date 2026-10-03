@@ -729,3 +729,30 @@ html[data-verse-layout='flow'] .verse-item.highlighted.active .verse-button {
     width: 100%;
   }
 }
+
+
+.sermon-reading-mode .sermon-return-bar {
+  top: max(8px, env(safe-area-inset-top));
+  z-index: 40;
+}
+
+.sermon-reading-mode .sermon-return-bar > div {
+  gap: 0;
+}
+
+.sermon-reading-mode .sermon-return-bar > div span,
+.sermon-reading-mode .sermon-return-bar > div strong {
+  display: none;
+}
+
+.sermon-reading-mode .sermon-return-bar .button {
+  width: 100%;
+}
+
+.sermon-reading-verse {
+  cursor: default;
+}
+
+.sermon-reading-mode .reading-sheet {
+  margin-bottom: max(12px, env(safe-area-inset-bottom));
+}

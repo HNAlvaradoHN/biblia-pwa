@@ -16,6 +16,7 @@ import {
   type SermonBibleReference,
   type SermonFieldName,
 } from './sermonReferences'
+import { SermonRichTextField, type SermonRichTextFieldHandle } from './SermonRichTextField'
 import './sermons.css'
 
 function formatUpdatedAt(value: number) {
@@ -182,9 +183,9 @@ export function SermonEditorPage() {
   const { sermonId = '' } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const introductionRef = useRef<HTMLTextAreaElement | null>(null)
-  const outlineRef = useRef<HTMLTextAreaElement | null>(null)
-  const conclusionRef = useRef<HTMLTextAreaElement | null>(null)
+  const introductionRef = useRef<SermonRichTextFieldHandle | null>(null)
+  const outlineRef = useRef<SermonRichTextFieldHandle | null>(null)
+  const conclusionRef = useRef<SermonRichTextFieldHandle | null>(null)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
   const [introduction, setIntroduction] = useState('')
@@ -233,9 +234,7 @@ export function SermonEditorPage() {
                 ? outlineRef.current
                 : conclusionRef.current
           if (!target) return
-          target.focus()
-          target.setSelectionRange(returnAt, returnAt)
-          target.scrollIntoView({ block: 'center' })
+          target.focusAt(returnAt)
           navigate(`/predicas/${sermonId}`, { replace: true })
         })
       }
@@ -298,10 +297,6 @@ export function SermonEditorPage() {
     setDirty(false)
   }
 
-  function referencesFor(field: SermonFieldName) {
-    return detectedReferences.filter((reference) => reference.field === field)
-  }
-
   async function openReferenceInBible(reference: SermonBibleReference) {
     await saveSermon(sermonId, {
       title,
@@ -326,25 +321,7 @@ export function SermonEditorPage() {
     )
   }
 
-  function ReferenceChips({ field }: { field: SermonFieldName }) {
-    const references = referencesFor(field)
-    if (references.length === 0) return null
 
-    return (
-      <div className="sermon-reference-chips" aria-label="Referencias bíblicas detectadas">
-        {references.map((reference) => (
-          <button
-            key={reference.id}
-            type="button"
-            onClick={() => setReferencePreview(reference)}
-          >
-            <span aria-hidden="true">📖</span>
-            {reference.sourceText}
-          </button>
-        ))}
-      </div>
-    )
-  }
 
   if (!sermon) {
     return (
@@ -382,48 +359,52 @@ export function SermonEditorPage() {
           />
         </label>
 
-        <label className="sermon-field">
+        <div className="sermon-field">
           <span>Introducción</span>
-          <textarea
+          <SermonRichTextField
             ref={introductionRef}
             value={introduction}
-            onChange={(event) => markDirty(setIntroduction, event.target.value)}
+            references={detectedReferences.filter((reference) => reference.field === 'introduction')}
+            onChange={(value) => markDirty(setIntroduction, value)}
+            onReferenceOpen={setReferencePreview}
             placeholder="Idea de apertura, contexto o propósito..."
-            rows={5}
+            ariaLabel="Introducción"
           />
-          <ReferenceChips field="introduction" />
-        </label>
+        </div>
 
-        <label className="sermon-field">
+        <div className="sermon-field">
           <span>Bosquejo y puntos</span>
-          <textarea
+          <SermonRichTextField
             ref={outlineRef}
+            className="sermon-rich-editor-outline"
             value={outline}
-            onChange={(event) => markDirty(setOutline, event.target.value)}
+            references={detectedReferences.filter((reference) => reference.field === 'outline')}
+            onChange={(value) => markDirty(setOutline, value)}
+            onReferenceOpen={setReferencePreview}
             placeholder={"1. Punto principal\n   - Subpunto\n   - Aplicación\n\n2. Siguiente punto..."}
-            rows={14}
+            ariaLabel="Bosquejo y puntos"
           />
-          <ReferenceChips field="outline" />
-        </label>
+        </div>
 
-        <label className="sermon-field">
+        <div className="sermon-field">
           <span>Conclusión</span>
-          <textarea
+          <SermonRichTextField
             ref={conclusionRef}
             value={conclusion}
-            onChange={(event) => markDirty(setConclusion, event.target.value)}
+            references={detectedReferences.filter((reference) => reference.field === 'conclusion')}
+            onChange={(value) => markDirty(setConclusion, value)}
+            onReferenceOpen={setReferencePreview}
             placeholder="Cierre, llamado o idea final..."
-            rows={6}
+            ariaLabel="Conclusión"
           />
-          <ReferenceChips field="conclusion" />
-        </label>
+        </div>
 
         <aside className="sermon-editor-note">
           <strong>Referencias inteligentes activas</strong>
           <p>
             Escribí referencias disponibles en el corpus, por ejemplo Juan 1:1 o
-            Génesis 1:1-3. La aplicación las guarda de forma estructurada y permite
-            ver el pasaje sin abandonar la prédica.
+            Génesis 1:1-3. Quedarán remarcadas dentro del mismo texto. Tocá una referencia
+            para ver el pasaje y, si querés, leer el capítulo completo.
           </p>
         </aside>
       </form>
@@ -470,7 +451,7 @@ export function SermonEditorPage() {
                 type="button"
                 onClick={() => void openReferenceInBible(referencePreview)}
               >
-                Abrir en Biblia
+                Leer capítulo completo
               </button>
               <button
                 className="button secondary"
