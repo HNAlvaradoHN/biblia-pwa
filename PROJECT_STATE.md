@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Compartir, búsqueda y lector enfocado 0.1.8 — publicado pendiente de validación física
+### Modos de lectura 0.1.9 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar la entrega `0.1.8` con tres mejoras coordinadas: personalización inicial de compartir como imagen, búsqueda unificada de libros + texto y lector capítulo por capítulo.
+Completar la entrega `0.1.9` sustituyendo el acceso directo al lector enfocado por un selector de modos de lectura con `Continuo`, `Capítulo por capítulo` y `Versículo por versículo`.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,16 +185,17 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente `0.1.8`: fondos/colores/foto personal al compartir imagen, búsqueda por libro/texto y resaltado de coincidencias.
-2. Validar lector capítulo por capítulo: anterior/siguiente, gesto horizontal y regreso exacto con indicador temporal.
-3. Si la prueba real pasa, cerrar la entrega y D-034.
-4. Continuar el inventario comparativo de la APK externa y elegir el siguiente objetivo funcional sin detener el avance.
+1. Completar CI/revisión de `0.1.9`.
+2. Desplegar y validar físicamente el selector de modos de lectura.
+3. Confirmar retorno exacto desde capítulo/versículo al lector continuo con auto-scroll e indicador temporal.
+4. Después avanzar a resaltados por color con selección múltiple y detección de propiedades comunes, según lo aprobado por el usuario.
+5. Mantener la personalización global de tipografía/tema/fondo como el objetivo siguiente después de resaltados.
 
-Estado de despliegue actual: `0.1.8` fue fusionada a `main` en `86a29467e13c216f4bf7fd1887583bf39c23678b`. El CI de `main` (run `37085359630`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.8`. La previsualización automatizada confirmó búsqueda por libro con coincidencia resaltada, búsqueda textual resaltada, fondos predeterminados/color/foto personal visibles en el flujo de compartir imagen y el lector capítulo por capítulo con anterior/siguiente y retorno al lector normal. Falta únicamente la validación física del usuario.
+Estado de despliegue actual: producción sirve `0.1.8`. La entrega `0.1.9` está en rama e incorpora el selector de modos de lectura y el nuevo modo versículo por versículo. No debe marcarse como lista hasta completar CI, revisión, merge, deployment y validación.
 
 ## Después de este objetivo
 
-Después de `0.1.8`, el siguiente objetivo se elegirá del inventario comparativo de la APK y del roadmap ya aprobado, evitando volver a dejar la búsqueda o el lector enfocado como pendientes abiertos.
+Después de `0.1.9`, el siguiente objetivo funcional es el resaltado avanzado por colores con selección múltiple y comportamiento común. Luego sigue la personalización global de lectura/tema/fondo.
 
 ## Regla de actualización
 
