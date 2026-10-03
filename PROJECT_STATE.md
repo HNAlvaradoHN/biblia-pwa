@@ -136,7 +136,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.21`: corregir el toque de referencias inline, hacer menos intrusiva la vista rápida y avanzar al siguiente objetivo oficial con la primera base de Modo Predicación.
+Validar físicamente `0.1.21`: toque normal sobre referencias inline, vista rápida centrada con controles discretos y primera base de Modo Predicación.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,13 +185,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI y publicación de `0.1.21`.
-2. Verificar que un toque normal sobre una referencia abre la vista rápida centrada.
-3. Verificar que los controles de la vista rápida son compactos y no dominan el contenido.
-4. Verificar la primera base de Modo Predicación: entrada desde `Predicar`, vista de solo lectura, referencias consultables y `Volver a editar`.
-5. Pedir validación física del usuario antes de cerrar D-047 y D-048.
+1. Validar físicamente `0.1.21` desde GitHub Pages.
+2. Confirmar que un toque normal sobre una referencia abre la vista rápida sin mantener presionado.
+3. Confirmar que la vista rápida aparece centrada y que `Seguir escribiendo` / `Leer capítulo` son discretos.
+4. Probar `Predicar`: vista de solo lectura, sin navegación principal, referencias consultables y `Volver a editar`.
+5. Con esa validación, cerrar D-047/D-048 y continuar refinando Modo Predicación.
 
-Estado de despliegue actual: producción continúa en `0.1.20` sobre GitHub Pages mientras `0.1.21` se valida en la rama `feature/sermon-tap-presentation-0121`. No debe presentarse como lista para probar hasta completar PR/CI, merge, CI de main, publicación en GitHub Pages y verificación del build servido.
+Estado de despliegue actual: `0.1.21` está fusionada a `main` en `18c47f12b6286ad2c2cb4a73687f1dac4fcca8a8`. El CI de `main` terminó en `success` y GitHub Pages completó correctamente TypeScript, ESLint, build PWA, auditoría, artefacto y publicación. El workflow de Pages publicó el artefacto construido desde este mismo commit, cuyo build visible está configurado como `0.1.21`. La validación automatizada de navegador no pudo ejecutarse por indisponibilidad del servicio externo de prueba, por lo que el comportamiento táctil y Modo Predicación quedan pendientes de validación física del usuario; no se consideran físicamente verificados todavía.
 
 
 ## Después de este objetivo
