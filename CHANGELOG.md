@@ -3,6 +3,16 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Hoja de apariencia móvil y limpieza 0.1.12
+
+- Corregida la hoja `Aa` para mantenerse completamente dentro del viewport móvil y respetar las áreas seguras del dispositivo.
+- Elevado el overlay de apariencia para que siempre quede por encima del encabezado, lector y navegación.
+- El encabezado del panel queda fijo dentro de la propia hoja mientras se desplaza su contenido.
+- Al abrir apariencia se bloquea el scroll de la página de fondo para evitar saltos o que el panel termine fuera de posición.
+- Eliminadas reglas CSS duplicadas del lector que habían quedado tras iteraciones anteriores.
+- La revisión nocturna programada se ejecutó hasta las 5:45 a. m.; no dejó cambios adicionales en `main` ni abrió trabajo nuevo fuera del objetivo autorizado.
+- Build visible actualizado a `0.1.12`.
+
 ## 2026-10-03 — Menús inteligentes, transición de página y personalización 0.1.11
 
 - El menú de acciones del versículo se posiciona dinámicamente arriba o abajo según el espacio real disponible y evita quedar oculto detrás del borde inferior o la navegación.
