@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Gestos y resaltados por color 0.1.10 — publicado pendiente de validación física
+### Menús inteligentes y personalización global 0.1.11 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar la validación física de `0.1.10`: gesto horizontal real, entrada exacta desde el versículo activo y resaltados por color con selección múltiple. La implementación, CI, merge y despliegue ya están completos.
+Completar la entrega `0.1.11`: corregir el menú contextual en los extremos de pantalla, mejorar la navegación enfocada con transición tipo página y ayuda temporal, y avanzar a la personalización global inicial de lectura.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,16 +185,17 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente el gesto horizontal, entrada exacta desde el versículo activo y señal visual inicial en modo versículo.
-2. Validar paleta de resaltados, estilo suave, aplicación múltiple y eliminación del resaltado común.
-3. Si la prueba real pasa, cerrar D-035/D-037.
-4. El siguiente objetivo oficial ya definido es personalización global de tipografía, tamaño, color de texto, temas y fondo general.
+1. Completar CI/revisión de `0.1.11`.
+2. Validar físicamente el menú de los tres puntos cerca del primer y último versículo de la pantalla.
+3. Validar transición tipo página, gesto horizontal y desaparición automática de la ayuda.
+4. Validar temas, tamaño, fuente, color de texto y fondo general en lector continuo y modos enfocados.
+5. Si la prueba real pasa, cerrar D-038/D-039 y elegir el siguiente objetivo del roadmap/inventario APK.
 
-Estado de despliegue actual: `0.1.10` fue fusionada a `main` en `7e294b287deb3fc84eb626a002d4a1dd5764d214`. El CI de `main` (run `37091491175`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.10`. La previsualización automatizada confirmó entrada exacta a Génesis 1:3, paleta de resaltados, aplicación por lote y eliminación del resaltado común. La automatización no reproduce de forma fiable un gesto táctil físico, por lo que el swipe horizontal queda `IMPLEMENTADO_PENDIENTE_VALIDACIÓN` en dispositivo real.
+Estado de despliegue actual: producción sirve `0.1.10`. El usuario confirmó físicamente que el gesto horizontal ya funciona. La entrega `0.1.11` está en rama con menú contextual inteligente, transición tipo página, ayuda temporal y primera etapa de personalización global. No debe marcarse como lista hasta completar CI, revisión, merge, deployment y validación física.
 
 ## Después de este objetivo
 
-Después de `0.1.10`, el siguiente objetivo funcional es la personalización global de lectura/tema/fondo: tamaño y fuente del texto, color de lectura, temas generales y fondo de la aplicación con reglas de contraste.
+Después de `0.1.11`, el siguiente objetivo funcional se seleccionará del roadmap aprobado y del inventario comparativo de la APK, sin reabrir como pendientes las personalizaciones ya incorporadas.
 
 ## Regla de actualización
 

@@ -449,3 +449,43 @@ Reglas:
 - si la selección tiene estados distintos, la paleta puede unificarlos aplicando un nuevo color;
 - quitar el resaltado no elimina favoritos, notas ni otras propiedades independientes.
 
+## D-038 — Menús contextuales inteligentes y transición de página
+Estado: APROBADA
+
+Los menús contextuales del lector deben mantenerse visibles aunque el versículo activo esté cerca del inicio o del final de la pantalla.
+
+Reglas:
+
+- al abrir el menú de los tres puntos, la interfaz mide el espacio disponible;
+- si hay espacio suficiente debajo, el menú aparece debajo;
+- si el borde inferior, barra de navegación u otra zona útil dejaría el menú cortado, aparece encima;
+- el panel puede limitar su altura y desplazarse internamente si el contenido crece;
+- el comportamiento debe recalcularse al hacer scroll, rotar o redimensionar la pantalla.
+
+En los modos enfocados, avanzar o retroceder puede usar una transición visual breve inspirada en pasar una página. Debe ser sutil, rápida y respetar `prefers-reduced-motion`.
+
+La indicación de gesto horizontal es ayuda temporal: se muestra al entrar y desaparece automáticamente para conservar la pantalla limpia.
+
+## D-039 — Personalización global inicial de lectura
+Estado: APROBADA
+
+La personalización global comienza con controles persistentes y separados del sistema de compartir imágenes.
+
+Primera etapa:
+
+- temas generales seguros: Claro, Sepia, Verde y Noche;
+- tamaño del texto bíblico;
+- tres familias tipográficas de sistema para evitar dependencias/licencias adicionales;
+- color del texto bíblico con validación mínima de contraste;
+- color de fondo general;
+- persistencia local de preferencias;
+- las superficies de lectura conservan contraste propio para que un fondo general personalizado no vuelva ilegible el contenido.
+
+Reglas:
+
+- estos ajustes afectan la lectura normal y los modos enfocados;
+- no deben modificar automáticamente las plantillas/fondos de `Compartir como imagen`;
+- un color de texto con contraste insuficiente debe rechazarse;
+- los temas oscuros deben conservar botones, paneles glass y navegación legibles;
+- personalizaciones más avanzadas, como tema generado desde una imagen, pueden añadirse después sobre esta base sin romper las preferencias existentes.
+
