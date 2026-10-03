@@ -3,6 +3,17 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Contraste de temas y resaltados 0.1.13
+
+- Revisados los tokens de color de los cuatro temas para mejorar contraste de texto, superficies, marca y navegación.
+- Corregidos colores fijos que perdían legibilidad en el tema Noche.
+- Las superficies tipo glass ahora se mezclan con los colores del tema en lugar de usar blanco fijo.
+- El tema Noche recibe una paleta más equilibrada y texto secundario con mayor contraste.
+- La paleta de resaltados pasa a Azul, Verde, Rojo, Amarillo, Naranja y Morado.
+- Los resaltados conservan transparencia suave tipo vidrio sobre la superficie del lector.
+- Verificación matemática de contraste de texto/superficie realizada sobre los tokens principales; los pares principales superan el umbral AA para texto normal.
+- Build visible actualizado a `0.1.13`.
+
 ## 2026-10-03 — Hoja de apariencia móvil y limpieza 0.1.12
 
 - Corregida la hoja `Aa` para mantenerse completamente dentro del viewport móvil y respetar las áreas seguras del dispositivo.
