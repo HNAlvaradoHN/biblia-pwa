@@ -172,6 +172,7 @@ export function FocusedReaderPage() {
 
       <main
         className="focus-reader-sheet"
+        style={{ touchAction: 'pan-y' }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -197,7 +198,18 @@ export function FocusedReaderPage() {
             ))}
           </>
         ) : verse ? (
-          <article className={`focus-verse-card${entryPulse ? ' entry-pulse' : ''}`}>
+          <article
+            className="focus-verse-card"
+            style={
+              entryPulse
+                ? {
+                    boxShadow: '0 0 0 5px color-mix(in srgb, var(--accent) 13%, transparent), 0 24px 60px rgba(29, 42, 34, 0.1)',
+                    borderColor: 'color-mix(in srgb, var(--accent) 58%, var(--line))',
+                    transition: 'box-shadow 500ms ease, border-color 500ms ease',
+                  }
+                : undefined
+            }
+          >
             <p className="focus-verse-context">
               {verse.heading ?? bibleProvider.translation.label}
             </p>
