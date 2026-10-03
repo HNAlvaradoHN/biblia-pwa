@@ -3,11 +3,13 @@ import './appearance.css'
 
 type ThemeName = 'light' | 'sepia' | 'forest' | 'ocean' | 'wine' | 'violet' | 'night'
 type FontChoice = 'serif' | 'sans' | 'rounded'
+type VerseLayout = 'separate' | 'flow'
 
 type AppearancePreferences = {
   theme: ThemeName
   fontScale: number
   fontFamily: FontChoice
+  verseLayout: VerseLayout
 }
 
 type ThemeTokens = {
@@ -184,11 +186,16 @@ function isFontChoice(value: unknown): value is FontChoice {
   return typeof value === 'string' && value in fonts
 }
 
+function isVerseLayout(value: unknown): value is VerseLayout {
+  return value === 'separate' || value === 'flow'
+}
+
 function readStoredPreferences(): AppearancePreferences {
   const fallback: AppearancePreferences = {
     theme: 'light',
     fontScale: 100,
     fontFamily: 'serif',
+    verseLayout: 'separate',
   }
 
   for (const key of [storageKey, legacyStorageKey]) {
@@ -204,6 +211,7 @@ function readStoredPreferences(): AppearancePreferences {
             ? Math.min(145, Math.max(85, parsed.fontScale))
             : fallback.fontScale,
         fontFamily: isFontChoice(parsed.fontFamily) ? parsed.fontFamily : fallback.fontFamily,
+        verseLayout: isVerseLayout(parsed.verseLayout) ? parsed.verseLayout : fallback.verseLayout,
       }
     } catch {
       continue
@@ -237,6 +245,7 @@ function applyPreferences(preferences: AppearancePreferences) {
   root.style.setProperty('--reader-font-scale', String(preferences.fontScale / 100))
   root.style.setProperty('--reader-font-family', fonts[preferences.fontFamily].stack)
   root.dataset.theme = preferences.theme
+  root.dataset.verseLayout = preferences.verseLayout
 }
 
 export function AppearanceControl() {
@@ -343,6 +352,33 @@ export function AppearanceControl() {
             </div>
 
             <div className="appearance-section">
+              <strong>Disposición de versículos</strong>
+              <p className="appearance-help">Elegí si querés cada versículo separado o una lectura más corrida.</p>
+              <div className="layout-grid">
+                <button
+                  type="button"
+                  className={preferences.verseLayout === 'separate' ? 'active' : ''}
+                  onClick={() =>
+                    setPreferences((current) => ({ ...current, verseLayout: 'separate' }))
+                  }
+                >
+                  <strong>Separados</strong>
+                  <span>Un versículo por bloque.</span>
+                </button>
+                <button
+                  type="button"
+                  className={preferences.verseLayout === 'flow' ? 'active' : ''}
+                  onClick={() =>
+                    setPreferences((current) => ({ ...current, verseLayout: 'flow' }))
+                  }
+                >
+                  <strong>Corridos</strong>
+                  <span>Texto continuo con referencias.</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="appearance-section">
               <strong>Fuente de lectura</strong>
               <div className="font-grid">
                 {(Object.keys(fonts) as FontChoice[]).map((fontName) => (
@@ -369,6 +405,7 @@ export function AppearanceControl() {
                   theme: 'light',
                   fontScale: 100,
                   fontFamily: 'serif',
+                  verseLayout: 'separate',
                 })
               }
             >
