@@ -5,6 +5,7 @@ import { App } from './app/App'
 import './app/styles.css'
 
 const root = document.getElementById('root')
+const routerBase = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
 if (!root) {
   throw new Error('No se encontró el contenedor principal de la aplicación.')
@@ -12,7 +13,7 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={routerBase}>
       <App />
     </BrowserRouter>
   </StrictMode>,
