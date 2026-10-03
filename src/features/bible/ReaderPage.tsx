@@ -4,17 +4,19 @@ import { bibleProvider } from '../../data/bible/provider'
 import {
   getActiveVerse,
   getBibleNote,
+  getHighlight,
   getHighlights,
   getLastReading,
   isFavorite,
-  isHighlighted,
   makeBibleLocationId,
   removeBibleNote,
+  removeHighlight,
   saveActiveVerse,
   saveBibleNote,
   saveLastReading,
+  setHighlight,
   toggleFavorite,
-  toggleHighlight,
+  type HighlightColor,
 } from '../../data/db'
 import './reader-actions.css'
 
@@ -47,6 +49,10 @@ export function ReaderPage() {
   const [favoriteActive, setFavoriteActive] = useState(false)
   const [highlightActive, setHighlightActive] = useState(false)
   const [highlightedIds, setHighlightedIds] = useState<Set<string>>(() => new Set())
+  const [highlightColors, setHighlightColors] = useState<Map<string, HighlightColor>>(
+    () => new Map(),
+  )
+  const [highlightPickerTarget, setHighlightPickerTarget] = useState<'single' | 'multi' | undefined>()
   const [noteOpen, setNoteOpen] = useState(false)
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
@@ -74,6 +80,14 @@ export function ReaderPage() {
       if (cancelled) return
 
       setHighlightedIds(new Set(highlights.map((item) => makeBibleLocationId(item))))
+      setHighlightColors(
+        new Map(
+          highlights.map((item) => [
+            makeBibleLocationId(item),
+            item.color ?? 'amber',
+          ]),
+        ),
+      )
 
       if (
         storedActiveVerse?.bookId === book.id &&
@@ -227,11 +241,11 @@ export function ReaderPage() {
     void Promise.all([
       isFavorite(location),
       getBibleNote(location),
-      isHighlighted(location),
-    ]).then(([favorite, note, highlighted]) => {
+      getHighlight(location),
+    ]).then(([favorite, note, highlight]) => {
       if (cancelled) return
       setFavoriteActive(favorite)
-      setHighlightActive(highlighted)
+      setHighlightActive(Boolean(highlight))
       setNoteDraft(note?.text ?? '')
       setNoteSaved(Boolean(note))
       setNoteOpen(Boolean(note))
