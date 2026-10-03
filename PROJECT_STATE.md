@@ -136,7 +136,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.20`: referencias remarcadas dentro del texto editable, apertura directa de vista rápida al tocarlas y lectura de capítulo enfocada con `Volver a prédica` como única acción.
+Validar físicamente `0.1.20`: referencias remarcadas dentro del texto editable, apertura directa de vista rápida al tocarlas y lectura de capítulo enfocada con `Volver a prédica` como única acción.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,13 +185,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar implementación y CI de `0.1.20`.
-2. Publicar mediante GitHub Pages.
-3. Validar automáticamente que la referencia aparece remarcada dentro del editor y abre la vista rápida desde el propio texto.
-4. Validar que `Leer capítulo completo` entra a una lectura sin navegación/acciones adicionales y deja únicamente `Volver a prédica`.
-5. Pedir validación física del usuario antes de cerrar D-047.
+1. Validar físicamente `0.1.20` desde `https://hnalvaradohn.github.io/biblia-pwa/`.
+2. Confirmar que `Juan 1:1` o una referencia válida queda remarcada dentro del mismo campo mientras se escribe.
+3. Tocar la referencia inline y confirmar la vista rápida con `Leer capítulo completo`.
+4. Confirmar que la lectura completa oculta navegación/acciones y deja únicamente `Volver a prédica`.
+5. Confirmar que al volver se conserva la prédica y el punto de edición.
 
-Estado de despliegue actual: producción continúa en `0.1.19` sobre GitHub Pages. `0.1.20` está en implementación en la rama `feature/inline-sermon-references-0120` y todavía no debe presentarse como lista para probar hasta completar CI, merge, CI de main, publicación y verificación del build servido.
+Estado de despliegue actual: `0.1.20` fue fusionada a `main` en `27875f05e797f58459ae0604f5bc5c18a938cb78`. El CI de `main` terminó en `success` y GitHub Pages completó correctamente instalación, TypeScript, ESLint, build PWA, auditoría, artefacto y publicación. La comprobación automatizada del sitio confirmó que la versión visible es `0.1.20`, que Prédicas abre y guarda, pero la automatización de navegador no logró interactuar de forma fiable con los nuevos campos `contenteditable`; por eso la validación funcional completa de la interacción inline queda pendiente de la prueba física del usuario. No se interpreta ese límite de automatización como validación física ni como confirmación del flujo completo.
 
 
 ## Después de este objetivo
