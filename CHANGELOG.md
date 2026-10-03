@@ -3,6 +3,18 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Menús inteligentes, transición de página y personalización 0.1.11
+
+- El menú de acciones del versículo se posiciona dinámicamente arriba o abajo según el espacio real disponible y evita quedar oculto detrás del borde inferior o la navegación.
+- El menú flotante recalcula posición al hacer scroll o cambiar el tamaño de la pantalla y puede usar scroll interno si crece.
+- El lector capítulo/versículo incorpora una transición sutil tipo cambio de página al avanzar o retroceder.
+- La ayuda de gesto horizontal se oculta automáticamente después de unos segundos.
+- Añadido panel global de apariencia accesible desde el encabezado.
+- Añadidos temas Claro, Sepia, Verde y Noche.
+- Añadidos tamaño de texto, tres tipografías de lectura, color del texto con control de contraste y fondo general configurable.
+- Las preferencias de apariencia se guardan localmente y afectan lector continuo y modos enfocados, sin alterar las plantillas de compartir como imagen.
+- Build visible actualizado a `0.1.11`.
+
 ## 2026-10-02 — Gestos y resaltados por color 0.1.10
 
 - Corregido el gesto horizontal del lector enfocado usando eventos táctiles con detección de dirección y umbral.
