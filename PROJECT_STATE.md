@@ -10,11 +10,11 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
 Visibilidad actual: pública desde el 2026-09-16 por autorización explícita del usuario.
 
-La versión `0.1.4` quedó integrada en `main`, pasó CI y el usuario confirmó en un dispositivo real que la versión publicada se ve y funciona correctamente a nivel de esta revisión. Con esto se cerró Favoritos y Notas reales.
+La versión `0.1.19` quedó integrada en `main`, pasó CI y se publicó correctamente mediante GitHub Pages. La validación automatizada confirmó la versión visible, navegación y el flujo de referencias bíblicas inteligentes; queda pendiente la validación física del usuario en su dispositivo.
 
 El 2026-10-02 el usuario reemplazó `AGENTS.md` por el paquete maestro general de reglas v4. El nuevo protocolo obliga a iniciar cada chat en `LOCKED_READ_ONLY`, sincronizar contra GitHub y obtener autorización por objetivo antes de modificar. Las reglas específicas `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` se conservaron.
 
-El objetivo funcional activo continúa siendo completar las acciones básicas del versículo y añadir un `versículo activo` por defecto para ayudar a seguir visualmente la lectura sin perder el punto. Existe el PR #8 con una implementación `0.1.5` de este objetivo; todavía no debe tratarse como terminada ni lista para probar hasta que complete CI, merge, verificación de `main` y despliegue según `RELEASE_RULES.md`.
+El objetivo funcional activo es validar físicamente `0.1.19` desde GitHub Pages. Después de esa validación, el siguiente objetivo oficial es refinar el editor de Prédicas y preparar Modo Predicación, manteniendo las referencias inteligentes y el regreso exacto como base.
 
 ## Completado
 
@@ -119,23 +119,24 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Referencias bíblicas inteligentes 0.1.19 — en implementación
+### Referencias bíblicas inteligentes 0.1.19 — publicada y verificada automáticamente
 
-- PR #8 implementa persistencia local de un único versículo activo.
-- PR #8 añade resaltados persistentes separados del estado de versículo activo.
-- El panel contextual incluye Favorito, Nota, Resaltar, Copiar y Compartir.
-- Copiar usa texto + referencia; Compartir usa Web Share cuando está disponible y fallback al portapapeles.
-- La versión visible del build pasa a `0.1.5`.
-- El primer CI del PR falló en TypeScript; la causa fue el estrechamiento de tipo de `book` dentro de handlers anidados.
-- La corrección posterior pasó TypeScript, ESLint, build PWA y auditoría de dependencias en verde en la rama.
-- `0.1.5` quedó publicada en `https://biblia-pwa.vercel.app/` y el usuario confirmó que la versión visible es `0.1.5`. Durante la validación física pidió ajustar la interacción antes de cerrar D-029.
-- Ajuste `0.1.6` implementado y publicado: tocar un versículo solo mueve el activo; el menú se abre mediante un control discreto, se cierra con `X` o tocando fuera y se añade selección múltiple temporal.
-- La selección múltiple aplica inicialmente Favoritos, Resaltar, Copiar y Compartir como texto. Las notas permanecen individuales.
-- Compartir como imagen sigue reservado a una fase posterior, con la regla de advertir/reducir selección cuando el contenido no quepa de forma legible.
+- PR #36 implementó detección y persistencia estructurada de referencias bíblicas dentro de Introducción, Bosquejo/puntos y Conclusión.
+- Soporta inicialmente referencias disponibles en el corpus con formato `Libro capítulo:versículo` y rangos del mismo capítulo.
+- Cada referencia detectada ofrece vista rápida del pasaje sin abandonar la prédica.
+- `Abrir en Biblia` guarda primero la prédica y abre el pasaje exacto.
+- El lector muestra `Volver a prédica` y restaura la misma prédica, campo y posición aproximada de edición.
+- La validación automatizada móvil confirmó `Juan 1:1` y `Génesis 1:1-3`, vista rápida, apertura en Biblia, retorno seguro y ausencia de clipping evidente.
+- El build visible es `0.1.19`.
+- PR #36 fue fusionado a `main`; el CI de `main` pasó TypeScript, ESLint, build PWA y auditoría en verde.
+- GitHub Pages quedó habilitado y publicó correctamente `0.1.19` en `https://hnalvaradohn.github.io/biblia-pwa/`.
+- Vercel queda como respaldo y ya no es requisito para continuar el desarrollo.
+- Falta la validación física del usuario en su dispositivo.
+
 
 ## Objetivo activo
 
-Completar `0.1.19`: detectar y persistir referencias bíblicas estructuradas dentro de Prédicas, añadir vista rápida del pasaje, abrir en Biblia y regresar exactamente al campo/punto de la prédica.
+Validar físicamente `0.1.19` publicada en GitHub Pages: referencias detectadas, vista rápida, `Abrir en Biblia`, `Volver a prédica` y conservación del contenido.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -175,7 +176,7 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 - Diseño final de sincronización opcional con Google Drive.
 - Editor definitivo de prédicas cuando llegue esa fase.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
-- Proveedor definitivo de despliegue a largo plazo; el host de prueba no debe crear dependencia arquitectónica.
+- GitHub Pages es el canal principal de publicación actual; Vercel queda como respaldo. La app debe conservar portabilidad y no depender arquitectónicamente de un host específico.
 - Si se añadirá protección obligatoria de `main` mediante ruleset/branch protection; la conexión actual de automatización no dispone de administración suficiente para configurarlo directamente.
 
 ## Restricción de contenido para desarrollo
@@ -184,13 +185,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar PR/CI/merge/deployment de `0.1.19`.
-2. Validar físicamente detección de referencias en los tres campos de una prédica.
-3. Validar vista rápida y `Abrir en Biblia` sin pérdida de contenido.
-4. Confirmar `Volver a prédica` restaurando el campo original y el cursor junto a la referencia.
-5. Después avanzar al refinamiento del editor y Modo Predicación según el roadmap.
+1. Validar físicamente `0.1.19` desde `https://hnalvaradohn.github.io/biblia-pwa/`.
+2. Confirmar en dispositivo real detección de referencias, vista rápida, apertura en Biblia y regreso exacto sin perder contenido.
+3. Si la prueba física pasa, cerrar D-045.
+4. Después iniciar el refinamiento del editor de Prédicas y preparación de Modo Predicación según el roadmap.
 
-Estado de despliegue actual: producción sigue sirviendo `0.1.18`. `0.1.19` está implementada en el PR #36 y su CI de rama pasó TypeScript, ESLint, build PWA y auditoría en verde. Vercel volvió a alcanzar el límite diario gratuito de más de 100 deployments y rechazó los previews de la rama, por lo que `0.1.19` NO se fusiona ni se presenta como lista para probar hasta que pueda verificarse un preview y completar después merge, CI de main y producción.
+Estado de despliegue actual: `0.1.19` está fusionada a `main` en `b8ab6fc5feb1d6a22ea42f18c7b115676d96c191`. El CI de `main` terminó en `success`. El workflow de GitHub Pages completó correctamente build, auditoría, publicación y confirmó la URL `https://hnalvaradohn.github.io/biblia-pwa/`. Una comprobación automatizada posterior confirmó que esa publicación muestra `v0.1.19`, carga la navegación principal y expone la interfaz de referencias inteligentes. Vercel queda disponible únicamente como respaldo.
+
 
 ## Después de este objetivo
 

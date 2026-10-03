@@ -615,3 +615,18 @@ Reglas:
 - el regreso exacto no debe depender únicamente del botón Atrás del navegador;
 - esta etapa no añade todavía detección de abreviaturas complejas, referencias entre capítulos ni herramientas de comentario bíblico.
 
+
+## D-046 — GitHub Pages como publicación principal
+Estado: APROBADA
+
+GitHub Pages pasa a ser el canal principal de publicación de Biblia PWA. Vercel se conserva como respaldo opcional y no debe bloquear el avance del proyecto cuando alcance cuotas o límites temporales.
+
+Reglas:
+
+- la publicación principal se realiza desde GitHub Actions hacia GitHub Pages;
+- el repositorio sigue siendo la fuente técnica de verdad;
+- el build para Pages debe conservar rutas, PWA, service worker y navegación correctas bajo el subpath del repositorio;
+- CI, typecheck, lint, build y auditoría siguen siendo obligatorios antes de considerar una entrega en verde;
+- Vercel puede usarse como preview o respaldo cuando esté disponible, pero no es requisito para fusionar o publicar si GitHub Pages ya ofrece una validación equivalente;
+- no introducir dependencias específicas del proveedor que dificulten mover la PWA a otro host estático en el futuro;
+- datos personales, prédicas, notas, favoritos y resaltados continúan siendo locales al dispositivo y no se publican en GitHub Pages.
