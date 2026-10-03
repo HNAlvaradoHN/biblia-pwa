@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router'
 import { UpdatePrompt } from '../pwa/UpdatePrompt'
+import { AppearanceControl } from '../features/settings/AppearanceControl'
 
 type NavIconName = 'home' | 'bible' | 'sermon' | 'search'
 
@@ -59,7 +60,10 @@ export function AppShell() {
             <small>Base de prueba</small>
           </span>
         </NavLink>
-        <span className="version-badge">v{__APP_VERSION__}</span>
+        <div className="topbar-actions">
+          <AppearanceControl />
+          <span className="version-badge">v{__APP_VERSION__}</span>
+        </div>
       </header>
 
       <main className="app-content">
