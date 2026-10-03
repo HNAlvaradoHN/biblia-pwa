@@ -3,6 +3,18 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Temas curados y submenús blur 0.1.14
+
+- Eliminados los selectores libres de color de texto y fondo general para evitar combinaciones sin contraste.
+- Añadidos temas completos predefinidos: Claro, Sepia, Verde, Azul, Rojo, Morado y Noche.
+- Cada tema define sus propios colores de fondo, tarjetas, texto, bordes, marca, acento y superficies glass.
+- Corregida la herencia global de texto para que encabezado `Biblia`, nombres de libros y otros textos no desaparezcan en tema Noche.
+- Revisadas superficies de Inicio, Guardados y Buscar para eliminar mezclas con blanco fijo que lavaban el contraste.
+- El menú de los tres puntos ahora aparece sobre un backdrop con blur y conserva posicionamiento inteligente arriba/abajo.
+- Compartir, Modo de lectura y Apariencia usan superficies modales por encima de la navegación, con blur y scroll interno cuando no caben completos.
+- Los resaltados Azul, Verde, Rojo, Amarillo, Naranja y Morado permanecen suaves y adaptados a la superficie del tema.
+- Build visible actualizado a `0.1.14`.
+
 ## 2026-10-03 — Contraste de temas y resaltados 0.1.13
 
 - Revisados los tokens de color de los cuatro temas para mejorar contraste de texto, superficies, marca y navegación.
