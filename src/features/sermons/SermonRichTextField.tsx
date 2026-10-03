@@ -95,6 +95,9 @@ export const SermonRichTextField = forwardRef<
 ) {
   const editorRef = useRef<HTMLDivElement | null>(null)
   const pendingCaretRef = useRef<number | null>(null)
+  const referenceSignature = references
+    .map((reference) => `${reference.id}:${reference.sourceText}:${reference.startIndex}:${reference.endIndex}`)
+    .join('|')
 
   useImperativeHandle(
     forwardedRef,
@@ -150,7 +153,7 @@ export const SermonRichTextField = forwardRef<
     }
 
     pendingCaretRef.current = null
-  }, [references, value])
+  }, [referenceSignature, value])
 
   function handleInput() {
     const editor = editorRef.current
