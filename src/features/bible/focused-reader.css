@@ -277,3 +277,17 @@
     animation: none;
   }
 }
+
+
+html[data-verse-layout='flow'] .focus-mode-chapter .focus-reader-verses {
+  display: block;
+}
+
+html[data-verse-layout='flow'] .focus-mode-chapter .focus-reader-verses p {
+  display: inline;
+  margin-right: 0.35em;
+}
+
+html[data-verse-layout='flow'] .focus-mode-chapter .focus-reader-verses sup {
+  min-width: 1.45em;
+}
