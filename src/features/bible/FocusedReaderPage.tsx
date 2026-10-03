@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type PointerEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type TouchEvent } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
 import { bibleProvider } from '../../data/bible/provider'
 import './focused-reader.css'
@@ -19,7 +19,8 @@ export function FocusedReaderPage() {
   const book = bibleProvider.getBook(bookId)
   const requestedChapter = Number(chapterParam)
   const mode: FocusMode = searchParams.get('mode') === 'verse' ? 'verse' : 'chapter'
-  const pointerStartX = useRef<number | undefined>(undefined)
+  const touchStart = useRef<{ x: number; y: number } | undefined>(undefined)
+  const [entryPulse, setEntryPulse] = useState(true)
 
   const returnAnchor = searchParams.get('returnAnchor') ?? ''
   const returnChapter = Number(searchParams.get('returnChapter') ?? requestedChapter)
@@ -58,6 +59,12 @@ export function FocusedReaderPage() {
   }, [book, flatVerses, requestedChapter, returnAnchor])
 
   const [verseIndex, setVerseIndex] = useState(initialVerseIndex)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setEntryPulse(false), 1500)
+    return () => window.clearTimeout(timer)
+  }, [])
+
 
   const chapter = book?.chapters[chapterIndex]
   const verse = flatVerses[verseIndex]
@@ -117,19 +124,25 @@ export function FocusedReaderPage() {
     setChapterIndex((current) => current + 1)
   }
 
-  function handlePointerDown(event: PointerEvent<HTMLElement>) {
-    if (event.pointerType === 'mouse') return
-    pointerStartX.current = event.clientX
+  function handleTouchStart(event: TouchEvent<HTMLElement>) {
+    const touch = event.touches[0]
+    if (!touch) return
+    touchStart.current = { x: touch.clientX, y: touch.clientY }
   }
 
-  function handlePointerUp(event: PointerEvent<HTMLElement>) {
-    const startX = pointerStartX.current
-    pointerStartX.current = undefined
-    if (startX === undefined) return
+  function handleTouchEnd(event: TouchEvent<HTMLElement>) {
+    const start = touchStart.current
+    touchStart.current = undefined
+    const touch = event.changedTouches[0]
+    if (!start || !touch) return
 
-    const distance = event.clientX - startX
-    if (Math.abs(distance) < 70) return
-    if (distance < 0) goNext()
+    const distanceX = touch.clientX - start.x
+    const distanceY = touch.clientY - start.y
+
+    if (Math.abs(distanceX) < 55) return
+    if (Math.abs(distanceX) < Math.abs(distanceY) * 1.25) return
+
+    if (distanceX < 0) goNext()
     else goPrevious()
   }
 
@@ -159,8 +172,8 @@ export function FocusedReaderPage() {
 
       <main
         className="focus-reader-sheet"
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {mode === 'chapter' && chapter ? (
           <>
@@ -184,13 +197,13 @@ export function FocusedReaderPage() {
             ))}
           </>
         ) : verse ? (
-          <article className="focus-verse-card">
+          <article className={`focus-verse-card${entryPulse ? ' entry-pulse' : ''}`}>
             <p className="focus-verse-context">
               {verse.heading ?? bibleProvider.translation.label}
             </p>
             <h1>{book.name} {verse.chapter}:{verse.number}</h1>
             <blockquote>{verse.text}</blockquote>
-            <p className="focus-verse-hint">Deslizá horizontalmente o usá los botones para continuar.</p>
+            <p className="focus-verse-hint">Deslizá a izquierda o derecha, o usá Anterior/Siguiente.</p>
           </article>
         ) : null}
       </main>
