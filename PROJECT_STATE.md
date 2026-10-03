@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Versículos separados o corridos 0.1.16 — en implementación
+### Versículos separados o corridos 0.1.16 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.16`: añadir la preferencia persistente `versículos separados / versículos corridos` al panel de apariencia, manteniendo todas las acciones por versículo y respetando la disposición también en lectura enfocada por capítulo.
+Validar físicamente `0.1.16`, ya integrada y publicada: preferencia persistente `versículos separados / versículos corridos` en Apariencia, conservando acciones por versículo y respetando la disposición también en lectura enfocada por capítulo.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -159,7 +159,6 @@ La decisión completa está registrada como D-029 en `DECISIONS.md`.
 ## Decisiones de producto futuras ya registradas, pero no abiertas todavía
 
 - Diseño exacto de colores y personalización avanzada de resaltados.
-- Diseño exacto de `versículos corridos` y `versículos separados`.
 - Compartir versículos con imágenes/fondos y su flujo visual completo.
 - Fondos seleccionables dentro de la aplicación.
 - Temas adicionales además de día/noche.
@@ -185,13 +184,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar PR/CI/merge/deployment de `0.1.16`.
-2. Validar físicamente el cambio entre `Separados` y `Corridos` en lector continuo.
-3. Confirmar que resaltados, versículo activo, tres puntos y selección múltiple siguen funcionando en `Corridos`.
-4. Confirmar que capítulo por capítulo respeta la preferencia y versículo por versículo sigue individual.
-5. Después elegir el siguiente objetivo funcional del roadmap usando `APK_INVENTORY.md` como referencia.
+1. Validar físicamente el cambio entre `Separados` y `Corridos` en lector continuo.
+2. Confirmar que resaltados, versículo activo, tres puntos y selección múltiple siguen funcionando en `Corridos`.
+3. Confirmar que capítulo por capítulo respeta la preferencia y versículo por versículo sigue individual.
+4. Si pasa, cerrar D-043 y elegir el siguiente objetivo funcional del roadmap usando `APK_INVENTORY.md` como referencia.
 
-Estado de despliegue actual: `0.1.15` fue fusionada a `main` en `a6867abbd06875f9c30f655ff15d88320e2ea956`. Su CI de `main` (run `37128938156`) terminó en `success`, Vercel dejó producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle con `0.1.15`. La previsualización móvil confirmó el menú completo, encabezado visible, backdrop blur y paleta de resaltados sin recortes. El inventario APK inicial está documentado en `APK_INVENTORY.md`. `0.1.16` está en rama con la preferencia de versículos separados/corridos.
+Estado de despliegue actual: `0.1.16` fue fusionada a `main` en `7d14322a0c93a94800b86b1303df735e9b062328`. Su CI de `main` (run `37129777781`) terminó en `success`, Vercel dejó producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.16`. La previsualización automatizada confirmó `Separados`/`Corridos`, cambio inmediato, menú de tres puntos en modo corrido, resaltado individual y respeto de la preferencia en capítulo por capítulo; versículo por versículo permanece individual. Falta la validación física del usuario.
 
 ## Después de este objetivo
 
