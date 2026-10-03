@@ -78,7 +78,7 @@ Mientras está LOCKED_READ_ONLY, puede:
 - identificar bloqueos;
 - proponer acciones.
 
-No puede modificar archivos, ramas, PR, issues, workflows, memoria oficial ni configuración.
+No puede modificar archivos, ramas, PR, issues, workflows, memoria oficial ni configuración, salvo la reserva estrictamente limitada de `CURRENT_SESSION`/`NEXT_SESSION` definida en la sección 4.
 
 Para Biblia PWA, antes de la primera respuesta sincronizada debe completarse la reserva de identidad definida en la sección 4.
 
