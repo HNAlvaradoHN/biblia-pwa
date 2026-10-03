@@ -767,8 +767,8 @@ export function ReaderPage() {
 
     if (anchors.length === 0) {
       return {
-        chapter: activeVerse?.chapter ?? requestedChapter,
-        anchorId: activeVerse?.anchorId ?? '',
+        chapter: requestedChapter,
+        anchorId: '',
       }
     }
 
@@ -786,7 +786,7 @@ export function ReaderPage() {
 
     const chapter = Number(nearest.dataset.chapter)
     return {
-      chapter: Number.isFinite(chapter) ? chapter : activeVerse?.chapter ?? requestedChapter,
+      chapter: Number.isFinite(chapter) ? chapter : requestedChapter,
       anchorId: nearest.id,
     }
   }
