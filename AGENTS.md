@@ -1,5 +1,9 @@
 PAQUETE MAESTRO GENERAL DE REGLAS PARA PROYECTOS CON CHATGPT + GITHUB
 Versión del paquete: 4 — autonomía controlada y revisores automáticos
+PROTOCOL_VERSION: 4
+PROJECT_PROTOCOL: BIBLIA_PWA
+CURRENT_SESSION: 2
+NEXT_SESSION: 3
 Uso: reutilizable en cualquier proyecto.
 Objetivo: que un chat/agente nuevo pueda comprender el estado real de un proyecto desde GitHub, trabajar con seguridad y continuidad, y completar una tarea autorizada sin que el usuario tenga que microgestionar archivos, pruebas, memoria o handoff.
 
@@ -76,7 +80,12 @@ Mientras está LOCKED_READ_ONLY, puede:
 
 No puede modificar archivos, ramas, PR, issues, workflows, memoria oficial ni configuración.
 
-La primera respuesta sincronizada debe informar:
+Para Biblia PWA, antes de la primera respuesta sincronizada debe completarse la reserva de identidad definida en la sección 4.
+
+La primera respuesta sincronizada debe comenzar exactamente con una línea independiente:
+Ing. Bibia 📖 #N
+
+Sustituir N por el número realmente reservado. Inmediatamente después debe informar:
 LOCKED_READ_ONLY_REPORT
 - repo;
 - rama;
@@ -118,19 +127,49 @@ Al terminar:
 ======================================================================
 4. SINCRONIZACIÓN, NUMERACIÓN Y HANDSHAKE
 ======================================================================
-El protocolo completo vive en AGENTS.md vigente en main.
+Biblia PWA conserva obligatoriamente la identidad secuencial aprobada por el dueño. LOCKED_READ_ONLY y la identidad secuencial conviven; uno no sustituye al otro.
 
-Reglas mínimas:
-- sincroniza antes de cambiar;
-- lee AGENTS.md primero;
-- verifica protocol_version e identidad;
-- cumple numeración/handshake del proyecto;
-- no inventes handshake;
-- si AGENTS.md o una regla fundamental cambia durante la sesión, vuelve a LOCKED_READ_ONLY / UNSYNCED y resincroniza;
-- si falla la sync, reporta:
-SINCRONIZACIÓN INCOMPLETA — no iniciaré cambios.
+Antes de la primera respuesta de trabajo de todo chat nuevo, debe cumplirse en este orden:
+1. entrar en LOCKED_READ_ONLY;
+2. leer AGENTS.md completo desde main;
+3. leer PROJECT_BRIEF.md, PROJECT_STATE.md, DECISIONS.md, SECURITY.md, UI_RULES.md y RELEASE_RULES.md completos;
+4. leer CHANGELOG.md reciente hasta comprender los últimos cambios reales;
+5. leer cualquier memoria especializada directamente relevante para el objetivo;
+6. verificar repo, visibilidad, main/HEAD, PR/CI, bloqueos, trabajo paralelo, objetivo activo y siguiente paso;
+7. comprobar contradicciones materiales entre reglas, decisiones, estado y código;
+8. completar la revisión previa de seguridad y privacidad;
+9. leer CURRENT_SESSION y NEXT_SESSION vigentes;
+10. reservar NEXT_SESSION actualizando solo CURRENT_SESSION y NEXT_SESSION;
+11. volver a leer AGENTS.md desde main y verificar que la reserva quedó escrita correctamente;
+12. emitir la primera respuesta con la identidad exacta y el LOCKED_READ_ONLY_REPORT.
 
-No dupliques aquí reglas mutables que pertenecen al AGENTS.md específico.
+Reglas de reserva:
+- el chat toma el valor actual de NEXT_SESSION;
+- deja CURRENT_SESSION = número reservado y NEXT_SESSION = número reservado + 1;
+- esta reserva es la única mutación permitida durante LOCKED_READ_ONLY antes de una tarea autorizada;
+- la reserva solo puede modificar CURRENT_SESSION y NEXT_SESSION;
+- debe usar la versión/SHA más reciente y escribirse en main para impedir números duplicados;
+- si otro chat reservó primero, relee main, toma el nuevo NEXT_SESSION y repite; nunca fuerces, reutilices ni adivines un número;
+- después de reservar, el chat sigue en LOCKED_READ_ONLY hasta que exista una tarea suficientemente clara y autorizada;
+- si falla cualquier parte de la sincronización, reporta: SINCRONIZACIÓN INCOMPLETA — no iniciaré cambios.
+
+La identidad exacta es:
+Ing. Bibia 📖 #N
+
+Mostrarla certifica que lectura, sincronización y reserva fueron verificadas. No puede mostrarse si falta cualquiera de esos pasos.
+
+Durante una tarea autorizada:
+- trabaja un único objetivo activo salvo cambio explícito del dueño;
+- actualiza la memoria oficial afectada después de hitos significativos, no solo al final;
+- mantén PROJECT_STATE.md, DECISIONS.md y CHANGELOG.md alineados con el estado real;
+- no declares terminado sin implementación, pruebas/revisión/CI cuando apliquen y documentación coherente;
+- el siguiente chat debe poder continuar leyendo el repo sin depender de la conversación anterior.
+
+Restauración 2026-10-03:
+- último contador válido previo al reemplazo documental: CURRENT_SESSION: 2 / NEXT_SESSION: 3;
+- el dueño aclaró que nunca autorizó eliminar la identidad secuencial;
+- este chat de reparación no recibe identidad retroactiva;
+- el próximo chat nuevo debe reservar correctamente #3 antes de su primera respuesta de trabajo.
 
 ======================================================================
 5. MEMORIA OFICIAL Y HANDOFF
