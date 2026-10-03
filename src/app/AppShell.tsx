@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router'
+import { NavLink, Outlet, useLocation } from 'react-router'
 import { UpdatePrompt } from '../pwa/UpdatePrompt'
 import { AppearanceControl } from '../features/settings/AppearanceControl'
 
@@ -50,9 +50,14 @@ function NavIcon({ name }: { name: NavIconName }) {
 }
 
 export function AppShell() {
+  const location = useLocation()
+  const sermonReadingMode =
+    location.pathname.startsWith('/biblia/') &&
+    new URLSearchParams(location.search).get('fromSermon') === '1'
+
   return (
-    <div className="app-shell">
-      <header className="topbar">
+    <div className={sermonReadingMode ? 'app-shell sermon-reader-shell' : 'app-shell'}>
+      {!sermonReadingMode ? <header className="topbar">
         <NavLink className="brand" to="/" aria-label="Ir al inicio">
           <span className="brand-mark" aria-hidden="true">B</span>
           <span>
@@ -64,29 +69,31 @@ export function AppShell() {
           <AppearanceControl />
           <span className="version-badge">v{__APP_VERSION__}</span>
         </div>
-      </header>
+      </header> : null}
 
       <main className="app-content">
         <Outlet />
       </main>
 
-      <nav className="bottom-nav glass-dock" aria-label="Navegación principal">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.end}
-            className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
-          >
-            <span className="nav-icon">
-              <NavIcon name={item.icon} />
-            </span>
-            <small>{item.label}</small>
-          </NavLink>
-        ))}
-      </nav>
+      {!sermonReadingMode ? (
+        <nav className="bottom-nav glass-dock" aria-label="Navegación principal">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
+            >
+              <span className="nav-icon">
+                <NavIcon name={item.icon} />
+              </span>
+              <small>{item.label}</small>
+            </NavLink>
+          ))}
+        </nav>
+      ) : null}
 
-      <UpdatePrompt />
+      {!sermonReadingMode ? <UpdatePrompt /> : null}
     </div>
   )
 }
