@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Apariencia móvil y limpieza 0.1.12 — preparado para integración
+### Apariencia móvil y limpieza 0.1.12 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Integrar y validar `0.1.12`, que corrige específicamente el panel `Aa` reportado físicamente: debe permanecer completo dentro del viewport móvil, sobre todo el contenido y con scroll interno seguro. También consolida estilos duplicados del lector sin cambiar su comportamiento.
+Validar físicamente `0.1.12`, ya integrada y publicada, que corrige específicamente el panel `Aa` reportado: debe permanecer completo dentro del viewport móvil, sobre todo el contenido y con scroll interno seguro. También consolida estilos duplicados del lector sin cambiar su comportamiento.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,16 +185,16 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar PR/CI/merge/deployment de `0.1.12`.
-2. Validar físicamente que el panel `Aa` se vea completo, con encabezado accesible y scroll interno en móvil.
-3. Reconfirmar que los temas/tamaño/fuente/color/fondo siguen funcionando después de la corrección.
-4. Después elegir el siguiente objetivo del roadmap/inventario APK sin reabrir trabajo ya validado.
+1. Validar físicamente que el panel `Aa` de `0.1.12` se vea completo, con encabezado accesible y scroll interno en móvil.
+2. Reconfirmar que los temas, tamaño, fuente, color del texto y fondo general siguen funcionando después de la corrección.
+3. Si la prueba real pasa, cerrar D-038/D-039 y la corrección de `0.1.12`.
+4. Después completar el inventario comparativo de la APK externa y elegir el siguiente objetivo funcional sin reabrir trabajo ya validado.
 
-Estado de despliegue actual: producción sigue en `0.1.11`. El usuario confirmó que el panel `Aa` podía aparecer desplazado hacia arriba y quedar parcialmente fuera de pantalla. La rama `fix/appearance-sheet-and-cleanup-0112` corrige el problema con límites `100dvh`, safe areas, overlay superior, header sticky, bloqueo de scroll de fondo y limpieza de estilos duplicados. La tarea nocturna programada se ejecutó desde las 11:45 p. m. hasta las 5:45 a. m.; no hubo commits nuevos durante esa ventana ni cambios fuera del alcance autorizado. `0.1.12` queda pendiente de PR/CI/merge/deployment al iniciar este cierre de mañana.
+Estado de despliegue actual: `0.1.12` fue fusionada a `main` en `222957e95c6e89a3863c92d65b42ae3effb45add`. El CI de `main` (run `37122370733`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y el host estable `https://biblia-pwa.vercel.app/` quedó actualizado. La corrección usa límites `100dvh`, safe areas, overlay superior, header sticky, bloqueo de scroll de fondo y limpieza de estilos duplicados. La tarea nocturna programada se ejecutó desde las 11:45 p. m. hasta las 5:45 a. m.; no produjo commits adicionales durante esa ventana ni abrió funcionalidades nuevas. El cierre de mañana integró y publicó la corrección pendiente como `0.1.12`.
 
 ## Después de este objetivo
 
-Después de `0.1.11`, el siguiente objetivo funcional se seleccionará del roadmap aprobado y del inventario comparativo de la APK, sin reabrir como pendientes las personalizaciones ya incorporadas.
+Después de validar `0.1.12`, el siguiente objetivo funcional se seleccionará del roadmap aprobado y del inventario comparativo de la APK, sin reabrir como pendientes las personalizaciones ya incorporadas.
 
 ## Regla de actualización
 
