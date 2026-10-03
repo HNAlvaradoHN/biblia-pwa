@@ -3,6 +3,17 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Menú completo e inventario APK 0.1.15
+
+- En móvil el menú de acciones del versículo pasa a una hoja flotante completa dentro del viewport.
+- El panel respeta safe areas, queda por encima de la navegación y usa scroll interno cuando sea necesario.
+- El encabezado del menú permanece visible para conservar referencia y cierre.
+- Se mantiene backdrop blur y apariencia temática.
+- Creado `APK_INVENTORY.md` con clasificación REUTILIZABLE VERIFICADO / RECONSTRUIBLE / REQUIERE LICENCIA / NO REUTILIZAR.
+- El inventario consolida los hallazgos ya verificados de la APK externa y evita copiar corpus, assets, secretos o código sin autorización.
+- El siguiente candidato funcional documentado es la preferencia `versículos separados / versículos corridos`.
+- Build visible actualizado a `0.1.15`.
+
 ## 2026-10-03 — Temas curados y submenús blur 0.1.14
 
 - Eliminados los selectores libres de color de texto y fondo general para evitar combinaciones sin contraste.

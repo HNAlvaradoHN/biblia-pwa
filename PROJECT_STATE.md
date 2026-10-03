@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Temas curados y submenús blur 0.1.14 — publicado pendiente de validación física
+### Menú completo e inventario APK 0.1.15 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Validar físicamente `0.1.14`, ya integrada y publicada: temas curados con contraste controlado, textos corregidos en Noche y submenús superiores con blur y scroll interno seguro.
+Completar `0.1.15`: corregir el único menú aún incompleto en móvil convirtiendo las acciones del versículo en una hoja segura dentro del viewport y cerrar el inventario comparativo inicial de la APK externa.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,16 +185,16 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente Claro, Sepia, Verde, Azul, Rojo, Morado y Noche, comprobando marca Biblia, nombres de libros, tarjetas, navegación, avisos y lector.
-2. Validar menú de tres puntos al inicio y final de pantalla, más Compartir, Modo de lectura y Apariencia, confirmando blur, superposición y scroll interno.
-3. Revalidar resaltados en temas claros y Noche.
-4. Si pasa, cerrar D-039/D-040/D-041 y continuar con el inventario comparativo de la APK externa.
+1. Completar PR/CI/merge/deployment de `0.1.15`.
+2. Validar físicamente que el menú de acciones del versículo se vea completo en móvil y que pueda desplazarse internamente si hace falta.
+3. El inventario inicial de la APK queda documentado en `APK_INVENTORY.md` bajo D-031.
+4. Continuar inmediatamente con la preferencia de disposición `versículos separados / versículos corridos`, ya aprobada y sin dependencia de licencias.
 
-Estado de despliegue actual: `0.1.14` fue fusionada a `main` en `7d0ff7a74ff7092cae387a38f5d2ab7fe70c1fc3`. El CI de `main` (run `37127663848`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.14`. La previsualización automatizada confirmó los siete temas predefinidos, legibilidad en Noche/Rojo/Azul/Verde, menú de versículo totalmente visible con backdrop blur, submenús de Apariencia/Modo de lectura/Compartir sobre la navegación y paleta de resaltados Azul, Verde, Rojo, Amarillo, Naranja y Morado con tinte suave. Falta únicamente la validación física del usuario.
+Estado de despliegue actual: producción sirve `0.1.14`. La validación física confirmó que los temas y submenús principales mejoraron, pero el menú del versículo aún podía cortar la parte inferior de la paleta en móvil. `0.1.15` está en rama con una hoja móvil de altura segura y scroll interno. En paralelo se completó el inventario comparativo inicial de la APK externa en `APK_INVENTORY.md`. Pendiente CI, merge, deployment y validación física.
 
 ## Después de este objetivo
 
-Después de validar `0.1.14`, el siguiente objetivo funcional se seleccionará del roadmap aprobado y del inventario comparativo de la APK, sin reabrir como pendientes las personalizaciones ya incorporadas.
+Después de `0.1.15`, el siguiente objetivo funcional ya seleccionado es la preferencia `versículos separados / versículos corridos`, basada en decisiones previas y sin copiar recursos de la APK.
 
 ## Regla de actualización
 
