@@ -530,3 +530,17 @@ Reglas:
 - si un submenú no cabe completo, debe tener desplazamiento interno y permanecer accesible dentro del viewport;
 - el menú de los tres puntos mantiene posicionamiento inteligente arriba/abajo, pero siempre sobre un backdrop blur.
 
+## D-042 — Menú de versículo completo en móvil
+Estado: APROBADA
+
+En pantallas móviles el menú de acciones del versículo debe priorizar que todas las acciones sean accesibles y visibles por encima de conservar un anclaje estricto al botón de tres puntos.
+
+Reglas:
+
+- en móvil se presenta como hoja flotante dentro del viewport con margen seguro;
+- puede usar scroll interno cuando el contenido sea más alto que la pantalla;
+- el encabezado con referencia y cierre permanece visible durante el scroll;
+- debe respetar safe areas y quedar por encima de la navegación inferior;
+- conserva backdrop blur y contraste del tema;
+- en pantallas más amplias puede seguir usando posicionamiento contextual alrededor del versículo.
+
