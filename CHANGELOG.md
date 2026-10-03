@@ -3,6 +3,17 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-02 — Fondos de compartir, búsqueda ampliada y lector enfocado 0.1.8
+
+- `Compartir como imagen` añade cuatro fondos predeterminados, color personal e imagen personal local como fondo.
+- Las imágenes personales se procesan en el dispositivo; se aplica una capa de contraste para mantener legibilidad.
+- La búsqueda unificada encuentra libros por nombre además de coincidencias en versículos.
+- La palabra/frase buscada queda resaltada dentro de los resultados y se toleran búsquedas sin tildes.
+- Implementado el lector capítulo por capítulo como vista enfocada temporal.
+- El lector enfocado permite capítulo anterior/siguiente y gesto horizontal intencional en pantallas táctiles.
+- Al cerrar vuelve al lector normal y, cuando existe ancla de retorno, restaura la posición y la señala visualmente durante aproximadamente 2 segundos.
+- Build visible actualizado a `0.1.8`.
+
 ## 2026-10-02 — Compartir por formato y búsqueda bíblica 0.1.7
 
 - Al tocar un nuevo versículo fuera del modo de selección múltiple se limpia cualquier selección transitoria para asegurar un único versículo activo visible.
