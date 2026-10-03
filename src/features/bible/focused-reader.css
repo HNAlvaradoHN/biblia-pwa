@@ -1,0 +1,146 @@
+.focus-reader {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: #eee9df;
+  color: var(--ink);
+}
+
+.focus-reader-toolbar,
+.focus-reader-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 12px max(16px, env(safe-area-inset-left));
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.focus-reader-toolbar {
+  border-bottom: 1px solid var(--line);
+}
+
+.focus-reader-toolbar > div {
+  display: grid;
+  gap: 2px;
+}
+
+.focus-reader-toolbar span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.focus-reader-toolbar strong {
+  font-size: 0.95rem;
+}
+
+.focus-reader-toolbar button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--brand);
+  cursor: pointer;
+  font-size: 1.35rem;
+}
+
+.focus-reader-sheet {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(28px, 7vw, 58px) clamp(22px, 8vw, 86px) 48px;
+  background: #fffdf8;
+}
+
+.focus-reader-heading {
+  margin-bottom: 34px;
+  text-align: center;
+}
+
+.focus-reader-heading p {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.focus-reader-heading h1 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 500;
+}
+
+.focus-reader-section + .focus-reader-section {
+  margin-top: 34px;
+}
+
+.focus-reader-section h2 {
+  margin: 0 0 16px;
+  color: var(--brand);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.25rem, 4vw, 1.6rem);
+}
+
+.focus-reader-verses {
+  display: grid;
+  gap: 12px;
+}
+
+.focus-reader-verses p {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.1rem, 3.5vw, 1.32rem);
+  line-height: 1.78;
+}
+
+.focus-reader-verses sup {
+  display: inline-block;
+  min-width: 1.8em;
+  color: var(--accent);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.62em;
+  font-weight: 900;
+}
+
+.focus-reader-controls {
+  padding-top: 10px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+}
+
+.focus-reader-controls button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-strong);
+  color: var(--brand);
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.focus-reader-controls button:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.focus-reader-controls span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.focus-reader-empty {
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+}

@@ -79,3 +79,44 @@
     padding: 13px 14px;
   }
 }
+
+
+.search-group {
+  display: grid;
+  gap: 9px;
+}
+
+.search-group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.search-group-heading strong {
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+
+.search-group-heading span {
+  min-width: 28px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--brand);
+  text-align: center;
+  font-weight: 800;
+}
+
+.search-result-card mark {
+  padding: 0 0.12em;
+  border-radius: 0.28em;
+  background: color-mix(in srgb, var(--accent) 34%, #fff2a8);
+  color: inherit;
+}
+
+.book-result strong {
+  font-size: 1rem;
+}

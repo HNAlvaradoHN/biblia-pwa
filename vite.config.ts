@@ -35,6 +35,6 @@ export default defineConfig({
     }),
   ],
   define: {
-    __APP_VERSION__: JSON.stringify('0.1.7'),
+    __APP_VERSION__: JSON.stringify('0.1.8'),
   },
 })

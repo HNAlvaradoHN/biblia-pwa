@@ -382,3 +382,21 @@ Reglas:
 
 La siguiente función activa después de estabilizar estas acciones es la búsqueda bíblica de palabras o frases sobre todo el corpus disponible, con resultados que abren el versículo exacto.
 
+## D-034 — Personalización inicial al compartir imagen y búsqueda ampliada
+Estado: APROBADA
+
+La función `Compartir como imagen` debe ser útil desde su primera versión visual sin esperar a toda la futura personalización global de la aplicación.
+
+Reglas:
+
+- incluir varios fondos visuales predeterminados aptos para lectura;
+- permitir elegir un color de fondo personal;
+- permitir usar una imagen personal del dispositivo como fondo de esa composición, procesada localmente y sin subirla a un servicio externo;
+- conservar contraste mediante una capa de protección cuando se use una foto;
+- si el texto seleccionado no cabe de forma legible, pedir reducir la selección;
+- la personalización usada para compartir una imagen es independiente de los futuros fondos/temas permanentes de la aplicación.
+
+La búsqueda bíblica unificada también debe localizar libros por nombre además de palabras/frases dentro de versículos. En los resultados textuales debe resaltarse visualmente la coincidencia buscada, incluyendo coincidencias equivalentes sin tilde cuando sea posible.
+
+El lector capítulo por capítulo aprobado en D-022 pasa a implementación después de estas mejoras: vista enfocada, capítulo anterior/siguiente, gesto horizontal intencional y regreso al lector normal conservando la posición, con señal visual temporal al volver.
+
