@@ -324,7 +324,7 @@ Esta distinción evita confundir la guía temporal de lectura con los resaltados
 ## D-030 — Protocolo estricto de continuidad y repositorio publicable
 Estado: APROBADA / ACTUALIZADA PARA CONVIVIR CON AGENTS.md v4
 
-Todo chat nuevo debe tratar la lectura del estado y reglas del repositorio como una puerta obligatoria antes de trabajar. No puede responder sobre implementación ni editar hasta leer y verificar `AGENTS.md`, `PROJECT_BRIEF.md`, `PROJECT_STATE.md`, `DECISIONS.md`, `SECURITY.md`, `UI_RULES.md`, `RELEASE_RULES.md` y el `CHANGELOG.md` reciente, comprobar el repositorio oficial/privado y reservar su número secuencial.
+Todo chat nuevo debe tratar la lectura del estado y reglas del repositorio como una puerta obligatoria antes de trabajar. No puede responder sobre implementación ni editar hasta leer y verificar `AGENTS.md`, `PROJECT_BRIEF.md`, `PROJECT_STATE.md`, `DECISIONS.md`, `SECURITY.md`, `UI_RULES.md`, `RELEASE_RULES.md` y el `CHANGELOG.md` reciente, comprobar el repositorio oficial, verificar su visibilidad actual y reservar su número secuencial.
 
 Desde 2026-10-03, `AGENTS.md` v4 y la identidad secuencial conviven: todo chat nuevo comienza en `LOCKED_READ_ONLY`, completa la lectura y sincronización obligatorias, reserva y verifica su identidad `Ing. Bibia 📖 #N`, emite el `LOCKED_READ_ONLY_REPORT` y solo modifica producto cuando existe una tarea autorizada. La identidad secuencial no puede eliminarse ni sustituirse sin aprobación explícita del dueño.
 
