@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Gestos y resaltados por color 0.1.10 — en implementación
+### Gestos y resaltados por color 0.1.10 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar la entrega `0.1.10`: corregir el gesto horizontal y el punto exacto de entrada a modos enfocados, y avanzar de inmediato al siguiente objetivo aprobado de resaltados por colores con selección múltiple.
+Completar la validación física de `0.1.10`: gesto horizontal real, entrada exacta desde el versículo activo y resaltados por color con selección múltiple. La implementación, CI, merge y despliegue ya están completos.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,13 +185,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI/revisión de `0.1.10`.
-2. Validar físicamente el gesto horizontal, entrada exacta desde el versículo activo y señal visual inicial en modo versículo.
-3. Validar paleta de resaltados, estilo suave, aplicación múltiple y eliminación del resaltado común.
-4. Si la prueba real pasa, cerrar D-035/D-037.
-5. Continuar con personalización global de tipografía, tamaño, color de texto, temas y fondo general.
+1. Validar físicamente el gesto horizontal, entrada exacta desde el versículo activo y señal visual inicial en modo versículo.
+2. Validar paleta de resaltados, estilo suave, aplicación múltiple y eliminación del resaltado común.
+3. Si la prueba real pasa, cerrar D-035/D-037.
+4. El siguiente objetivo oficial ya definido es personalización global de tipografía, tamaño, color de texto, temas y fondo general.
 
-Estado de despliegue actual: producción sirve `0.1.9`. La entrega `0.1.10` está en rama con corrección del gesto táctil, entrada exacta desde el versículo activo y resaltados por color. El primer CI del PR falló en TypeScript por un estrechamiento de `activeVerse` después de una rama que ya lo descartaba; se corrigió usando el capítulo solicitado como fallback y el CI posterior pasó TypeScript, ESLint, build PWA y auditoría. La previsualización automatizada confirmó entrada exacta a Génesis 1:3, paleta de resaltados, aplicación por lote y eliminación del resaltado común. La automatización no reproduce de forma fiable un gesto táctil físico, por lo que el swipe horizontal queda IMPLEMENTADO_PENDIENTE_VALIDACIÓN en dispositivo real. No debe cerrarse la entrega hasta merge, CI de `main`, deployment y validación física.
+Estado de despliegue actual: `0.1.10` fue fusionada a `main` en `7e294b287deb3fc84eb626a002d4a1dd5764d214`. El CI de `main` (run `37091491175`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.10`. La previsualización automatizada confirmó entrada exacta a Génesis 1:3, paleta de resaltados, aplicación por lote y eliminación del resaltado común. La automatización no reproduce de forma fiable un gesto táctil físico, por lo que el swipe horizontal queda `IMPLEMENTADO_PENDIENTE_VALIDACIÓN` en dispositivo real.
 
 ## Después de este objetivo
 
