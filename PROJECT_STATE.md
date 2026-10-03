@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Modos de lectura 0.1.9 — en implementación
+### Modos de lectura 0.1.9 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -185,13 +185,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI/revisión de `0.1.9`.
-2. Desplegar y validar físicamente el selector de modos de lectura.
-3. Confirmar retorno exacto desde capítulo/versículo al lector continuo con auto-scroll e indicador temporal.
-4. Después avanzar a resaltados por color con selección múltiple y detección de propiedades comunes, según lo aprobado por el usuario.
-5. Mantener la personalización global de tipografía/tema/fondo como el objetivo siguiente después de resaltados.
+1. Validar físicamente `0.1.9`: selector de modos, capítulo por capítulo, versículo por versículo y retorno exacto al continuo.
+2. Confirmar auto-scroll e indicador temporal al regresar.
+3. Si la prueba real pasa, cerrar D-035.
+4. Después avanzar a resaltados por color con selección múltiple y detección de propiedades comunes.
+5. Mantener la personalización global de tipografía/tema/fondo como objetivo siguiente después de resaltados.
 
-Estado de despliegue actual: producción sirve `0.1.8`. La entrega `0.1.9` está en rama e incorpora el selector de modos de lectura y el nuevo modo versículo por versículo. No debe marcarse como lista hasta completar CI, revisión, merge, deployment y validación.
+Estado de despliegue actual: `0.1.9` fue fusionada a `main` en `166b3064eb180b9cc3a45220fa42d97a47d0c073`. El CI de `main` (run `37089921328`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve la nueva entrega. La previsualización automatizada confirmó los tres modos de lectura, navegación capítulo/versículo, cruce de capítulo en modo versículo y regreso al lector normal. Falta validación física del usuario.
 
 ## Después de este objetivo
 
