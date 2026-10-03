@@ -8,6 +8,7 @@ import { FocusedReaderPage } from '../features/bible/FocusedReaderPage'
 import { FavoritesPage, NotesPage } from '../features/saved/SavedPages'
 import { ComingSoonPage } from '../features/placeholders/ComingSoonPage'
 import { SearchPage } from '../features/search/SearchPage'
+import { SermonEditorPage, SermonsPage } from '../features/sermons/SermonsPage'
 
 export function App() {
   return (
@@ -20,15 +21,8 @@ export function App() {
         <Route path="biblia/:bookId/:chapter/foco" element={<FocusedReaderPage />} />
         <Route path="favoritos" element={<FavoritesPage />} />
         <Route path="notas" element={<NotesPage />} />
-        <Route
-          path="predicas"
-          element={
-            <ComingSoonPage
-              title="Prédicas"
-              description="El editor de prédicas se construirá cuando cerremos la base bíblica y el lector."
-            />
-          }
-        />
+        <Route path="predicas" element={<SermonsPage />} />
+        <Route path="predicas/:sermonId" element={<SermonEditorPage />} />
         <Route path="buscar" element={<SearchPage />} />
         <Route
           path="*"
