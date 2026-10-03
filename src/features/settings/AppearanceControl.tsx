@@ -220,6 +220,17 @@ export function AppearanceControl() {
     window.localStorage.setItem(storageKey, JSON.stringify(preferences))
   }, [preferences])
 
+  useEffect(() => {
+    if (!open) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [open])
+
   const currentTheme = themes[preferences.theme]
   const contrast = useMemo(
     () => contrastRatio(preferences.readerText, currentTheme.readerSurface),

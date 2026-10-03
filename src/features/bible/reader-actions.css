@@ -20,6 +20,7 @@
 }
 
 .verse-item.active .verse-button {
+  padding-right: 42px;
   background: color-mix(in srgb, var(--accent-soft) 52%, transparent);
   box-shadow: inset 3px 0 0 color-mix(in srgb, var(--accent) 72%, transparent);
 }
@@ -70,9 +71,6 @@
   line-height: 1;
 }
 
-.verse-item.active .verse-button {
-  padding-right: 42px;
-}
 
 .verse-action-panel {
   display: grid;
@@ -308,6 +306,7 @@
 }
 
 .reader-focus-link {
+  appearance: none;
   display: inline-flex;
   align-items: center;
   min-height: 32px;
@@ -315,6 +314,7 @@
   border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
   border-radius: 10px;
   background: color-mix(in srgb, var(--surface-strong) 70%, transparent);
+  font: inherit;
   font-size: 0.75rem;
 }
 
@@ -443,11 +443,6 @@
   }
 }
 
-
-.reader-focus-link {
-  appearance: none;
-  font: inherit;
-}
 
 .reading-mode-card {
   display: grid;
