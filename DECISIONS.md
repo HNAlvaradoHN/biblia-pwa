@@ -322,11 +322,11 @@ Reglas:
 Esta distinción evita confundir la guía temporal de lectura con los resaltados que el usuario decide conservar como guardados permanentes.
 
 ## D-030 — Protocolo estricto de continuidad y repositorio publicable
-Estado: SUPERSEDIDA EN SU MECÁNICA POR AGENTS.md v4
+Estado: APROBADA / ACTUALIZADA PARA CONVIVIR CON AGENTS.md v4
 
-Todo chat nuevo debe tratar la lectura del estado y reglas del repositorio como una puerta obligatoria antes de trabajar. No puede responder sobre implementación ni editar hasta leer y verificar `AGENTS.md`, `PROJECT_BRIEF.md`, `PROJECT_STATE.md`, `DECISIONS.md`, `SECURITY.md`, `UI_RULES.md`, `RELEASE_RULES.md` y el `CHANGELOG.md` reciente, comprobar el repositorio oficial/privado y reservar su número secuencial.
+Todo chat nuevo debe tratar la lectura del estado y reglas del repositorio como una puerta obligatoria antes de trabajar. No puede responder sobre implementación ni editar hasta leer y verificar `AGENTS.md`, `PROJECT_BRIEF.md`, `PROJECT_STATE.md`, `DECISIONS.md`, `SECURITY.md`, `UI_RULES.md`, `RELEASE_RULES.md` y el `CHANGELOG.md` reciente, comprobar el repositorio oficial, verificar su visibilidad actual y reservar su número secuencial.
 
-Desde 2026-10-02, la mecánica de identidad secuencial anterior queda sustituida por el protocolo vigente de `AGENTS.md` v4: todo chat nuevo comienza en `LOCKED_READ_ONLY`, sincroniza contra GitHub, emite el `LOCKED_READ_ONLY_REPORT` y solo escribe con una tarea autorizada. Las obligaciones de seguridad, continuidad y repositorio público se mantienen.
+Desde 2026-10-03, `AGENTS.md` v4 y la identidad secuencial conviven: todo chat nuevo comienza en `LOCKED_READ_ONLY`, completa la lectura y sincronización obligatorias, reserva y verifica su identidad `Ing. Bibia 📖 #N`, emite el `LOCKED_READ_ONLY_REPORT` y solo modifica producto cuando existe una tarea autorizada. La identidad secuencial no puede eliminarse ni sustituirse sin aprobación explícita del dueño.
 
 Además, el repositorio se desarrollará desde ahora como potencialmente público: no puede contener secretos, credenciales, tokens, claves privadas, URLs firmadas temporales, datos personales reales, bases de datos personales ni otros valores cuya exposición comprometa al usuario. Los secretos nunca pueden depender de permanecer ocultos dentro del frontend/PWA.
 
@@ -663,3 +663,20 @@ Reglas iniciales:
 - conserva las referencias bíblicas remarcadas y permite consultar su pasaje en una vista rápida;
 - siempre existe una salida explícita `Volver a editar`;
 - esta primera base no añade todavía temporizadores, anotaciones en vivo, control remoto ni herramientas de presentación avanzadas.
+
+
+## D-049 — Identidad secuencial obligatoria integrada con gobernanza v4
+Estado: APROBADA
+
+El dueño confirma que la identidad secuencial `Ing. Bibia 📖 #N` sigue siendo obligatoria y nunca fue autorizada su eliminación.
+
+Reglas:
+
+- `AGENTS.md` v4 se conserva como marco de seguridad, sincronización, autorización por objetivo y autonomía controlada.
+- La identidad secuencial se integra como handshake específico de Biblia PWA y no es sustituida por `LOCKED_READ_ONLY`.
+- Todo chat nuevo debe leer y sincronizar primero, reservar `NEXT_SESSION`, volver a verificar `AGENTS.md` y solo entonces emitir su primera respuesta de trabajo.
+- La primera línea debe usar exactamente `Ing. Bibia 📖 #N`, seguida del `LOCKED_READ_ONLY_REPORT`.
+- La reserva de identidad es la única escritura permitida antes de una tarea autorizada y solo puede cambiar `CURRENT_SESSION`/`NEXT_SESSION`.
+- El contador válido restaurado queda en `CURRENT_SESSION: 2` y `NEXT_SESSION: 3`; no se asignan identidades retroactivas a chats que no completaron correctamente el handshake.
+- Durante cada tarea autorizada, la memoria oficial afectada debe mantenerse actualizada después de hitos significativos y no reconstruirse únicamente al final.
+- Ninguna decisión aprobada de gobernanza puede considerarse sustituida por una edición documental posterior sin autorización explícita del dueño.

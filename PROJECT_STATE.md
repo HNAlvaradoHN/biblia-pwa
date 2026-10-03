@@ -12,7 +12,7 @@ Visibilidad actual: pública desde el 2026-09-16 por autorización explícita de
 
 La versión `0.1.19` quedó integrada en `main`, pasó CI y se publicó correctamente mediante GitHub Pages. La validación automatizada confirmó la versión visible, navegación y el flujo de referencias bíblicas inteligentes; queda pendiente la validación física del usuario en su dispositivo.
 
-El 2026-10-02 el usuario reemplazó `AGENTS.md` por el paquete maestro general de reglas v4. El nuevo protocolo obliga a iniciar cada chat en `LOCKED_READ_ONLY`, sincronizar contra GitHub y obtener autorización por objetivo antes de modificar. Las reglas específicas `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` se conservaron.
+El 2026-10-02 se incorporó el paquete maestro general v4. El 2026-10-03 el dueño aclaró que nunca autorizó eliminar la identidad secuencial. La gobernanza queda corregida: todo chat nuevo inicia en `LOCKED_READ_ONLY`, completa lectura/sincronización, reserva y verifica `Ing. Bibia 📖 #N`, emite `LOCKED_READ_ONLY_REPORT` y solo modifica producto con una tarea autorizada. `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` siguen vigentes.
 
 El objetivo funcional activo es validar físicamente `0.1.19` desde GitHub Pages. Después de esa validación, el siguiente objetivo oficial es refinar el editor de Prédicas y preparar Modo Predicación, manteniendo las referencias inteligentes y el regreso exacto como base.
 
@@ -133,6 +133,13 @@ Pendiente específico:
 - Vercel queda como respaldo y ya no es requisito para continuar el desarrollo.
 - El usuario confirmó físicamente que la referencia se detecta y se ve, pero pidió refinar la interacción: verla remarcada dentro del texto, tocarla allí mismo y usar una lectura bíblica enfocada con regreso exclusivo a la prédica.
 
+
+## Estado de gobernanza
+
+- Identidad secuencial obligatoria restaurada e integrada con v4.
+- Último contador válido: `CURRENT_SESSION: 2`, `NEXT_SESSION: 3`.
+- Este chat de reparación no recibe identidad retroactiva; el próximo chat nuevo debe reservar `#3`.
+- La memoria oficial debe actualizarse durante el trabajo después de hitos significativos, manteniendo el orden real de implementación, validación y documentación.
 
 ## Objetivo activo
 
