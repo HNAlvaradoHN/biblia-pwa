@@ -1,3 +1,13 @@
+## 2026-10-03 — Restauración de identidad secuencial y coherencia de gobernanza
+
+- Aclarado que la identidad secuencial `Ing. Bibia 📖 #N` sigue siendo obligatoria.
+- Restaurados en `AGENTS.md` `PROTOCOL_VERSION`, `CURRENT_SESSION: 2` y `NEXT_SESSION: 3`.
+- Integrado el handshake secuencial con `LOCKED_READ_ONLY`: primero lectura y sincronización completas; después reserva/verificación de identidad; luego primera respuesta con identidad + `LOCKED_READ_ONLY_REPORT`.
+- La reserva de identidad queda como única mutación permitida antes de una tarea autorizada y solo puede actualizar el contador de sesión.
+- Corregida D-030 y añadida D-049 para mantener coherencia entre decisiones y gobernanza.
+- Registrado que la memoria oficial afectada debe actualizarse después de hitos significativos durante el trabajo, no reconstruirse únicamente al final.
+- Este ajuste es exclusivamente documental/de gobernanza; no modifica código ni versión ejecutable de Biblia PWA.
+
 # CHANGELOG.md
 
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
