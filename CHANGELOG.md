@@ -6,6 +6,7 @@
 - La reserva de identidad queda como única mutación permitida antes de una tarea autorizada y solo puede actualizar el contador de sesión.
 - Corregida D-030 y añadida D-049 para mantener coherencia entre decisiones y gobernanza.
 - Registrado que la memoria oficial afectada debe actualizarse después de hitos significativos durante el trabajo, no reconstruirse únicamente al final.
+- Corregidas referencias antiguas a `0.1.19` en el estado general para que el objetivo activo y la primera respuesta reflejen `0.1.21` y el handshake restaurado.
 - Este ajuste es exclusivamente documental/de gobernanza; no modifica código ni versión ejecutable de Biblia PWA.
 
 # CHANGELOG.md

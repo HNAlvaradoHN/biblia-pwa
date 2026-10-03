@@ -10,11 +10,11 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
 Visibilidad actual: pública desde el 2026-09-16 por autorización explícita del usuario.
 
-La versión `0.1.19` quedó integrada en `main`, pasó CI y se publicó correctamente mediante GitHub Pages. La validación automatizada confirmó la versión visible, navegación y el flujo de referencias bíblicas inteligentes; queda pendiente la validación física del usuario en su dispositivo.
+La versión `0.1.21` está integrada en `main`, pasó CI y se publicó correctamente mediante GitHub Pages. La validación automatizada confirmó build, navegación y publicación; queda pendiente la validación física del usuario en su dispositivo para el toque normal de referencias inline, la vista rápida centrada y la primera base de Modo Predicación.
 
 El 2026-10-02 se incorporó el paquete maestro general v4. El 2026-10-03 el dueño aclaró que nunca autorizó eliminar la identidad secuencial. La gobernanza queda corregida: todo chat nuevo inicia en `LOCKED_READ_ONLY`, completa lectura/sincronización, reserva y verifica `Ing. Bibia 📖 #N`, emite `LOCKED_READ_ONLY_REPORT` y solo modifica producto con una tarea autorizada. `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` siguen vigentes.
 
-El objetivo funcional activo es validar físicamente `0.1.19` desde GitHub Pages. Después de esa validación, el siguiente objetivo oficial es refinar el editor de Prédicas y preparar Modo Predicación, manteniendo las referencias inteligentes y el regreso exacto como base.
+El objetivo funcional activo es validar físicamente `0.1.21` desde GitHub Pages. Después de esa validación, el siguiente objetivo oficial es refinar Modo Predicación y continuar el roadmap de Prédicas, manteniendo las referencias inteligentes y el regreso exacto como base.
 
 ## Completado
 
@@ -30,8 +30,8 @@ El objetivo funcional activo es validar físicamente `0.1.19` desde GitHub Pages
 ### Continuidad y seguridad vigentes
 
 - `AGENTS.md` contiene el paquete maestro general v4 de autonomía controlada y revisores automáticos.
-- Todo chat nuevo comienza en `LOCKED_READ_ONLY`; puede leer, revisar y diagnosticar, pero no escribir hasta sincronizar y tener una tarea autorizada.
-- La primera respuesta sincronizada debe usar el formato `LOCKED_READ_ONLY_REPORT` definido por `AGENTS.md`.
+- Todo chat nuevo comienza en `LOCKED_READ_ONLY`; puede leer, revisar y diagnosticar. Antes de una tarea autorizada solo puede realizar la reserva estrictamente limitada de `CURRENT_SESSION`/`NEXT_SESSION` exigida por `AGENTS.md`.
+- La primera respuesta sincronizada debe comenzar con la identidad exacta `Ing. Bibia 📖 #N` ya reservada y verificada, seguida del `LOCKED_READ_ONLY_REPORT` definido por `AGENTS.md`.
 - Si cambia `AGENTS.md`, `protocol_version` o una regla fundamental durante una sesión, el chat vuelve a `LOCKED_READ_ONLY / UNSYNCED` y debe resincronizar.
 - `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` siguen vigentes como reglas específicas del proyecto.
 - `SECURITY.md` trata todo contenido versionado, ramas e historial como públicamente accesibles.
