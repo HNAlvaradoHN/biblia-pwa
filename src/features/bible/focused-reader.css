@@ -144,3 +144,60 @@
   justify-items: center;
   gap: 14px;
 }
+
+
+.focus-mode-verse .focus-reader-sheet {
+  display: grid;
+  place-items: center;
+}
+
+.focus-verse-card {
+  display: grid;
+  gap: 18px;
+  width: min(100%, 760px);
+  margin: auto;
+  padding: clamp(28px, 8vw, 56px);
+  border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+  box-shadow: 0 24px 60px rgba(29, 42, 34, 0.08);
+  text-align: center;
+}
+
+.focus-verse-context {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.focus-verse-card h1 {
+  margin: 0;
+  color: var(--brand);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.65rem, 6vw, 2.5rem);
+  font-weight: 500;
+}
+
+.focus-verse-card blockquote {
+  margin: 0;
+  color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.35rem, 5vw, 2rem);
+  line-height: 1.7;
+}
+
+.focus-verse-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+@media (max-width: 560px) {
+  .focus-verse-card {
+    padding: 30px 22px;
+    border-radius: 22px;
+  }
+}

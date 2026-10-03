@@ -400,3 +400,24 @@ La búsqueda bíblica unificada también debe localizar libros por nombre ademá
 
 El lector capítulo por capítulo aprobado en D-022 pasa a implementación después de estas mejoras: vista enfocada, capítulo anterior/siguiente, gesto horizontal intencional y regreso al lector normal conservando la posición, con señal visual temporal al volver.
 
+## D-035 — Selector de modo de lectura
+Estado: APROBADA
+
+El acceso directo `Leer capítulo` se sustituye por un selector `Modo de lectura` para que el usuario elija la experiencia sin perder la posición del lector normal.
+
+Modos iniciales:
+
+- `Continuo`: mantiene el lector vertical normal actual.
+- `Capítulo por capítulo`: muestra un capítulo completo en una vista enfocada con anterior/siguiente y gesto horizontal intencional.
+- `Versículo por versículo`: muestra una sola referencia por vez para lectura pausada y permite avanzar o retroceder entre versículos, incluso al cruzar capítulos.
+
+Reglas:
+
+- entrar a un modo enfocado debe capturar la posición real más cercana del lector normal, no solo el capítulo de la URL;
+- cerrar cualquier modo enfocado debe regresar al lector normal a esa posición;
+- al regresar, la pantalla debe desplazarse automáticamente hasta el ancla guardada;
+- la posición recuperada debe señalarse visualmente durante aproximadamente 2 segundos;
+- los controles de salida deben ser evidentes y no depender únicamente de gestos;
+- los gestos horizontales no deben reemplazar los botones anterior/siguiente;
+- este selector de modo es independiente de la futura preferencia visual de versículos corridos o separados.
+

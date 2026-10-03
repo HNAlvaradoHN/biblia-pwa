@@ -434,3 +434,58 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+.reader-focus-link {
+  appearance: none;
+  font: inherit;
+}
+
+.reading-mode-card {
+  display: grid;
+  gap: 12px;
+  width: min(100%, 540px);
+  padding: 16px;
+  border-radius: 18px;
+}
+
+.reading-mode-card > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.reading-mode-options {
+  display: grid;
+  gap: 9px;
+}
+
+.reading-mode-option {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-strong) 80%, transparent);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.reading-mode-option strong {
+  color: var(--brand);
+  font-size: 0.9rem;
+}
+
+.reading-mode-option span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.reading-mode-option.active {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: var(--accent-soft);
+}
