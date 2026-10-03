@@ -591,3 +591,27 @@ Reglas:
 - el autosave debe reducir riesgo de pérdida accidental durante preparación;
 - la interfaz debe funcionar en móvil, tablet y computadora.
 
+## D-045 — Referencias bíblicas inteligentes en Prédicas
+Estado: APROBADA
+
+La Fase 5 comienza detectando referencias bíblicas escritas dentro de Introducción, Bosquejo/puntos y Conclusión, conservando además una representación estructurada independiente del texto visible.
+
+Primera etapa:
+
+- detectar referencias de libros disponibles en el corpus con formato `Libro capítulo:versículo` y rangos `Libro capítulo:versículo-versículo`;
+- guardar estructura interna con libro, capítulo, versículo inicial/final, campo y posición del texto;
+- mostrar controles compactos para abrir una vista rápida del pasaje sin abandonar la prédica;
+- permitir `Abrir en Biblia` desde la vista rápida;
+- al abrir Biblia desde una prédica, mostrar una acción explícita `Volver a prédica`;
+- al volver, restaurar la misma prédica, el campo original y la posición de edición aproximada de la referencia.
+
+Reglas:
+
+- la detección depende del corpus disponible y no inventa referencias inexistentes;
+- el texto bíblico mostrado proviene del proveedor bíblico actual, nunca se copia dentro del documento de prédica;
+- las referencias estructuradas se regeneran al guardar para mantenerse sincronizadas con el texto;
+- la vista rápida debe ser modal, legible, compatible con temas y con blur, sin perder el contenido no guardado;
+- abrir Biblia debe forzar un guardado seguro antes de navegar;
+- el regreso exacto no debe depender únicamente del botón Atrás del navegador;
+- esta etapa no añade todavía detección de abreviaturas complejas, referencias entre capítulos ni herramientas de comentario bíblico.
+
