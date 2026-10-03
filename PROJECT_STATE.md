@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Temas curados y submenús blur 0.1.14 — en implementación
+### Temas curados y submenús blur 0.1.14 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.14`: sustituir los colores libres por temas predefinidos completos con contraste controlado, corregir textos que seguían heredando colores incorrectos en Noche y convertir los submenús en superficies superiores con blur y scroll interno seguro.
+Validar físicamente `0.1.14`, ya integrada y publicada: temas curados con contraste controlado, textos corregidos en Noche y submenús superiores con blur y scroll interno seguro.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,13 +185,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar PR/CI/merge/deployment de `0.1.14`.
-2. Validar físicamente Claro, Sepia, Verde, Azul, Rojo, Morado y Noche, comprobando marca Biblia, nombres de libros, tarjetas, navegación, avisos y lector.
-3. Validar menú de tres puntos al inicio y final de pantalla, más Compartir, Modo de lectura y Apariencia, confirmando blur, superposición y scroll interno.
-4. Revalidar resaltados en temas claros y Noche.
-5. Si pasa, cerrar D-039/D-040/D-041 y continuar con el inventario comparativo de la APK externa.
+1. Validar físicamente Claro, Sepia, Verde, Azul, Rojo, Morado y Noche, comprobando marca Biblia, nombres de libros, tarjetas, navegación, avisos y lector.
+2. Validar menú de tres puntos al inicio y final de pantalla, más Compartir, Modo de lectura y Apariencia, confirmando blur, superposición y scroll interno.
+3. Revalidar resaltados en temas claros y Noche.
+4. Si pasa, cerrar D-039/D-040/D-041 y continuar con el inventario comparativo de la APK externa.
 
-Estado de despliegue actual: `0.1.13` fue fusionada a `main` en `64b245dc946c0118cd0e041b96fc456e9b2e3b08`, su CI de `main` (run `37123937687`) terminó en `success` y Vercel dejó producción en `READY`. La validación física posterior confirmó que todavía quedaban textos con contraste insuficiente en Noche y que el usuario prefiere temas completos predefinidos en lugar de colores libres. `0.1.14` está en rama con temas curados, corrección de herencia global de texto y submenús modales con blur. Pendiente CI, merge, deployment y validación física.
+Estado de despliegue actual: `0.1.14` fue fusionada a `main` en `7d0ff7a74ff7092cae387a38f5d2ab7fe70c1fc3`. El CI de `main` (run `37127663848`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.14`. La previsualización automatizada confirmó los siete temas predefinidos, legibilidad en Noche/Rojo/Azul/Verde, menú de versículo totalmente visible con backdrop blur, submenús de Apariencia/Modo de lectura/Compartir sobre la navegación y paleta de resaltados Azul, Verde, Rojo, Amarillo, Naranja y Morado con tinte suave. Falta únicamente la validación física del usuario.
 
 ## Después de este objetivo
 
