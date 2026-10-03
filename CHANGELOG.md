@@ -3,6 +3,16 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Formato rápido de bosquejos 0.1.19
+
+- Añadida barra de formato horizontal en `Bosquejo y puntos`, optimizada para móvil.
+- Incluye Título 1, Título 2, Título 3, negrita, cursiva, lista numerada, viñetas, cita, sangría y separador.
+- Las acciones trabajan sobre la selección o la línea actual y devuelven el foco al editor para continuar escribiendo.
+- El formato se conserva como texto ligero compatible con los bosquejos existentes de `0.1.18`; no hay migración destructiva ni dependencia nueva.
+- El autosave local existente continúa guardando el contenido formateado offline.
+- Referencias bíblicas inteligentes y vista rápida permanecen como la siguiente fase funcional.
+- Build visible actualizado a `0.1.19`.
+
 ## 2026-10-03 — Base local de Prédicas 0.1.18
 
 - La pestaña `Prédicas` deja de ser placeholder y abre `Mis prédicas`.

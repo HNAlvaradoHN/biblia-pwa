@@ -234,6 +234,59 @@
   min-height: 300px;
 }
 
+
+.sermon-outline-field {
+  min-width: 0;
+}
+
+.sermon-format-toolbar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
+  scrollbar-width: thin;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sermon-format-toolbar button {
+  flex: 0 0 auto;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--reader-surface) 92%, transparent);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 780;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.sermon-format-toolbar button:active {
+  transform: translateY(1px);
+  background: color-mix(in srgb, var(--accent-soft) 58%, var(--reader-surface));
+}
+
+.sermon-format-toolbar .format-bold {
+  font-weight: 950;
+}
+
+.sermon-format-toolbar .format-italic {
+  font-style: italic;
+}
+
+.sermon-format-hint {
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
 .sermon-editor-note {
   display: grid;
   gap: 5px;

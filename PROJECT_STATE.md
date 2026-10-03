@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Validar físicamente `0.1.18`, ya integrada y publicada: `Mis prédicas` con crear, buscar, editar, autosave, duplicar, archivar y restaurar, todo local/offline.
+Entregar y validar `0.1.19`: formato rápido para `Bosquejo y puntos` con títulos, énfasis, listas, citas, sangría y separador, manteniendo compatibilidad con los datos locales de `0.1.18`.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -184,16 +184,16 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente creación, autosave, edición, búsqueda, duplicado y archivado/restauración de una prédica.
-2. Confirmar persistencia tras recargar/cerrar y volver a abrir la PWA.
-3. Si la prueba real pasa, cerrar D-044.
-4. Después iniciar referencias bíblicas inteligentes y vista rápida, manteniendo regreso exacto a la prédica.
+1. Verificar build, typecheck/lint y CI de `0.1.19`.
+2. Verificar preview móvil: selección de texto, línea actual, scroll horizontal de la barra, autosave y persistencia.
+3. Fusionar solo si las verificaciones aplicables están en verde.
+4. Validar producción y pedir prueba física de la barra de formato en el teléfono.
 
-Estado de despliegue actual: `0.1.18` fue fusionada a `main` en `70c023ee62c3cc124fede484ac75378f384ea4ab`. El CI de `main` (run `37135353551`) terminó en `success`, Vercel dejó producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.18`. La previsualización móvil validó creación, edición completa, autosave, persistencia tras recargar, búsqueda, duplicado, archivado, restauración y legibilidad del módulo Prédicas. Falta únicamente la validación física del usuario. Vercel volvió a aceptar previews; se inició una nueva validación completa del head actual del PR #33 antes de merge.
+Estado de despliegue actual: `0.1.18` permanece estable en producción mientras `0.1.19` se implementa en rama aislada. No se cambia el esquema de IndexedDB ni se migran prédicas existentes.
 
 ## Después de este objetivo
 
-Después de `0.1.18`, el siguiente objetivo oficial será Fase 5: referencias bíblicas inteligentes, vista rápida de pasajes y regreso exacto a la posición previa de la prédica.
+Después de `0.1.19`, el siguiente objetivo oficial será Fase 5: referencias bíblicas inteligentes, vista rápida de pasajes y regreso exacto a la posición previa de la prédica.
 
 ## Regla de actualización
 
