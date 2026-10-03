@@ -3,6 +3,16 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-02 — Selector de modos de lectura 0.1.9
+
+- El botón `Leer capítulo` se sustituye por `Modo de lectura`.
+- Añadidos tres modos: `Continuo`, `Capítulo por capítulo` y `Versículo por versículo`.
+- El modo versículo por versículo permite avanzar/retroceder una referencia a la vez y continuar entre capítulos.
+- Antes de entrar a un modo enfocado se captura la posición real más cercana del lector normal.
+- Al salir se restaura el lector normal en esa posición y se conserva la señal visual temporal de retorno.
+- Se mantienen botones anterior/siguiente además del gesto horizontal táctil.
+- Build visible actualizado a `0.1.9`.
+
 ## 2026-10-02 — Fondos de compartir, búsqueda ampliada y lector enfocado 0.1.8
 
 - `Compartir como imagen` añade cuatro fondos predeterminados, color personal e imagen personal local como fondo.
