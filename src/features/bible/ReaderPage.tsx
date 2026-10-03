@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useLocation, useParams } from 'react-router'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { bibleProvider } from '../../data/bible/provider'
 import {
   getActiveVerse,
@@ -35,6 +35,7 @@ type ShareItem = {
 export function ReaderPage() {
   const { bookId = '', chapter: chapterParam = '1' } = useParams()
   const routerLocation = useLocation()
+  const navigate = useNavigate()
   const book = bibleProvider.getBook(bookId)
   const requestedChapter = Number(chapterParam)
   const saveTimer = useRef<number | undefined>(undefined)
@@ -53,6 +54,7 @@ export function ReaderPage() {
   const [shareTheme, setShareTheme] = useState<ShareTheme>('paper')
   const [shareCustomColor, setShareCustomColor] = useState('#173a2a')
   const [shareCustomImage, setShareCustomImage] = useState<string | undefined>()
+  const [readingModeOpen, setReadingModeOpen] = useState(false)
   const [actionMessage, setActionMessage] = useState('')
 
   const chapters = useMemo(() => {
@@ -672,6 +674,45 @@ export function ReaderPage() {
     setActionMessage('Nota eliminada')
   }
 
+  function getNearestReadingPoint() {
+    const anchors = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-reading-anchor="true"]'),
+    )
+
+    if (anchors.length === 0) {
+      return {
+        chapter: activeVerse?.chapter ?? requestedChapter,
+        anchorId: activeVerse?.anchorId ?? '',
+      }
+    }
+
+    const targetY = 150
+    let nearest = anchors[0]
+    let nearestDistance = Number.POSITIVE_INFINITY
+
+    for (const anchor of anchors) {
+      const distance = Math.abs(anchor.getBoundingClientRect().top - targetY)
+      if (distance < nearestDistance) {
+        nearest = anchor
+        nearestDistance = distance
+      }
+    }
+
+    const chapter = Number(nearest.dataset.chapter)
+    return {
+      chapter: Number.isFinite(chapter) ? chapter : activeVerse?.chapter ?? requestedChapter,
+      anchorId: nearest.id,
+    }
+  }
+
+  function openFocusedMode(mode: 'chapter' | 'verse') {
+    const point = getNearestReadingPoint()
+    setReadingModeOpen(false)
+    navigate(
+      `/biblia/${activeBook.id}/${point.chapter}/foco?mode=${mode}&returnChapter=${point.chapter}&returnAnchor=${encodeURIComponent(point.anchorId)}`,
+    )
+  }
+
   function activateVerse(chapter: number, verse: number, anchorId: string) {
     const location = {
       bookId: activeBook.id,
@@ -697,12 +738,15 @@ export function ReaderPage() {
       <div className="reader-toolbar">
         <Link to={`/biblia/${activeBook.id}`}>← {activeBook.name}</Link>
         <div className="reader-toolbar-actions">
-          <Link
+          <button
             className="reader-focus-link"
-            to={`/biblia/${activeBook.id}/${activeVerse?.chapter ?? requestedChapter}/foco?returnChapter=${activeVerse?.chapter ?? requestedChapter}&returnAnchor=${encodeURIComponent(activeVerse?.anchorId ?? '')}`}
+            type="button"
+            onClick={() => setReadingModeOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={readingModeOpen}
           >
-            Leer capítulo
-          </Link>
+            Modo de lectura
+          </button>
           <span>{bibleProvider.translation.label}</span>
         </div>
       </div>
@@ -959,6 +1003,54 @@ export function ReaderPage() {
             </button>
           </div>
           {actionMessage ? <p className="verse-action-message" role="status">{actionMessage}</p> : null}
+        </div>
+      ) : null}
+
+      {readingModeOpen ? (
+        <div
+          className="share-choice-backdrop"
+          role="presentation"
+          onClick={() => setReadingModeOpen(false)}
+        >
+          <section
+            className="reading-mode-card glass-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="reading-mode-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="verse-action-header">
+              <strong id="reading-mode-title">Modo de lectura</strong>
+              <button type="button" onClick={() => setReadingModeOpen(false)} aria-label="Cerrar">×</button>
+            </div>
+            <p>Elegí cómo querés leer sin perder tu posición en el lector normal.</p>
+            <div className="reading-mode-options">
+              <button
+                className="reading-mode-option active"
+                type="button"
+                onClick={() => setReadingModeOpen(false)}
+              >
+                <strong>Continuo</strong>
+                <span>Lista vertical como la vista actual.</span>
+              </button>
+              <button
+                className="reading-mode-option"
+                type="button"
+                onClick={() => openFocusedMode('chapter')}
+              >
+                <strong>Capítulo por capítulo</strong>
+                <span>Un capítulo completo con anterior, siguiente y gesto horizontal.</span>
+              </button>
+              <button
+                className="reading-mode-option"
+                type="button"
+                onClick={() => openFocusedMode('verse')}
+              >
+                <strong>Versículo por versículo</strong>
+                <span>Una sola referencia a la vez para lectura más pausada.</span>
+              </button>
+            </div>
+          </section>
         </div>
       ) : null}
 
