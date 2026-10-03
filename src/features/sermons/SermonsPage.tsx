@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
   createSermon,
   duplicateSermon,
@@ -10,6 +10,12 @@ import {
   type SermonRecord,
   type SermonStatus,
 } from '../../data/db'
+import {
+  detectAllSermonReferences,
+  getReferencePassage,
+  type SermonBibleReference,
+  type SermonFieldName,
+} from './sermonReferences'
 import './sermons.css'
 
 function formatUpdatedAt(value: number) {
@@ -175,6 +181,10 @@ export function SermonsPage() {
 export function SermonEditorPage() {
   const { sermonId = '' } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+  const introductionRef = useRef<HTMLTextAreaElement | null>(null)
+  const outlineRef = useRef<HTMLTextAreaElement | null>(null)
+  const conclusionRef = useRef<HTMLTextAreaElement | null>(null)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
   const [introduction, setIntroduction] = useState('')
@@ -182,6 +192,22 @@ export function SermonEditorPage() {
   const [conclusion, setConclusion] = useState('')
   const [savedAt, setSavedAt] = useState<number>()
   const [dirty, setDirty] = useState(false)
+  const [referencePreview, setReferencePreview] = useState<SermonBibleReference>()
+
+  const detectedReferences = useMemo(
+    () =>
+      detectAllSermonReferences({
+        introduction,
+        outline,
+        conclusion,
+      }),
+    [conclusion, introduction, outline],
+  )
+
+  const previewPassage = useMemo(
+    () => (referencePreview ? getReferencePassage(referencePreview) : []),
+    [referencePreview],
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -194,12 +220,31 @@ export function SermonEditorPage() {
       setOutline(record.outline)
       setConclusion(record.conclusion)
       setSavedAt(record.updatedAt)
+
+      const params = new URLSearchParams(location.search)
+      const returnField = params.get('returnField') as SermonFieldName | null
+      const returnAt = Number(params.get('returnAt'))
+      if (returnField && Number.isFinite(returnAt)) {
+        window.requestAnimationFrame(() => {
+          const target =
+            returnField === 'introduction'
+              ? introductionRef.current
+              : returnField === 'outline'
+                ? outlineRef.current
+                : conclusionRef.current
+          if (!target) return
+          target.focus()
+          target.setSelectionRange(returnAt, returnAt)
+          target.scrollIntoView({ block: 'center' })
+          navigate(`/predicas/${sermonId}`, { replace: true })
+        })
+      }
     })
 
     return () => {
       cancelled = true
     }
-  }, [sermonId])
+  }, [location.search, navigate, sermonId])
 
   useEffect(() => {
     function warnUnsaved(event: BeforeUnloadEvent) {
@@ -220,6 +265,7 @@ export function SermonEditorPage() {
         introduction,
         outline,
         conclusion,
+        references: detectedReferences,
       }).then((saved) => {
         if (!saved) return
         setSermon(saved)
@@ -230,7 +276,7 @@ export function SermonEditorPage() {
     }, 900)
 
     return () => window.clearTimeout(timer)
-  }, [conclusion, dirty, introduction, outline, sermon, sermonId, title])
+  }, [conclusion, detectedReferences, dirty, introduction, outline, sermon, sermonId, title])
 
   function markDirty(setter: (value: string) => void, value: string) {
     setter(value)
@@ -243,12 +289,61 @@ export function SermonEditorPage() {
       introduction,
       outline,
       conclusion,
+      references: detectedReferences,
     })
     if (!saved) return
     setSermon(saved)
     setTitle(saved.title)
     setSavedAt(saved.updatedAt)
     setDirty(false)
+  }
+
+  function referencesFor(field: SermonFieldName) {
+    return detectedReferences.filter((reference) => reference.field === field)
+  }
+
+  async function openReferenceInBible(reference: SermonBibleReference) {
+    await saveSermon(sermonId, {
+      title,
+      introduction,
+      outline,
+      conclusion,
+      references: detectedReferences,
+    })
+
+    window.sessionStorage.setItem(
+      'biblia-sermon-return-v1',
+      JSON.stringify({
+        sermonId,
+        field: reference.field,
+        startIndex: reference.startIndex,
+      }),
+    )
+
+    const anchor = `verse-${reference.bookId}-${reference.chapter}-${reference.verseStart}`
+    navigate(
+      `/biblia/${reference.bookId}/${reference.chapter}?fromSermon=1#${anchor}`,
+    )
+  }
+
+  function ReferenceChips({ field }: { field: SermonFieldName }) {
+    const references = referencesFor(field)
+    if (references.length === 0) return null
+
+    return (
+      <div className="sermon-reference-chips" aria-label="Referencias bíblicas detectadas">
+        {references.map((reference) => (
+          <button
+            key={reference.id}
+            type="button"
+            onClick={() => setReferencePreview(reference)}
+          >
+            <span aria-hidden="true">📖</span>
+            {reference.sourceText}
+          </button>
+        ))}
+      </div>
+    )
   }
 
   if (!sermon) {
@@ -290,42 +385,104 @@ export function SermonEditorPage() {
         <label className="sermon-field">
           <span>Introducción</span>
           <textarea
+            ref={introductionRef}
             value={introduction}
             onChange={(event) => markDirty(setIntroduction, event.target.value)}
             placeholder="Idea de apertura, contexto o propósito..."
             rows={5}
           />
+          <ReferenceChips field="introduction" />
         </label>
 
         <label className="sermon-field">
           <span>Bosquejo y puntos</span>
           <textarea
+            ref={outlineRef}
             value={outline}
             onChange={(event) => markDirty(setOutline, event.target.value)}
             placeholder={"1. Punto principal\n   - Subpunto\n   - Aplicación\n\n2. Siguiente punto..."}
             rows={14}
           />
+          <ReferenceChips field="outline" />
         </label>
 
         <label className="sermon-field">
           <span>Conclusión</span>
           <textarea
+            ref={conclusionRef}
             value={conclusion}
             onChange={(event) => markDirty(setConclusion, event.target.value)}
             placeholder="Cierre, llamado o idea final..."
             rows={6}
           />
+          <ReferenceChips field="conclusion" />
         </label>
 
         <aside className="sermon-editor-note">
-          <strong>Primera etapa del editor</strong>
+          <strong>Referencias inteligentes activas</strong>
           <p>
-            El bosquejo se guarda automáticamente en este dispositivo. Las referencias
-            bíblicas inteligentes y la vista rápida se incorporarán en la siguiente fase
-            para no mezclar responsabilidades.
+            Escribí referencias disponibles en el corpus, por ejemplo Juan 1:1 o
+            Génesis 1:1-3. La aplicación las guarda de forma estructurada y permite
+            ver el pasaje sin abandonar la prédica.
           </p>
         </aside>
       </form>
+
+      {referencePreview ? (
+        <div
+          className="sermon-reference-backdrop submenu-backdrop"
+          role="presentation"
+          onClick={() => setReferencePreview(undefined)}
+        >
+          <section
+            className="sermon-reference-preview submenu-surface"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sermon-reference-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header>
+              <div>
+                <span>Vista rápida</span>
+                <strong id="sermon-reference-title">{referencePreview.sourceText}</strong>
+              </div>
+              <button
+                type="button"
+                aria-label="Cerrar vista rápida"
+                onClick={() => setReferencePreview(undefined)}
+              >
+                ×
+              </button>
+            </header>
+
+            <div className="sermon-reference-passage">
+              {previewPassage.map((verse) => (
+                <p key={verse.number}>
+                  <sup>{verse.number}</sup>
+                  {verse.text}
+                </p>
+              ))}
+            </div>
+
+            <div className="sermon-reference-actions">
+              <button
+                className="button primary"
+                type="button"
+                onClick={() => void openReferenceInBible(referencePreview)}
+              >
+                Abrir en Biblia
+              </button>
+              <button
+                className="button secondary"
+                type="button"
+                onClick={() => setReferencePreview(undefined)}
+              >
+                Seguir en prédica
+              </button>
+            </div>
+          </section>
+        </div>
+      ) : null}
     </section>
   )
 }

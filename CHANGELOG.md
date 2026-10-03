@@ -3,6 +3,20 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Referencias bíblicas inteligentes 0.1.19
+
+- Detección automática de referencias bíblicas en Introducción, Bosquejo/puntos y Conclusión de una prédica.
+- Soporte inicial para `Libro capítulo:versículo` y rangos del mismo capítulo, según libros/versículos realmente disponibles en el corpus.
+- Las referencias se guardan también como estructura interna: libro, capítulo, rango, campo y posición.
+- Cada referencia detectada aparece como control compacto debajo del campo correspondiente.
+- Añadida vista rápida modal del pasaje con estilo temático y blur, sin abandonar el editor.
+- Desde la vista rápida se puede abrir el pasaje en Biblia.
+- Antes de abrir Biblia se guarda la prédica de forma segura.
+- El lector muestra `Volver a prédica` cuando fue abierto desde una referencia.
+- Al volver, la app restaura la prédica, enfoca el campo original y posiciona el cursor junto a la referencia.
+- El texto bíblico sigue viniendo del proveedor bíblico y no se duplica dentro de los datos personales.
+- Build visible actualizado a `0.1.19`.
+
 ## 2026-10-03 — Base local de Prédicas 0.1.18
 
 - La pestaña `Prédicas` deja de ser placeholder y abre `Mis prédicas`.

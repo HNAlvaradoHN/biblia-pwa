@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Base local de Prédicas 0.1.18 — publicado pendiente de validación física
+### Referencias bíblicas inteligentes 0.1.19 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Validar físicamente `0.1.18`, ya integrada y publicada: `Mis prédicas` con crear, buscar, editar, autosave, duplicar, archivar y restaurar, todo local/offline.
+Completar `0.1.19`: detectar y persistir referencias bíblicas estructuradas dentro de Prédicas, añadir vista rápida del pasaje, abrir en Biblia y regresar exactamente al campo/punto de la prédica.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -184,16 +184,17 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente creación, autosave, edición, búsqueda, duplicado y archivado/restauración de una prédica.
-2. Confirmar persistencia tras recargar/cerrar y volver a abrir la PWA.
-3. Si la prueba real pasa, cerrar D-044.
-4. Después iniciar referencias bíblicas inteligentes y vista rápida, manteniendo regreso exacto a la prédica.
+1. Completar PR/CI/merge/deployment de `0.1.19`.
+2. Validar físicamente detección de referencias en los tres campos de una prédica.
+3. Validar vista rápida y `Abrir en Biblia` sin pérdida de contenido.
+4. Confirmar `Volver a prédica` restaurando el campo original y el cursor junto a la referencia.
+5. Después avanzar al refinamiento del editor y Modo Predicación según el roadmap.
 
-Estado de despliegue actual: `0.1.18` fue fusionada a `main` en `70c023ee62c3cc124fede484ac75378f384ea4ab`. El CI de `main` (run `37135353551`) terminó en `success`, Vercel dejó producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.18`. La previsualización móvil validó creación, edición completa, autosave, persistencia tras recargar, búsqueda, duplicado, archivado, restauración y legibilidad del módulo Prédicas. Falta únicamente la validación física del usuario. Vercel volvió a aceptar previews; se inició una nueva validación completa del head actual del PR #33 antes de merge.
+Estado de despliegue actual: producción sigue sirviendo `0.1.18`. `0.1.19` está implementada en el PR #36 y su CI de rama pasó TypeScript, ESLint, build PWA y auditoría en verde. Vercel volvió a alcanzar el límite diario gratuito de más de 100 deployments y rechazó los previews de la rama, por lo que `0.1.19` NO se fusiona ni se presenta como lista para probar hasta que pueda verificarse un preview y completar después merge, CI de main y producción.
 
 ## Después de este objetivo
 
-Después de `0.1.18`, el siguiente objetivo oficial será Fase 5: referencias bíblicas inteligentes, vista rápida de pasajes y regreso exacto a la posición previa de la prédica.
+Después de `0.1.19`, el siguiente objetivo oficial será refinar el editor de Prédicas y preparar Modo Predicación, manteniendo referencias rápidas y retorno seguro como base.
 
 ## Regla de actualización
 

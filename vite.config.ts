@@ -2,7 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const isGitHubPages = process.env.GITHUB_PAGES === 'true'
+const base = isGitHubPages ? '/biblia-pwa/' : '/'
+
 export default defineConfig({
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -16,8 +20,8 @@ export default defineConfig({
         background_color: '#f4f0e7',
         display: 'standalone',
         orientation: 'any',
-        start_url: '/',
-        scope: '/',
+        start_url: base,
+        scope: base,
         icons: [
           {
             src: 'icon.svg',
@@ -29,12 +33,12 @@ export default defineConfig({
       },
       workbox: {
         cleanupOutdatedCaches: true,
-        navigateFallback: '/index.html',
+        navigateFallback: `${base}index.html`,
         globPatterns: ['**/*.{js,css,html,svg,webmanifest}'],
       },
     }),
   ],
   define: {
-    __APP_VERSION__: JSON.stringify('0.1.18'),
+    __APP_VERSION__: JSON.stringify('0.1.19'),
   },
 })

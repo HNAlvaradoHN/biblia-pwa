@@ -43,12 +43,26 @@ export interface HighlightRecord extends BibleLocation {
 
 export type SermonStatus = 'active' | 'archived'
 
+export interface SermonReferenceRecord {
+  id: string
+  field: 'introduction' | 'outline' | 'conclusion'
+  sourceText: string
+  bookId: string
+  bookName: string
+  chapter: number
+  verseStart: number
+  verseEnd: number
+  startIndex: number
+  endIndex: number
+}
+
 export interface SermonRecord {
   id: string
   title: string
   introduction: string
   outline: string
   conclusion: string
+  references: SermonReferenceRecord[]
   status: SermonStatus
   createdAt: number
   updatedAt: number
@@ -91,6 +105,26 @@ class BibliaDatabase extends Dexie {
       highlights: 'id,bookId,chapter,verse,updatedAt',
       sermons: 'id,status,updatedAt,title',
     })
+
+    this.version(5)
+      .stores({
+        readingProgress: 'id,bookId,chapter,updatedAt',
+        activeVerse: 'id,bookId,chapter,verse,updatedAt',
+        favorites: 'id,bookId,chapter,verse,updatedAt',
+        notes: 'id,bookId,chapter,verse,updatedAt',
+        highlights: 'id,bookId,chapter,verse,updatedAt',
+        sermons: 'id,status,updatedAt,title',
+      })
+      .upgrade(async (transaction) => {
+        await transaction
+          .table<SermonRecord, string>('sermons')
+          .toCollection()
+          .modify((sermon) => {
+            if (!Array.isArray(sermon.references)) {
+              sermon.references = []
+            }
+          })
+      })
   }
 }
 
@@ -272,6 +306,7 @@ export async function createSermon() {
     introduction: '',
     outline: '',
     conclusion: '',
+    references: [],
     status: 'active',
     createdAt: now,
     updatedAt: now,
@@ -283,7 +318,10 @@ export async function createSermon() {
 
 export async function saveSermon(
   id: string,
-  content: Pick<SermonRecord, 'title' | 'introduction' | 'outline' | 'conclusion'>,
+  content: Pick<
+    SermonRecord,
+    'title' | 'introduction' | 'outline' | 'conclusion' | 'references'
+  >,
 ) {
   const existing = await db.sermons.get(id)
   if (!existing) return undefined
@@ -294,6 +332,7 @@ export async function saveSermon(
     introduction: content.introduction,
     outline: content.outline,
     conclusion: content.conclusion,
+    references: content.references,
     updatedAt: Date.now(),
   }
 

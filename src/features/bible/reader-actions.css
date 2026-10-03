@@ -682,3 +682,50 @@ html[data-verse-layout='flow'] .verse-item.highlighted .verse-button,
 html[data-verse-layout='flow'] .verse-item.highlighted.active .verse-button {
   border-radius: 0.28em;
 }
+
+
+.sermon-return-bar {
+  position: sticky;
+  top: 74px;
+  z-index: 18;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+}
+
+.sermon-return-bar > div {
+  display: grid;
+  gap: 2px;
+}
+
+.sermon-return-bar span {
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.sermon-return-bar strong {
+  color: var(--ink);
+  font-size: 0.76rem;
+}
+
+.sermon-return-bar .button {
+  flex: 0 0 auto;
+  min-height: 38px;
+}
+
+@media (max-width: 560px) {
+  .sermon-return-bar {
+    top: 66px;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sermon-return-bar .button {
+    width: 100%;
+  }
+}
