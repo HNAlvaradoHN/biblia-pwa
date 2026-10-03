@@ -544,3 +544,23 @@ Reglas:
 - conserva backdrop blur y contraste del tema;
 - en pantallas más amplias puede seguir usando posicionamiento contextual alrededor del versículo.
 
+## D-043 — Disposición de versículos separados o corridos
+Estado: APROBADA
+
+La apariencia de lectura permite elegir entre dos disposiciones sin cambiar el contenido ni el modo de navegación.
+
+Opciones:
+
+- `Separados`: un versículo por bloque, comportamiento visual actual.
+- `Corridos`: los versículos fluyen como texto continuo manteniendo visible su número y conservando interacción individual.
+
+Reglas:
+
+- la preferencia se guarda localmente junto con apariencia;
+- el cambio debe aplicarse inmediatamente sin recargar;
+- afecta al lector continuo y al modo capítulo por capítulo;
+- el modo versículo por versículo permanece individual por definición;
+- favoritos, notas, resaltados, versículo activo y selección múltiple siguen asociados a cada versículo, independientemente de la disposición;
+- el menú de acciones debe seguir accesible en modo corrido;
+- títulos/encabezados de sección siguen separando bloques temáticos.
+

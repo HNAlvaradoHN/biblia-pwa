@@ -212,3 +212,40 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.layout-grid button {
+  display: grid;
+  gap: 4px;
+  min-height: 64px;
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.layout-grid button strong {
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+
+.layout-grid button span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.layout-grid button.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 68%, var(--surface-strong));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 16%, transparent);
+}

@@ -3,6 +3,18 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Versículos separados o corridos 0.1.16
+
+- Añadida preferencia persistente de disposición bíblica dentro de `Aa`.
+- `Separados` conserva un versículo por bloque.
+- `Corridos` presenta los versículos como texto continuo manteniendo número e interacción individual.
+- El cambio se aplica inmediatamente y se conserva al volver a abrir la aplicación.
+- El modo capítulo por capítulo también respeta la disposición elegida.
+- Versículo por versículo permanece individual por definición.
+- Favoritos, notas, resaltados, selección múltiple y menú de acciones siguen funcionando por versículo.
+- La entrega anterior `0.1.15` quedó publicada con CI de main verde y producción READY; su menú móvil completo fue verificado automáticamente.
+- Build visible actualizado a `0.1.16`.
+
 ## 2026-10-03 — Menú completo e inventario APK 0.1.15
 
 - En móvil el menú de acciones del versículo pasa a una hoja flotante completa dentro del viewport.
