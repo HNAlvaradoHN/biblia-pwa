@@ -5,7 +5,7 @@ import {
   useRef,
   type ClipboardEvent,
   type KeyboardEvent,
-  type PointerEvent,
+  type MouseEvent,
 } from 'react'
 import type { SermonBibleReference } from './sermonReferences'
 
@@ -173,9 +173,10 @@ export const SermonRichTextField = forwardRef<
     return true
   }
 
-  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
+  function handleClick(event: MouseEvent<HTMLDivElement>) {
     if (!openReferenceFromTarget(event.target)) return
     event.preventDefault()
+    event.stopPropagation()
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -215,7 +216,7 @@ export const SermonRichTextField = forwardRef<
       data-placeholder={placeholder}
       spellCheck
       onInput={handleInput}
-      onPointerDown={handlePointerDown}
+      onClickCapture={handleClick}
       onKeyDown={handleKeyDown}
       onPaste={handlePaste}
     />

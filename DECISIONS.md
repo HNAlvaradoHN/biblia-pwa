@@ -647,3 +647,19 @@ Reglas:
 - el regreso restaura la misma prédica y el campo/punto de edición de origen;
 - el contenido persistido de la prédica sigue siendo texto plano; el marcado visual de referencias es una capa de interfaz y no HTML guardado;
 - la detección sigue limitada a referencias realmente disponibles en el corpus actual y no inventa contenido.
+
+
+## D-048 — Base de Modo Predicación
+Estado: APROBADA
+
+Después de estabilizar las referencias inline, Prédicas incorpora una primera vista de presentación enfocada para usar el bosquejo sin controles de edición.
+
+Reglas iniciales:
+
+- el editor ofrece una acción discreta `Predicar` que guarda primero la prédica y abre la vista de presentación;
+- Modo Predicación es de solo lectura y no modifica el documento;
+- muestra título, Introducción, Bosquejo/puntos y Conclusión con tipografía amplia y legible;
+- oculta la navegación general y controles de edición para reducir distracciones;
+- conserva las referencias bíblicas remarcadas y permite consultar su pasaje en una vista rápida;
+- siempre existe una salida explícita `Volver a editar`;
+- esta primera base no añade todavía temporizadores, anotaciones en vivo, control remoto ni herramientas de presentación avanzadas.

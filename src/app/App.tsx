@@ -9,6 +9,7 @@ import { FavoritesPage, NotesPage } from '../features/saved/SavedPages'
 import { ComingSoonPage } from '../features/placeholders/ComingSoonPage'
 import { SearchPage } from '../features/search/SearchPage'
 import { SermonEditorPage, SermonsPage } from '../features/sermons/SermonsPage'
+import { SermonPresentationPage } from '../features/sermons/SermonPresentationPage'
 
 export function App() {
   return (
@@ -23,6 +24,7 @@ export function App() {
         <Route path="notas" element={<NotesPage />} />
         <Route path="predicas" element={<SermonsPage />} />
         <Route path="predicas/:sermonId" element={<SermonEditorPage />} />
+        <Route path="predicas/:sermonId/presentar" element={<SermonPresentationPage />} />
         <Route path="buscar" element={<SearchPage />} />
         <Route
           path="*"
