@@ -39,12 +39,12 @@ const highlightPalette: Array<{
   label: string
   value: string
 }> = [
-  { id: 'amber', label: 'Ámbar', value: '#d9a441' },
-  { id: 'sage', label: 'Salvia', value: '#6fa37d' },
-  { id: 'sky', label: 'Cielo', value: '#6aa6d9' },
-  { id: 'rose', label: 'Rosa', value: '#d78091' },
-  { id: 'lavender', label: 'Lavanda', value: '#9483cc' },
-  { id: 'peach', label: 'Durazno', value: '#d99a72' },
+  { id: 'sky', label: 'Azul', value: '#4f8edc' },
+  { id: 'sage', label: 'Verde', value: '#4fa66d' },
+  { id: 'rose', label: 'Rojo', value: '#d95c63' },
+  { id: 'amber', label: 'Amarillo', value: '#e2b83f' },
+  { id: 'peach', label: 'Naranja', value: '#e8893f' },
+  { id: 'lavender', label: 'Morado', value: '#8d68d6' },
 ]
 
 export function ReaderPage() {

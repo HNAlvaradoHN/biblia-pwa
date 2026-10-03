@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Apariencia móvil y limpieza 0.1.12 — publicado pendiente de validación física
+### Contraste de temas y resaltados 0.1.13 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Validar físicamente `0.1.12`, ya integrada y publicada, que corrige específicamente el panel `Aa` reportado: debe permanecer completo dentro del viewport móvil, sobre todo el contenido y con scroll interno seguro. También consolida estilos duplicados del lector sin cambiar su comportamiento.
+Completar `0.1.13`: corregir el contraste visual reportado en los temas, especialmente Noche, y reemplazar la paleta de resaltados por Azul, Verde, Rojo, Amarillo, Naranja y Morado manteniendo el efecto translúcido tipo vidrio.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,12 +185,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente que el panel `Aa` de `0.1.12` se vea completo, con encabezado accesible y scroll interno en móvil.
-2. Reconfirmar que los temas, tamaño, fuente, color del texto y fondo general siguen funcionando después de la corrección.
-3. Si la prueba real pasa, cerrar D-038/D-039 y la corrección de `0.1.12`.
-4. Después completar el inventario comparativo de la APK externa y elegir el siguiente objetivo funcional sin reabrir trabajo ya validado.
+1. Completar PR/CI/merge/deployment de `0.1.13`.
+2. Validar físicamente los cuatro temas, especialmente Noche, comprobando textos, tarjetas, navegación y avisos.
+3. Validar resaltados Azul, Verde, Rojo, Amarillo, Naranja y Morado en tema claro y oscuro.
+4. Si pasa, cerrar D-039/D-040 y continuar con el inventario comparativo de la APK externa.
 
-Estado de despliegue actual: `0.1.12` fue fusionada a `main` en `222957e95c6e89a3863c92d65b42ae3effb45add`. El CI de `main` (run `37122370733`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y el host estable `https://biblia-pwa.vercel.app/` quedó actualizado. La corrección usa límites `100dvh`, safe areas, overlay superior, header sticky, bloqueo de scroll de fondo y limpieza de estilos duplicados. La tarea nocturna programada se ejecutó desde las 11:45 p. m. hasta las 5:45 a. m.; no produjo commits adicionales durante esa ventana ni abrió funcionalidades nuevas. El cierre de mañana integró y publicó la corrección pendiente como `0.1.12`.
+Estado de despliegue actual: producción sirve `0.1.12`. El usuario validó que el panel `Aa` ya se muestra correctamente, pero reportó contraste deficiente en los temas, especialmente Noche, y pidió una paleta de resaltados más clara. `0.1.13` está en rama con tokens de contraste corregidos, superficies glass dependientes del tema y nueva paleta semántica de resaltados. Pendiente CI, merge, deployment y validación física.
 
 ## Después de este objetivo
 

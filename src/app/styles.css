@@ -27,6 +27,7 @@
   --reader-text: #202821;
   --reader-font-scale: 1;
   --reader-font-family: Georgia, "Times New Roman", serif;
+  --on-brand: #ffffff;
 }
 
 * {
@@ -118,7 +119,7 @@ input:focus-visible {
   place-items: center;
   border-radius: 14px;
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
   font-family: Georgia, serif;
   font-size: 1.35rem;
   box-shadow: 0 8px 20px rgba(23, 58, 42, 0.18);
@@ -393,7 +394,7 @@ input:focus-visible {
   height: 34px;
   place-items: center;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.42);
+  background: color-mix(in srgb, var(--surface-strong) 72%, transparent);
   color: var(--brand);
   font-size: 1.15rem;
 }
@@ -428,8 +429,8 @@ input:focus-visible {
   overflow: hidden;
   border-color: var(--glass-border);
   background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.45)),
-    color-mix(in srgb, var(--accent-soft) 45%, transparent);
+    linear-gradient(150deg, var(--glass-surface-strong), var(--glass-surface)),
+    color-mix(in srgb, var(--accent-soft) 32%, transparent);
 }
 
 .daily-quote-mark {
@@ -481,7 +482,7 @@ input:focus-visible {
 
 .button.primary {
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
   box-shadow: 0 8px 18px rgba(23, 58, 42, 0.16);
 }
 
@@ -492,8 +493,8 @@ input:focus-visible {
 }
 
 .button.glass-button {
-  border-color: rgba(255, 255, 255, 0.68);
-  background: rgba(255, 255, 255, 0.5);
+  border-color: var(--glass-border);
+  background: var(--glass-surface-strong);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -541,8 +542,8 @@ input:focus-visible {
 .content-notice,
 .reader-demo-notice {
   padding: 16px 18px;
-  background: var(--accent-soft);
-  color: #5c482c;
+  background: color-mix(in srgb, var(--accent-soft) 82%, var(--surface));
+  color: var(--ink);
 }
 
 .content-notice p,
@@ -782,12 +783,12 @@ input:focus-visible {
 }
 
 .nav-item.active {
-  border-color: color-mix(in srgb, var(--nav-accent) 8%, rgba(255, 255, 255, 0.7));
-  background: color-mix(in srgb, var(--nav-accent) 15%, rgba(255, 255, 255, 0.62));
+  border-color: color-mix(in srgb, var(--nav-accent) 22%, var(--glass-border));
+  background: color-mix(in srgb, var(--nav-accent) 16%, var(--surface-strong));
   color: var(--nav-accent);
   box-shadow:
     0 7px 18px color-mix(in srgb, var(--nav-accent) 12%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    inset 0 1px 0 color-mix(in srgb, var(--surface-strong) 70%, transparent);
   transform: translateY(-1px);
 }
 

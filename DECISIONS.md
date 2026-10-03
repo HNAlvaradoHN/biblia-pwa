@@ -489,3 +489,18 @@ Reglas:
 - los temas oscuros deben conservar botones, paneles glass y navegación legibles;
 - personalizaciones más avanzadas, como tema generado desde una imagen, pueden añadirse después sobre esta base sin romper las preferencias existentes.
 
+## D-040 — Contraste obligatorio de temas y resaltados
+Estado: APROBADA
+
+La personalización visual no puede reducir la legibilidad. Cada tema debe tener colores coordinados para fondo, superficies, texto principal, texto secundario, marca y controles.
+
+Reglas:
+
+- el texto principal y el texto bíblico deben mantener contraste alto respecto a sus superficies;
+- el texto secundario debe mantener contraste legible, evitando tonos demasiado apagados;
+- los componentes glass deben mezclar con las superficies del tema, no con blanco fijo, para evitar tarjetas lavadas en modo oscuro;
+- los colores fijos de texto que funcionen solo en tema claro deben reemplazarse por variables del tema;
+- los resaltados usarán colores semánticos claros: Azul, Verde, Rojo, Amarillo, Naranja y Morado;
+- el resaltado sigue siendo translúcido/suave tipo vidrio esmerilado y nunca debe convertirse en un bloque saturado que opaque el texto;
+- cambiar de tema debe conservar legibilidad de tarjetas, navegación, avisos, botones y lector.
+
