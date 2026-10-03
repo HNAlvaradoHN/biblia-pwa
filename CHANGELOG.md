@@ -3,6 +3,16 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-03 — Lectura corrida tipo Biblia impresa 0.1.17
+
+- Refinado el modo `Corridos` para que los versículos se lean como un párrafo continuo de Biblia impresa.
+- Los números de versículo quedan pequeños y en superíndice, sin separar cada versículo en una tarjeta.
+- El versículo activo y los resaltados conservan marcas sutiles aplicadas solo al texto correspondiente.
+- El modo capítulo por capítulo adopta la misma presentación corrida.
+- Renombrado `Fuente de lectura` a `Tipo de letra de la Biblia` y añadida una explicación: solo cambia la tipografía del texto bíblico, no la interfaz.
+- `Separados` conserva su diseño actual de un versículo por bloque.
+- Build visible actualizado a `0.1.17`.
+
 ## 2026-10-03 — Versículos separados o corridos 0.1.16
 
 - Añadida preferencia persistente de disposición bíblica dentro de `Aa`.
