@@ -113,7 +113,7 @@
 .search-result-card mark {
   padding: 0 0.12em;
   border-radius: 0.28em;
-  background: color-mix(in srgb, var(--accent) 34%, #fff2a8);
+  background: color-mix(in srgb, var(--accent) 28%, var(--surface-strong));
   color: inherit;
 }
 
