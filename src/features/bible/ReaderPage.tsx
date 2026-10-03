@@ -110,10 +110,10 @@ export function ReaderPage() {
     if (!book) return []
     const startIndex = book.chapters.findIndex((item) => item.number === requestedChapter)
     if (startIndex < 0) return []
-    return openedFromSermon
+    return sermonReturnPoint
       ? book.chapters.slice(startIndex, startIndex + 1)
       : book.chapters.slice(startIndex)
-  }, [book, openedFromSermon, requestedChapter])
+  }, [book, requestedChapter, sermonReturnPoint])
 
   useEffect(() => {
     if (!book || chapters.length === 0) return
