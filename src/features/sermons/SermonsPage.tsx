@@ -295,6 +295,13 @@ export function SermonEditorPage() {
     setTitle(saved.title)
     setSavedAt(saved.updatedAt)
     setDirty(false)
+    return saved
+  }
+
+  async function startPresentation() {
+    const saved = await handleSave()
+    if (!saved) return
+    navigate(`/predicas/${sermonId}/presentar`)
   }
 
   async function openReferenceInBible(reference: SermonBibleReference) {
@@ -344,9 +351,14 @@ export function SermonEditorPage() {
           <span>{dirty ? 'Guardando...' : 'Guardado'}</span>
           {savedAt ? <small>{formatUpdatedAt(savedAt)}</small> : null}
         </div>
-        <button className="button primary" type="button" onClick={() => void handleSave()}>
-          Guardar
-        </button>
+        <div className="sermon-toolbar-actions">
+          <button className="button secondary" type="button" onClick={() => void startPresentation()}>
+            Predicar
+          </button>
+          <button className="button primary" type="button" onClick={() => void handleSave()}>
+            Guardar
+          </button>
+        </div>
       </header>
 
       <form className="sermon-editor-sheet" onSubmit={(event) => event.preventDefault()}>
@@ -447,18 +459,18 @@ export function SermonEditorPage() {
 
             <div className="sermon-reference-actions">
               <button
-                className="button primary"
-                type="button"
-                onClick={() => void openReferenceInBible(referencePreview)}
-              >
-                Leer capítulo completo
-              </button>
-              <button
-                className="button secondary"
+                className="sermon-reference-action-link"
                 type="button"
                 onClick={() => setReferencePreview(undefined)}
               >
-                Seguir en prédica
+                Seguir escribiendo
+              </button>
+              <button
+                className="sermon-reference-action-link accent"
+                type="button"
+                onClick={() => void openReferenceInBible(referencePreview)}
+              >
+                Leer capítulo
               </button>
             </div>
           </section>
