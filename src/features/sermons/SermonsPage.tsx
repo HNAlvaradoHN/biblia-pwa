@@ -357,7 +357,7 @@ export function SermonEditorPage() {
             onChange={(event) => markDirty(setTitle, event.target.value)}
             placeholder="Título de la prédica"
           />
-        </div>
+        </label>
 
         <div className="sermon-field">
           <span>Introducción</span>
@@ -451,7 +451,7 @@ export function SermonEditorPage() {
                 type="button"
                 onClick={() => void openReferenceInBible(referencePreview)}
               >
-                Abrir en Biblia
+                Leer capítulo completo
               </button>
               <button
                 className="button secondary"
