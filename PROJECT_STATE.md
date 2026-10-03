@@ -191,7 +191,7 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 4. Si la prueba real pasa, cerrar D-035/D-037.
 5. Continuar con personalización global de tipografía, tamaño, color de texto, temas y fondo general.
 
-Estado de despliegue actual: producción sirve `0.1.9`. La entrega `0.1.10` está en rama con corrección del gesto táctil, entrada exacta desde el versículo activo y resaltados por color. No debe marcarse como lista hasta completar CI, revisión, merge, deployment y validación física.
+Estado de despliegue actual: producción sirve `0.1.9`. La entrega `0.1.10` está en rama con corrección del gesto táctil, entrada exacta desde el versículo activo y resaltados por color. El primer CI del PR falló en TypeScript por un estrechamiento de `activeVerse` después de una rama que ya lo descartaba; se corrigió usando el capítulo solicitado como fallback y el CI posterior pasó TypeScript, ESLint, build PWA y auditoría. La previsualización automatizada confirmó entrada exacta a Génesis 1:3, paleta de resaltados, aplicación por lote y eliminación del resaltado común. La automatización no reproduce de forma fiable un gesto táctil físico, por lo que el swipe horizontal queda IMPLEMENTADO_PENDIENTE_VALIDACIÓN en dispositivo real. No debe cerrarse la entrega hasta merge, CI de `main`, deployment y validación física.
 
 ## Después de este objetivo
 
