@@ -19,7 +19,7 @@ function highlightMatch(text: string, query: string) {
   const parts = text.split(matcher)
 
   return parts.map((part, index) =>
-    matcher.test(part) ? (
+    part.toLocaleLowerCase('es') === trimmed.toLocaleLowerCase('es') ? (
       <mark key={`${part}-${index}`}>{part}</mark>
     ) : (
       <Fragment key={`${part}-${index}`}>{part}</Fragment>
