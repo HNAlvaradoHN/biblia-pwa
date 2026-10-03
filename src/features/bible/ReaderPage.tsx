@@ -55,8 +55,10 @@ export function ReaderPage() {
   const requestedChapter = Number(chapterParam)
   const saveTimer = useRef<number | undefined>(undefined)
   const actionPanelRef = useRef<HTMLDivElement | null>(null)
+  const actionTriggerRef = useRef<HTMLButtonElement | null>(null)
   const [activeVerse, setActiveVerse] = useState<ActiveVerse | undefined>()
   const [actionPanelOpen, setActionPanelOpen] = useState(false)
+  const [actionPanelPosition, setActionPanelPosition] = useState<CSSProperties>({})
   const [selectionMode, setSelectionMode] = useState(false)
   const [selectedVerseIds, setSelectedVerseIds] = useState<Set<string>>(() => new Set())
   const [favoriteActive, setFavoriteActive] = useState(false)
@@ -273,6 +275,40 @@ export function ReaderPage() {
   useEffect(() => {
     if (!actionPanelOpen) return
 
+    function updateActionPanelPosition() {
+      const trigger = actionTriggerRef.current
+      if (!trigger) return
+
+      const rect = trigger.getBoundingClientRect()
+      const panelHeight = actionPanelRef.current?.getBoundingClientRect().height ?? 330
+      const viewportPadding = 12
+      const bottomNavigationReserve = 92
+      const maxWidth = Math.min(360, window.innerWidth - viewportPadding * 2)
+      const availableBelow =
+        window.innerHeight - rect.bottom - bottomNavigationReserve - viewportPadding
+      const availableAbove = rect.top - viewportPadding
+      const placeAbove = availableBelow < Math.min(panelHeight, 280) && availableAbove > availableBelow
+      const left = Math.min(
+        Math.max(viewportPadding, rect.right - maxWidth),
+        window.innerWidth - maxWidth - viewportPadding,
+      )
+
+      setActionPanelPosition({
+        position: 'fixed',
+        width: maxWidth,
+        left,
+        top: placeAbove ? undefined : rect.bottom + 8,
+        bottom: placeAbove ? window.innerHeight - rect.top + 8 : undefined,
+        maxHeight: Math.max(
+          180,
+          Math.min(
+            panelHeight,
+            placeAbove ? availableAbove - 8 : availableBelow - 8,
+          ),
+        ),
+      })
+    }
+
     function closeOnOutsidePress(event: PointerEvent) {
       const target = event.target as Node
       if (actionPanelRef.current?.contains(target)) return
@@ -280,9 +316,18 @@ export function ReaderPage() {
       setActionPanelOpen(false)
     }
 
+    const frame = window.requestAnimationFrame(updateActionPanelPosition)
     document.addEventListener('pointerdown', closeOnOutsidePress)
-    return () => document.removeEventListener('pointerdown', closeOnOutsidePress)
-  }, [actionPanelOpen])
+    window.addEventListener('resize', updateActionPanelPosition)
+    window.addEventListener('scroll', updateActionPanelPosition, true)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      document.removeEventListener('pointerdown', closeOnOutsidePress)
+      window.removeEventListener('resize', updateActionPanelPosition)
+      window.removeEventListener('scroll', updateActionPanelPosition, true)
+    }
+  }, [actionPanelOpen, noteOpen, highlightPickerTarget])
 
   const activeVerseText = useMemo(() => {
     if (!book || !activeVerse) return undefined
@@ -914,6 +959,7 @@ export function ReaderPage() {
 
                         {isActive && !selectionMode ? (
                           <button
+                            ref={actionTriggerRef}
                             className="verse-menu-trigger"
                             type="button"
                             aria-label={`Abrir opciones para ${reference}`}
@@ -930,7 +976,8 @@ export function ReaderPage() {
                         {panelVisible ? (
                           <div
                             ref={actionPanelRef}
-                            className="verse-action-panel glass-panel"
+                            className="verse-action-panel verse-action-floating glass-panel"
+                            style={actionPanelPosition}
                             aria-label={`Opciones para ${reference}`}
                           >
                             <div className="verse-action-header">
