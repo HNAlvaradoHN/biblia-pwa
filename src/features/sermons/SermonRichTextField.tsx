@@ -95,6 +95,8 @@ export const SermonRichTextField = forwardRef<
 ) {
   const editorRef = useRef<HTMLDivElement | null>(null)
   const pendingCaretRef = useRef<number | null>(null)
+  const referencesRef = useRef(references)
+  referencesRef.current = references
   const referenceSignature = references
     .map((reference) => `${reference.id}:${reference.sourceText}:${reference.startIndex}:${reference.endIndex}`)
     .join('|')
@@ -122,7 +124,7 @@ export const SermonRichTextField = forwardRef<
     editor.replaceChildren()
 
     let cursor = 0
-    const sortedReferences = [...references].sort((a, b) => a.startIndex - b.startIndex)
+    const sortedReferences = [...referencesRef.current].sort((a, b) => a.startIndex - b.startIndex)
 
     for (const reference of sortedReferences) {
       if (reference.startIndex < cursor || reference.endIndex > value.length) continue
