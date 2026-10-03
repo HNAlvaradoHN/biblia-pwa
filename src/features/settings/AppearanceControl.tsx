@@ -373,13 +373,14 @@ export function AppearanceControl() {
                   }
                 >
                   <strong>Corridos</strong>
-                  <span>Texto continuo con referencias.</span>
+                  <span>Como una Biblia impresa: texto continuo con números de versículo.</span>
                 </button>
               </div>
             </div>
 
             <div className="appearance-section">
-              <strong>Fuente de lectura</strong>
+              <strong>Tipo de letra de la Biblia</strong>
+              <p className="appearance-help">Cambia únicamente la tipografía del texto bíblico; los menús y botones conservan su propia fuente.</p>
               <div className="font-grid">
                 {(Object.keys(fonts) as FontChoice[]).map((fontName) => (
                   <button
