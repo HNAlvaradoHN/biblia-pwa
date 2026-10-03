@@ -190,7 +190,7 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 4. Confirmar `Volver a prédica` restaurando el campo original y el cursor junto a la referencia.
 5. Después avanzar al refinamiento del editor y Modo Predicación según el roadmap.
 
-Estado de despliegue actual: producción sirve `0.1.18`, con CI de main verde y Vercel `READY`. La validación automatizada de Prédicas pasó completa y el usuario autorizó continuar a la siguiente fase. `0.1.19` está en rama con referencias estructuradas, vista rápida y regreso exacto desde Biblia. Pendiente CI, merge, deployment y validación física.
+Estado de despliegue actual: producción sigue sirviendo `0.1.18`. `0.1.19` está implementada en el PR #36 y su CI de rama pasó TypeScript, ESLint, build PWA y auditoría en verde. Vercel volvió a alcanzar el límite diario gratuito de más de 100 deployments y rechazó los previews de la rama, por lo que `0.1.19` NO se fusiona ni se presenta como lista para probar hasta que pueda verificarse un preview y completar después merge, CI de main y producción.
 
 ## Después de este objetivo
 
