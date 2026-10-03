@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Contraste de temas y resaltados 0.1.13 — en implementación
+### Temas curados y submenús blur 0.1.14 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.13`: corregir el contraste visual reportado en los temas, especialmente Noche, y reemplazar la paleta de resaltados por Azul, Verde, Rojo, Amarillo, Naranja y Morado manteniendo el efecto translúcido tipo vidrio.
+Completar `0.1.14`: sustituir los colores libres por temas predefinidos completos con contraste controlado, corregir textos que seguían heredando colores incorrectos en Noche y convertir los submenús en superficies superiores con blur y scroll interno seguro.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,16 +185,17 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar PR/CI/merge/deployment de `0.1.13`.
-2. Validar físicamente los cuatro temas, especialmente Noche, comprobando textos, tarjetas, navegación y avisos.
-3. Validar resaltados Azul, Verde, Rojo, Amarillo, Naranja y Morado en tema claro y oscuro.
-4. Si pasa, cerrar D-039/D-040 y continuar con el inventario comparativo de la APK externa.
+1. Completar PR/CI/merge/deployment de `0.1.14`.
+2. Validar físicamente Claro, Sepia, Verde, Azul, Rojo, Morado y Noche, comprobando marca Biblia, nombres de libros, tarjetas, navegación, avisos y lector.
+3. Validar menú de tres puntos al inicio y final de pantalla, más Compartir, Modo de lectura y Apariencia, confirmando blur, superposición y scroll interno.
+4. Revalidar resaltados en temas claros y Noche.
+5. Si pasa, cerrar D-039/D-040/D-041 y continuar con el inventario comparativo de la APK externa.
 
-Estado de despliegue actual: producción sirve `0.1.12`. El usuario validó que el panel `Aa` ya se muestra correctamente, pero reportó contraste deficiente en los temas, especialmente Noche, y pidió una paleta de resaltados más clara. `0.1.13` está en rama con tokens de contraste corregidos, superficies glass dependientes del tema y nueva paleta semántica de resaltados. Pendiente CI, merge, deployment y validación física.
+Estado de despliegue actual: `0.1.13` fue fusionada a `main` en `64b245dc946c0118cd0e041b96fc456e9b2e3b08`, su CI de `main` (run `37123937687`) terminó en `success` y Vercel dejó producción en `READY`. La validación física posterior confirmó que todavía quedaban textos con contraste insuficiente en Noche y que el usuario prefiere temas completos predefinidos en lugar de colores libres. `0.1.14` está en rama con temas curados, corrección de herencia global de texto y submenús modales con blur. Pendiente CI, merge, deployment y validación física.
 
 ## Después de este objetivo
 
-Después de validar `0.1.12`, el siguiente objetivo funcional se seleccionará del roadmap aprobado y del inventario comparativo de la APK, sin reabrir como pendientes las personalizaciones ya incorporadas.
+Después de validar `0.1.14`, el siguiente objetivo funcional se seleccionará del roadmap aprobado y del inventario comparativo de la APK, sin reabrir como pendientes las personalizaciones ya incorporadas.
 
 ## Regla de actualización
 
