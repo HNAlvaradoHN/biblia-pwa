@@ -90,6 +90,15 @@ input:focus-visible {
   padding-bottom: calc(88px + env(safe-area-inset-bottom));
 }
 
+.sermon-reader-shell {
+  padding-bottom: 0;
+}
+
+.sermon-reader-shell .app-content {
+  padding-top: max(10px, env(safe-area-inset-top));
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
 .topbar {
   position: sticky;
   top: 0;
