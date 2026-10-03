@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Modos de lectura 0.1.9 — publicado pendiente de validación física
+### Gestos y resaltados por color 0.1.10 — en implementación
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar la entrega `0.1.9` sustituyendo el acceso directo al lector enfocado por un selector de modos de lectura con `Continuo`, `Capítulo por capítulo` y `Versículo por versículo`.
+Completar la entrega `0.1.10`: corregir el gesto horizontal y el punto exacto de entrada a modos enfocados, y avanzar de inmediato al siguiente objetivo aprobado de resaltados por colores con selección múltiple.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -185,17 +185,17 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente `0.1.9`: selector de modos, capítulo por capítulo, versículo por versículo y retorno exacto al continuo.
-2. Confirmar auto-scroll e indicador temporal al regresar.
-3. Si la prueba real pasa, cerrar D-035.
-4. Después avanzar a resaltados por color con selección múltiple y detección de propiedades comunes.
-5. Mantener la personalización global de tipografía/tema/fondo como objetivo siguiente después de resaltados.
+1. Completar CI/revisión de `0.1.10`.
+2. Validar físicamente el gesto horizontal, entrada exacta desde el versículo activo y señal visual inicial en modo versículo.
+3. Validar paleta de resaltados, estilo suave, aplicación múltiple y eliminación del resaltado común.
+4. Si la prueba real pasa, cerrar D-035/D-037.
+5. Continuar con personalización global de tipografía, tamaño, color de texto, temas y fondo general.
 
-Estado de despliegue actual: `0.1.9` fue fusionada a `main` en `166b3064eb180b9cc3a45220fa42d97a47d0c073`. El CI de `main` (run `37089921328`) terminó en `success`, Vercel dejó el deployment de producción en `READY` y `https://biblia-pwa.vercel.app/` sirve la nueva entrega. La previsualización automatizada confirmó los tres modos de lectura, navegación capítulo/versículo, cruce de capítulo en modo versículo y regreso al lector normal. Falta validación física del usuario.
+Estado de despliegue actual: producción sirve `0.1.9`. La entrega `0.1.10` está en rama con corrección del gesto táctil, entrada exacta desde el versículo activo y resaltados por color. El primer CI del PR falló en TypeScript por un estrechamiento de `activeVerse` después de una rama que ya lo descartaba; se corrigió usando el capítulo solicitado como fallback y el CI posterior pasó TypeScript, ESLint, build PWA y auditoría. La previsualización automatizada confirmó entrada exacta a Génesis 1:3, paleta de resaltados, aplicación por lote y eliminación del resaltado común. La automatización no reproduce de forma fiable un gesto táctil físico, por lo que el swipe horizontal queda IMPLEMENTADO_PENDIENTE_VALIDACIÓN en dispositivo real. No debe cerrarse la entrega hasta merge, CI de `main`, deployment y validación física.
 
 ## Después de este objetivo
 
-Después de `0.1.9`, el siguiente objetivo funcional es el resaltado avanzado por colores con selección múltiple y comportamiento común. Luego sigue la personalización global de lectura/tema/fondo.
+Después de `0.1.10`, el siguiente objetivo funcional es la personalización global de lectura/tema/fondo: tamaño y fuente del texto, color de lectura, temas generales y fondo de la aplicación con reglas de contraste.
 
 ## Regla de actualización
 

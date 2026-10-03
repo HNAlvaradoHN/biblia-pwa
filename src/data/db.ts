@@ -32,8 +32,11 @@ export interface BibleNoteRecord extends BibleLocation {
   updatedAt: number
 }
 
+export type HighlightColor = 'amber' | 'sage' | 'sky' | 'rose' | 'lavender' | 'peach'
+
 export interface HighlightRecord extends BibleLocation {
   id: string
+  color?: HighlightColor
   createdAt: number
   updatedAt: number
 }
@@ -179,9 +182,32 @@ export async function getHighlights() {
   return db.highlights.orderBy('updatedAt').reverse().toArray()
 }
 
+export async function getHighlight(location: BibleLocation) {
+  return db.highlights.get(makeBibleLocationId(location))
+}
+
 export async function isHighlighted(location: BibleLocation) {
-  const record = await db.highlights.get(makeBibleLocationId(location))
+  const record = await getHighlight(location)
   return Boolean(record)
+}
+
+export async function setHighlight(location: BibleLocation, color: HighlightColor) {
+  const id = makeBibleLocationId(location)
+  const existing = await db.highlights.get(id)
+  const now = Date.now()
+  const record: HighlightRecord = {
+    id,
+    ...location,
+    color,
+    createdAt: existing?.createdAt ?? now,
+    updatedAt: now,
+  }
+  await db.highlights.put(record)
+  return record
+}
+
+export async function removeHighlight(location: BibleLocation) {
+  await db.highlights.delete(makeBibleLocationId(location))
 }
 
 export async function toggleHighlight(location: BibleLocation) {
@@ -193,12 +219,6 @@ export async function toggleHighlight(location: BibleLocation) {
     return false
   }
 
-  const now = Date.now()
-  await db.highlights.put({
-    id,
-    ...location,
-    createdAt: now,
-    updatedAt: now,
-  })
+  await setHighlight(location, 'amber')
   return true
 }

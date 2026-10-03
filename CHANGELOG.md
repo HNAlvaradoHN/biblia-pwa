@@ -3,6 +3,17 @@
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
 
+## 2026-10-02 — Gestos y resaltados por color 0.1.10
+
+- Corregido el gesto horizontal del lector enfocado usando eventos táctiles con detección de dirección y umbral.
+- Al entrar a un modo enfocado desde un versículo activo, se usa ese versículo exacto como punto de entrada.
+- En modo versículo por versículo, la referencia inicial recibe una señal visual sutil temporal para confirmar el punto de entrada.
+- Añadida paleta persistente de seis colores para resaltados.
+- Los resaltados usan una apariencia suave tipo vidrio esmerilado en lugar de un relleno plano intenso.
+- La selección múltiple puede aplicar un color común y, cuando todos comparten el mismo resaltado, quitarlo en conjunto.
+- Registrada la regla de trabajo continuo: si el usuario pide corregir y continuar, se corrige y se avanza salvo bloqueo obligatorio.
+- Build visible actualizado a `0.1.10`.
+
 ## 2026-10-02 — Selector de modos de lectura 0.1.9
 
 - El botón `Leer capítulo` se sustituye por `Modo de lectura`.

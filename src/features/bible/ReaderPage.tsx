@@ -1,20 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { bibleProvider } from '../../data/bible/provider'
 import {
   getActiveVerse,
   getBibleNote,
+  getHighlight,
   getHighlights,
   getLastReading,
   isFavorite,
-  isHighlighted,
   makeBibleLocationId,
   removeBibleNote,
+  removeHighlight,
   saveActiveVerse,
   saveBibleNote,
   saveLastReading,
+  setHighlight,
   toggleFavorite,
-  toggleHighlight,
+  type HighlightColor,
 } from '../../data/db'
 import './reader-actions.css'
 
@@ -32,6 +34,19 @@ type ShareItem = {
   text: string
 }
 
+const highlightPalette: Array<{
+  id: HighlightColor
+  label: string
+  value: string
+}> = [
+  { id: 'amber', label: 'Ámbar', value: '#d9a441' },
+  { id: 'sage', label: 'Salvia', value: '#6fa37d' },
+  { id: 'sky', label: 'Cielo', value: '#6aa6d9' },
+  { id: 'rose', label: 'Rosa', value: '#d78091' },
+  { id: 'lavender', label: 'Lavanda', value: '#9483cc' },
+  { id: 'peach', label: 'Durazno', value: '#d99a72' },
+]
+
 export function ReaderPage() {
   const { bookId = '', chapter: chapterParam = '1' } = useParams()
   const routerLocation = useLocation()
@@ -47,6 +62,10 @@ export function ReaderPage() {
   const [favoriteActive, setFavoriteActive] = useState(false)
   const [highlightActive, setHighlightActive] = useState(false)
   const [highlightedIds, setHighlightedIds] = useState<Set<string>>(() => new Set())
+  const [highlightColors, setHighlightColors] = useState<Map<string, HighlightColor>>(
+    () => new Map(),
+  )
+  const [highlightPickerTarget, setHighlightPickerTarget] = useState<'single' | 'multi' | undefined>()
   const [noteOpen, setNoteOpen] = useState(false)
   const [noteDraft, setNoteDraft] = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
@@ -74,6 +93,14 @@ export function ReaderPage() {
       if (cancelled) return
 
       setHighlightedIds(new Set(highlights.map((item) => makeBibleLocationId(item))))
+      setHighlightColors(
+        new Map(
+          highlights.map((item) => [
+            makeBibleLocationId(item),
+            item.color ?? 'amber',
+          ]),
+        ),
+      )
 
       if (
         storedActiveVerse?.bookId === book.id &&
@@ -227,11 +254,11 @@ export function ReaderPage() {
     void Promise.all([
       isFavorite(location),
       getBibleNote(location),
-      isHighlighted(location),
-    ]).then(([favorite, note, highlighted]) => {
+      getHighlight(location),
+    ]).then(([favorite, note, highlight]) => {
       if (cancelled) return
       setFavoriteActive(favorite)
-      setHighlightActive(highlighted)
+      setHighlightActive(Boolean(highlight))
       setNoteDraft(note?.text ?? '')
       setNoteSaved(Boolean(note))
       setNoteOpen(Boolean(note))
@@ -577,21 +604,42 @@ export function ReaderPage() {
     setActionMessage(active ? 'Añadido a favoritos' : 'Quitado de favoritos')
   }
 
-  async function handleHighlight() {
+  async function applySingleHighlight(color: HighlightColor) {
     const location = getActiveLocation()
     if (!location) return
-
-    const active = await toggleHighlight(location)
     const id = makeBibleLocationId(location)
+    await setHighlight(location, color)
 
-    setHighlightActive(active)
-    setHighlightedIds((current) => {
-      const next = new Set(current)
-      if (active) next.add(id)
-      else next.delete(id)
+    setHighlightActive(true)
+    setHighlightedIds((current) => new Set(current).add(id))
+    setHighlightColors((current) => {
+      const next = new Map(current)
+      next.set(id, color)
       return next
     })
-    setActionMessage(active ? 'Versículo resaltado' : 'Resaltado eliminado')
+    setHighlightPickerTarget(undefined)
+    setActionMessage('Color de resaltado aplicado')
+  }
+
+  async function removeSingleHighlight() {
+    const location = getActiveLocation()
+    if (!location) return
+    const id = makeBibleLocationId(location)
+    await removeHighlight(location)
+
+    setHighlightActive(false)
+    setHighlightedIds((current) => {
+      const next = new Set(current)
+      next.delete(id)
+      return next
+    })
+    setHighlightColors((current) => {
+      const next = new Map(current)
+      next.delete(id)
+      return next
+    })
+    setHighlightPickerTarget(undefined)
+    setActionMessage('Resaltado eliminado')
   }
 
   async function handleCopy() {
@@ -620,25 +668,56 @@ export function ReaderPage() {
     )
   }
 
-  async function handleBulkHighlight() {
+  function getCommonSelectedHighlightColor() {
+    const selected = getSelectedVerses()
+    if (selected.length === 0) return undefined
+
+    const colors = selected.map(({ id }) => highlightColors.get(id))
+    if (colors.some((color) => !color)) return undefined
+    const first = colors[0]
+    return colors.every((color) => color === first) ? first : undefined
+  }
+
+  async function applyBulkHighlight(color: HighlightColor) {
     const selected = getSelectedVerses()
     if (selected.length === 0) return
 
-    const newlyHighlighted = await Promise.all(
-      selected.map(async ({ id, location }) => {
-        if (!(await isHighlighted(location))) await toggleHighlight(location)
-        return id
-      }),
-    )
+    await Promise.all(selected.map(({ location }) => setHighlight(location, color)))
 
     setHighlightedIds((current) => {
       const next = new Set(current)
-      newlyHighlighted.forEach((id) => next.add(id))
+      selected.forEach(({ id }) => next.add(id))
       return next
     })
+    setHighlightColors((current) => {
+      const next = new Map(current)
+      selected.forEach(({ id }) => next.set(id, color))
+      return next
+    })
+    setHighlightPickerTarget(undefined)
     setActionMessage(
       `${selected.length} versículo${selected.length === 1 ? '' : 's'} resaltado${selected.length === 1 ? '' : 's'}`,
     )
+  }
+
+  async function removeCommonBulkHighlight() {
+    const selected = getSelectedVerses()
+    if (selected.length === 0 || !getCommonSelectedHighlightColor()) return
+
+    await Promise.all(selected.map(({ location }) => removeHighlight(location)))
+
+    setHighlightedIds((current) => {
+      const next = new Set(current)
+      selected.forEach(({ id }) => next.delete(id))
+      return next
+    })
+    setHighlightColors((current) => {
+      const next = new Map(current)
+      selected.forEach(({ id }) => next.delete(id))
+      return next
+    })
+    setHighlightPickerTarget(undefined)
+    setActionMessage('Resaltado común eliminado de la selección')
   }
 
   async function handleBulkCopy() {
@@ -675,14 +754,21 @@ export function ReaderPage() {
   }
 
   function getNearestReadingPoint() {
+    if (activeVerse) {
+      return {
+        chapter: activeVerse.chapter,
+        anchorId: activeVerse.anchorId,
+      }
+    }
+
     const anchors = Array.from(
       document.querySelectorAll<HTMLElement>('[data-reading-anchor="true"]'),
     )
 
     if (anchors.length === 0) {
       return {
-        chapter: activeVerse?.chapter ?? requestedChapter,
-        anchorId: activeVerse?.anchorId ?? '',
+        chapter: requestedChapter,
+        anchorId: '',
       }
     }
 
@@ -700,7 +786,7 @@ export function ReaderPage() {
 
     const chapter = Number(nearest.dataset.chapter)
     return {
-      chapter: Number.isFinite(chapter) ? chapter : activeVerse?.chapter ?? requestedChapter,
+      chapter: Number.isFinite(chapter) ? chapter : requestedChapter,
       anchorId: nearest.id,
     }
   }
@@ -777,6 +863,10 @@ export function ReaderPage() {
                     })
                     const isActive = activeVerse?.anchorId === anchorId
                     const isHighlighted = highlightedIds.has(locationId)
+                    const highlightColor = highlightColors.get(locationId)
+                    const highlightValue = highlightPalette.find(
+                      (item) => item.id === highlightColor,
+                    )?.value
                     const isSelected = selectedVerseIds.has(locationId)
                     const panelVisible = isActive && actionPanelOpen && !selectionMode
                     const reference = `${activeBook.name} ${chapter.number}:${verse.number}`
@@ -790,6 +880,11 @@ export function ReaderPage() {
                           isSelected ? 'selected' : '',
                         ].filter(Boolean).join(' ')}
                         key={verse.number}
+                        style={
+                          highlightValue
+                            ? ({ '--highlight-color': highlightValue } as CSSProperties)
+                            : undefined
+                        }
                       >
                         <button
                           id={anchorId}
@@ -874,10 +969,15 @@ export function ReaderPage() {
                                 className={`verse-action-button${highlightActive ? ' active' : ''}`}
                                 type="button"
                                 aria-pressed={highlightActive}
-                                onClick={() => void handleHighlight()}
+                                aria-expanded={highlightPickerTarget === 'single'}
+                                onClick={() =>
+                                  setHighlightPickerTarget((current) =>
+                                    current === 'single' ? undefined : 'single',
+                                  )
+                                }
                               >
                                 <span aria-hidden="true">▰</span>
-                                {highlightActive ? 'Resaltado' : 'Resaltar'}
+                                {highlightActive ? 'Cambiar resaltado' : 'Resaltar'}
                               </button>
 
                               <button
@@ -907,6 +1007,35 @@ export function ReaderPage() {
                                 Seleccionar varios
                               </button>
                             </div>
+
+                            {highlightPickerTarget === 'single' ? (
+                              <div className="highlight-picker" aria-label="Color de resaltado">
+                                <div className="highlight-palette">
+                                  {highlightPalette.map((color) => (
+                                    <button
+                                      key={color.id}
+                                      className="highlight-color-button"
+                                      type="button"
+                                      style={{ '--swatch-color': color.value } as CSSProperties}
+                                      aria-label={`Resaltar en ${color.label}`}
+                                      onClick={() => void applySingleHighlight(color.id)}
+                                    >
+                                      <span aria-hidden="true" />
+                                      {color.label}
+                                    </button>
+                                  ))}
+                                </div>
+                                {highlightActive ? (
+                                  <button
+                                    className="button secondary"
+                                    type="button"
+                                    onClick={() => void removeSingleHighlight()}
+                                  >
+                                    Quitar resaltado
+                                  </button>
+                                ) : null}
+                              </div>
+                            ) : null}
 
                             {noteOpen ? (
                               <div className="verse-note-editor">
@@ -978,7 +1107,12 @@ export function ReaderPage() {
               className="verse-action-button"
               type="button"
               disabled={selectedVerseIds.size === 0}
-              onClick={() => void handleBulkHighlight()}
+              aria-expanded={highlightPickerTarget === 'multi'}
+              onClick={() =>
+                setHighlightPickerTarget((current) =>
+                  current === 'multi' ? undefined : 'multi',
+                )
+              }
             >
               <span aria-hidden="true">▰</span>
               Resaltar
@@ -1002,6 +1136,34 @@ export function ReaderPage() {
               Compartir
             </button>
           </div>
+          {highlightPickerTarget === 'multi' ? (
+            <div className="highlight-picker" aria-label="Color para la selección">
+              <div className="highlight-palette">
+                {highlightPalette.map((color) => (
+                  <button
+                    key={color.id}
+                    className="highlight-color-button"
+                    type="button"
+                    style={{ '--swatch-color': color.value } as CSSProperties}
+                    aria-label={`Resaltar selección en ${color.label}`}
+                    onClick={() => void applyBulkHighlight(color.id)}
+                  >
+                    <span aria-hidden="true" />
+                    {color.label}
+                  </button>
+                ))}
+              </div>
+              {getCommonSelectedHighlightColor() ? (
+                <button
+                  className="button secondary"
+                  type="button"
+                  onClick={() => void removeCommonBulkHighlight()}
+                >
+                  Quitar resaltado común
+                </button>
+              ) : null}
+            </div>
+          ) : null}
           {actionMessage ? <p className="verse-action-message" role="status">{actionMessage}</p> : null}
         </div>
       ) : null}

@@ -421,3 +421,31 @@ Reglas:
 - los gestos horizontales no deben reemplazar los botones anterior/siguiente;
 - este selector de modo es independiente de la futura preferencia visual de versículos corridos o separados.
 
+## D-036 — Corrección + avance continuo cuando el usuario lo pide
+Estado: APROBADA
+
+Cuando el usuario reporte una corrección y en la misma instrucción pida continuar con el siguiente paso, esa instrucción se interpreta como un objetivo compuesto autorizado: corregir primero lo necesario y, si no existe un bloqueo real, avanzar inmediatamente al siguiente objetivo oficial ya definido.
+
+Reglas:
+
+- no detener el avance solo porque apareció una corrección pequeña o visual;
+- corregir primero cualquier defecto que afecte el flujo que se está probando;
+- después continuar con el siguiente objetivo oficial ya registrado, sin pedir una autorización adicional cuando el usuario ya indicó explícitamente que se continúe;
+- sí detenerse cuando sea obligatorio terminar o validar antes de avanzar por seguridad, integridad de datos, arquitectura, costo, irreversibilidad, CI roto o dependencia técnica bloqueante;
+- no usar esta regla para abrir funcionalidades no aprobadas ni ampliar producto fuera del roadmap/decisiones existentes.
+
+## D-037 — Resaltados por color con comportamiento común
+Estado: APROBADA
+
+Los resaltados persistentes deben permitir elegir colores suaves y conservar una apariencia tipo vidrio esmerilado, no una tarjeta plana o saturada.
+
+Reglas:
+
+- paleta inicial: Ámbar, Salvia, Cielo, Rosa, Lavanda y Durazno;
+- el color se guarda localmente como parte del resaltado del versículo;
+- el resaltado tiñe suavemente la tarjeta visual y mantiene contraste/legibilidad;
+- selección múltiple puede aplicar el mismo color a todos los versículos seleccionados;
+- si todos los versículos seleccionados comparten el mismo resaltado/color, la interfaz debe detectar esa propiedad común y ofrecer quitarla de todos;
+- si la selección tiene estados distintos, la paleta puede unificarlos aplicando un nuevo color;
+- quitar el resaltado no elimina favoritos, notas ni otras propiedades independientes.
+
