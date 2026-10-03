@@ -211,6 +211,27 @@ export function SermonEditorPage() {
     return () => window.removeEventListener('beforeunload', warnUnsaved)
   }, [dirty])
 
+  useEffect(() => {
+    if (!dirty || !sermon) return
+
+    const timer = window.setTimeout(() => {
+      void saveSermon(sermonId, {
+        title,
+        introduction,
+        outline,
+        conclusion,
+      }).then((saved) => {
+        if (!saved) return
+        setSermon(saved)
+        setTitle(saved.title)
+        setSavedAt(saved.updatedAt)
+        setDirty(false)
+      })
+    }, 900)
+
+    return () => window.clearTimeout(timer)
+  }, [conclusion, dirty, introduction, outline, sermon, sermonId, title])
+
   function markDirty(setter: (value: string) => void, value: string) {
     setter(value)
     setDirty(true)
@@ -248,7 +269,7 @@ export function SermonEditorPage() {
           ← Mis prédicas
         </button>
         <div className="sermon-save-state">
-          <span>{dirty ? 'Cambios sin guardar' : 'Guardado'}</span>
+          <span>{dirty ? 'Guardando...' : 'Guardado'}</span>
           {savedAt ? <small>{formatUpdatedAt(savedAt)}</small> : null}
         </div>
         <button className="button primary" type="button" onClick={() => void handleSave()}>
@@ -299,9 +320,9 @@ export function SermonEditorPage() {
         <aside className="sermon-editor-note">
           <strong>Primera etapa del editor</strong>
           <p>
-            En esta versión el bosquejo se guarda como texto estructurado local. Las
-            referencias bíblicas inteligentes y la vista rápida se incorporarán en la
-            siguiente fase para no mezclar responsabilidades.
+            El bosquejo se guarda automáticamente en este dispositivo. Las referencias
+            bíblicas inteligentes y la vista rápida se incorporarán en la siguiente fase
+            para no mezclar responsabilidades.
           </p>
         </aside>
       </form>
