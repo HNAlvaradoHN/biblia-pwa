@@ -565,3 +565,29 @@ Reglas:
 - el resaltado y el versículo activo en modo corrido deben marcar solo el texto del versículo de forma sutil, sin convertirlo en una tarjeta completa;
 - títulos/encabezados de sección siguen separando bloques temáticos.
 
+## D-044 — Base local del editor de prédicas
+Estado: APROBADA
+
+La Fase 4 comienza con documentos de prédica independientes de las notas bíblicas y guardados localmente/offline en IndexedDB.
+
+Primera etapa:
+
+- pantalla `Mis prédicas`;
+- crear una prédica;
+- buscar por título o contenido;
+- abrir y editar;
+- duplicar;
+- archivar y restaurar;
+- guardado automático local;
+- estructura inicial: título, introducción, bosquejo/puntos y conclusión.
+
+Reglas:
+
+- una prédica es un documento personal independiente; no reutilizar la tabla de notas bíblicas;
+- no exigir cuenta ni conexión para crear/editar;
+- evitar borrado destructivo en esta primera etapa; `Archivar` es la acción de retiro principal;
+- el editor básico puede usar controles nativos mientras se valida el flujo; no añadir un editor pesado solo por anticipación;
+- referencias bíblicas inteligentes, vista rápida y regreso exacto son la fase siguiente y deben construirse sobre esta base sin acoplar el texto bíblico al documento;
+- el autosave debe reducir riesgo de pérdida accidental durante preparación;
+- la interfaz debe funcionar en móvil, tablet y computadora.
+
