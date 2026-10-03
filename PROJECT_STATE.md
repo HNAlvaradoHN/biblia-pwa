@@ -119,7 +119,7 @@ Pendiente específico:
 - verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
 - no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
 
-### Base local de Prédicas 0.1.18 — en implementación
+### Base local de Prédicas 0.1.18 — publicado pendiente de validación física
 
 - PR #8 implementa persistencia local de un único versículo activo.
 - PR #8 añade resaltados persistentes separados del estado de versículo activo.
@@ -135,7 +135,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.18`: iniciar Fase 4 reemplazando el placeholder de `Prédicas` por almacenamiento local y gestión básica de documentos con crear, buscar, editar, autosave, duplicar, archivar y restaurar.
+Validar físicamente `0.1.18`, ya integrada y publicada: `Mis prédicas` con crear, buscar, editar, autosave, duplicar, archivar y restaurar, todo local/offline.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -184,12 +184,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar PR/CI/merge/deployment de `0.1.18`.
-2. Validar físicamente creación, autosave, edición, búsqueda, duplicado y archivado/restauración de una prédica.
-3. Confirmar persistencia tras recargar/cerrar y volver a abrir la PWA.
+1. Validar físicamente creación, autosave, edición, búsqueda, duplicado y archivado/restauración de una prédica.
+2. Confirmar persistencia tras recargar/cerrar y volver a abrir la PWA.
+3. Si la prueba real pasa, cerrar D-044.
 4. Después iniciar referencias bíblicas inteligentes y vista rápida, manteniendo regreso exacto a la prédica.
 
-Estado de despliegue actual: `0.1.17` fue fusionada a `main` en `7418ea37abf54c9aba9b7845659bed883cc483f9`. Su CI de `main` (run `37131582566`) terminó en `success` y Vercel dejó producción en `READY`. La previsualización móvil confirmó que `Corridos` se muestra como párrafo continuo tipo Biblia impresa y que `Separados` conserva bloques individuales; también confirmó el nuevo rótulo `Tipo de letra de la Biblia`. El usuario autorizó continuar, por lo que `0.1.18` abre Fase 4 con la base local de Prédicas. Vercel volvió a aceptar previews; se inició una nueva validación completa del head actual del PR #33 antes de merge.
+Estado de despliegue actual: `0.1.18` fue fusionada a `main` en `70c023ee62c3cc124fede484ac75378f384ea4ab`. El CI de `main` (run `37135353551`) terminó en `success`, Vercel dejó producción en `READY` y `https://biblia-pwa.vercel.app/` sirve un bundle que contiene `0.1.18`. La previsualización móvil validó creación, edición completa, autosave, persistencia tras recargar, búsqueda, duplicado, archivado, restauración y legibilidad del módulo Prédicas. Falta únicamente la validación física del usuario. Vercel volvió a aceptar previews; se inició una nueva validación completa del head actual del PR #33 antes de merge.
 
 ## Después de este objetivo
 
