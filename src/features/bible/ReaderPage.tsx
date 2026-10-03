@@ -34,6 +34,19 @@ type ShareItem = {
   text: string
 }
 
+const highlightPalette: Array<{
+  id: HighlightColor
+  label: string
+  value: string
+}> = [
+  { id: 'amber', label: 'Ámbar', value: '#d9a441' },
+  { id: 'sage', label: 'Salvia', value: '#6fa37d' },
+  { id: 'sky', label: 'Cielo', value: '#6aa6d9' },
+  { id: 'rose', label: 'Rosa', value: '#d78091' },
+  { id: 'lavender', label: 'Lavanda', value: '#9483cc' },
+  { id: 'peach', label: 'Durazno', value: '#d99a72' },
+]
+
 export function ReaderPage() {
   const { bookId = '', chapter: chapterParam = '1' } = useParams()
   const routerLocation = useLocation()
@@ -591,21 +604,42 @@ export function ReaderPage() {
     setActionMessage(active ? 'Añadido a favoritos' : 'Quitado de favoritos')
   }
 
-  async function handleHighlight() {
+  async function applySingleHighlight(color: HighlightColor) {
     const location = getActiveLocation()
     if (!location) return
-
-    const active = await toggleHighlight(location)
     const id = makeBibleLocationId(location)
+    await setHighlight(location, color)
 
-    setHighlightActive(active)
-    setHighlightedIds((current) => {
-      const next = new Set(current)
-      if (active) next.add(id)
-      else next.delete(id)
+    setHighlightActive(true)
+    setHighlightedIds((current) => new Set(current).add(id))
+    setHighlightColors((current) => {
+      const next = new Map(current)
+      next.set(id, color)
       return next
     })
-    setActionMessage(active ? 'Versículo resaltado' : 'Resaltado eliminado')
+    setHighlightPickerTarget(undefined)
+    setActionMessage('Color de resaltado aplicado')
+  }
+
+  async function removeSingleHighlight() {
+    const location = getActiveLocation()
+    if (!location) return
+    const id = makeBibleLocationId(location)
+    await removeHighlight(location)
+
+    setHighlightActive(false)
+    setHighlightedIds((current) => {
+      const next = new Set(current)
+      next.delete(id)
+      return next
+    })
+    setHighlightColors((current) => {
+      const next = new Map(current)
+      next.delete(id)
+      return next
+    })
+    setHighlightPickerTarget(undefined)
+    setActionMessage('Resaltado eliminado')
   }
 
   async function handleCopy() {
@@ -634,25 +668,56 @@ export function ReaderPage() {
     )
   }
 
-  async function handleBulkHighlight() {
+  function getCommonSelectedHighlightColor() {
+    const selected = getSelectedVerses()
+    if (selected.length === 0) return undefined
+
+    const colors = selected.map(({ id }) => highlightColors.get(id))
+    if (colors.some((color) => !color)) return undefined
+    const first = colors[0]
+    return colors.every((color) => color === first) ? first : undefined
+  }
+
+  async function applyBulkHighlight(color: HighlightColor) {
     const selected = getSelectedVerses()
     if (selected.length === 0) return
 
-    const newlyHighlighted = await Promise.all(
-      selected.map(async ({ id, location }) => {
-        if (!(await isHighlighted(location))) await toggleHighlight(location)
-        return id
-      }),
-    )
+    await Promise.all(selected.map(({ location }) => setHighlight(location, color)))
 
     setHighlightedIds((current) => {
       const next = new Set(current)
-      newlyHighlighted.forEach((id) => next.add(id))
+      selected.forEach(({ id }) => next.add(id))
       return next
     })
+    setHighlightColors((current) => {
+      const next = new Map(current)
+      selected.forEach(({ id }) => next.set(id, color))
+      return next
+    })
+    setHighlightPickerTarget(undefined)
     setActionMessage(
       `${selected.length} versículo${selected.length === 1 ? '' : 's'} resaltado${selected.length === 1 ? '' : 's'}`,
     )
+  }
+
+  async function removeCommonBulkHighlight() {
+    const selected = getSelectedVerses()
+    if (selected.length === 0 || !getCommonSelectedHighlightColor()) return
+
+    await Promise.all(selected.map(({ location }) => removeHighlight(location)))
+
+    setHighlightedIds((current) => {
+      const next = new Set(current)
+      selected.forEach(({ id }) => next.delete(id))
+      return next
+    })
+    setHighlightColors((current) => {
+      const next = new Map(current)
+      selected.forEach(({ id }) => next.delete(id))
+      return next
+    })
+    setHighlightPickerTarget(undefined)
+    setActionMessage('Resaltado común eliminado de la selección')
   }
 
   async function handleBulkCopy() {
