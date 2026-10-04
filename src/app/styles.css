@@ -110,7 +110,7 @@ input:focus-visible {
   padding:
     max(8px, env(safe-area-inset-top))
     max(10px, env(safe-area-inset-right))
-    calc(88px + env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-bottom))
     max(10px, env(safe-area-inset-left));
 }
 

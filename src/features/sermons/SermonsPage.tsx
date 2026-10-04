@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
   appendSermonBlock,
@@ -41,6 +41,40 @@ function formatUpdatedAt(value: number) {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(value)
+}
+
+type SermonToolSide = 'left' | 'right'
+
+type SermonToolPlacement = {
+  side: SermonToolSide
+  topRatio: number
+}
+
+const SERMON_TOOL_PLACEMENT_KEY = 'biblia-sermon-tool-placement-v1'
+
+function loadSermonToolPlacement(): SermonToolPlacement {
+  if (typeof window === 'undefined') {
+    return { side: 'right', topRatio: 0.56 }
+  }
+
+  try {
+    const stored = JSON.parse(
+      window.localStorage.getItem(SERMON_TOOL_PLACEMENT_KEY) ?? '',
+    ) as Partial<SermonToolPlacement>
+    if (
+      (stored.side === 'left' || stored.side === 'right') &&
+      typeof stored.topRatio === 'number'
+    ) {
+      return {
+        side: stored.side,
+        topRatio: Math.max(0.12, Math.min(0.88, stored.topRatio)),
+      }
+    }
+  } catch {
+    // Use the default placement when local preference is unavailable.
+  }
+
+  return { side: 'right', topRatio: 0.56 }
 }
 
 export function SermonsPage() {
@@ -277,7 +311,23 @@ export function SermonEditorPage() {
     selectionStart?: number
     selectionEnd?: number
   }>({ section: 'outline' })
-  const [toolMenu, setToolMenu] = useState<'text' | 'list' | 'insert'>()
+  const [toolPanelOpen, setToolPanelOpen] = useState(false)
+  const [toolPlacement, setToolPlacement] =
+    useState<SermonToolPlacement>(loadSermonToolPlacement)
+  const toolPlacementRef = useRef(toolPlacement)
+  const [toolViewport, setToolViewport] = useState(() => ({
+    top: 0,
+    height:
+      typeof window === 'undefined'
+        ? 800
+        : window.visualViewport?.height ?? window.innerHeight,
+  }))
+  const toolDragRef = useRef<{
+    pointerId: number
+    startX: number
+    startY: number
+    moved: boolean
+  } | undefined>(undefined)
   const [typingMarkOverrides, setTypingMarkOverrides] = useState<
     Partial<Record<SermonInlineMarkType, boolean>>
   >({})
@@ -394,45 +444,31 @@ export function SermonEditorPage() {
   }, [referencePreview])
 
   useEffect(() => {
-    const root = document.documentElement
     const visualViewport = window.visualViewport
     let frame = 0
 
-    function updateToolbarViewportOffset() {
+    function updateToolViewport() {
       window.cancelAnimationFrame(frame)
       frame = window.requestAnimationFrame(() => {
-        if (!visualViewport) {
-          root.style.setProperty('--sermon-toolbar-keyboard-offset', '0px')
-          return
-        }
-
-        const occludedBottom = Math.max(
-          0,
-          window.innerHeight -
-            visualViewport.height -
-            visualViewport.offsetTop,
-        )
-
-        root.style.setProperty(
-          '--sermon-toolbar-keyboard-offset',
-          `${Math.round(occludedBottom)}px`,
-        )
+        setToolViewport({
+          top: visualViewport?.offsetTop ?? 0,
+          height: visualViewport?.height ?? window.innerHeight,
+        })
       })
     }
 
-    updateToolbarViewportOffset()
-    visualViewport?.addEventListener('resize', updateToolbarViewportOffset)
-    visualViewport?.addEventListener('scroll', updateToolbarViewportOffset)
-    window.addEventListener('resize', updateToolbarViewportOffset)
-    window.addEventListener('orientationchange', updateToolbarViewportOffset)
+    updateToolViewport()
+    visualViewport?.addEventListener('resize', updateToolViewport)
+    visualViewport?.addEventListener('scroll', updateToolViewport)
+    window.addEventListener('resize', updateToolViewport)
+    window.addEventListener('orientationchange', updateToolViewport)
 
     return () => {
       window.cancelAnimationFrame(frame)
-      visualViewport?.removeEventListener('resize', updateToolbarViewportOffset)
-      visualViewport?.removeEventListener('scroll', updateToolbarViewportOffset)
-      window.removeEventListener('resize', updateToolbarViewportOffset)
-      window.removeEventListener('orientationchange', updateToolbarViewportOffset)
-      root.style.removeProperty('--sermon-toolbar-keyboard-offset')
+      visualViewport?.removeEventListener('resize', updateToolViewport)
+      visualViewport?.removeEventListener('scroll', updateToolViewport)
+      window.removeEventListener('resize', updateToolViewport)
+      window.removeEventListener('orientationchange', updateToolViewport)
     }
   }, [])
 
@@ -875,7 +911,6 @@ export function SermonEditorPage() {
           ? block.checked ?? false
           : undefined,
     })
-    setToolMenu(undefined)
   }
 
   async function changeActiveIndent(delta: number) {
@@ -888,6 +923,87 @@ export function SermonEditorPage() {
 
   async function toggleTaskChecked(block: SermonBlockRecord) {
     await applyBlockFormatting(block.id, { checked: !block.checked })
+  }
+
+  function runToolAction(action: () => void | Promise<void>) {
+    setToolPanelOpen(false)
+    void action()
+  }
+
+  function persistToolPlacement(placement: SermonToolPlacement) {
+    try {
+      window.localStorage.setItem(
+        SERMON_TOOL_PLACEMENT_KEY,
+        JSON.stringify(placement),
+      )
+    } catch {
+      // The tool tab still works when storage is unavailable.
+    }
+  }
+
+  function handleToolTabPointerDown(
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) {
+    event.preventDefault()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    toolDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      moved: false,
+    }
+  }
+
+  function handleToolTabPointerMove(
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) {
+    const drag = toolDragRef.current
+    if (!drag || drag.pointerId !== event.pointerId) return
+
+    const distance = Math.hypot(
+      event.clientX - drag.startX,
+      event.clientY - drag.startY,
+    )
+    if (distance > 7) {
+      drag.moved = true
+      setToolPanelOpen(false)
+    }
+    if (!drag.moved) return
+
+    const visualViewport = window.visualViewport
+    const viewportLeft = visualViewport?.offsetLeft ?? 0
+    const viewportTop = visualViewport?.offsetTop ?? 0
+    const viewportWidth = visualViewport?.width ?? window.innerWidth
+    const viewportHeight = visualViewport?.height ?? window.innerHeight
+    const side: SermonToolSide =
+      event.clientX < viewportLeft + viewportWidth / 2 ? 'left' : 'right'
+    const topRatio = Math.max(
+      0.12,
+      Math.min(0.88, (event.clientY - viewportTop) / viewportHeight),
+    )
+
+    const nextPlacement = { side, topRatio }
+    toolPlacementRef.current = nextPlacement
+    setToolPlacement(nextPlacement)
+  }
+
+  function handleToolTabPointerUp(
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) {
+    const drag = toolDragRef.current
+    if (!drag || drag.pointerId !== event.pointerId) return
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+
+    if (drag.moved) {
+      persistToolPlacement(toolPlacementRef.current)
+    } else {
+      setToolPanelOpen((current) => !current)
+    }
+
+    toolDragRef.current = undefined
   }
 
   async function handleImageSelected(files?: FileList | null) {
@@ -1198,16 +1314,55 @@ export function SermonEditorPage() {
           'Cierre, llamado o idea final...',
         )}
 
-        <div className="sermon-compose-dock">
-          {toolMenu ? (
-            <div className="sermon-tool-panel" role="dialog" aria-label="Herramientas de formato">
-              {toolMenu === 'text' ? (
-                <>
+        {toolPanelOpen ? (
+          <button
+            className="sermon-side-tool-backdrop"
+            type="button"
+            aria-label="Cerrar herramientas"
+            onClick={() => setToolPanelOpen(false)}
+          />
+        ) : null}
+
+        <div
+          className={`sermon-side-tools sermon-side-tools-${toolPlacement.side}`}
+          style={{
+            top: Math.max(
+              toolViewport.top + 66,
+              Math.min(
+                toolViewport.top + toolViewport.height - 66,
+                toolViewport.top + toolViewport.height * toolPlacement.topRatio,
+              ),
+            ),
+          }}
+        >
+          {toolPanelOpen ? (
+            <div
+              className="sermon-side-tool-panel"
+              role="dialog"
+              aria-label="Herramientas de edición"
+            >
+              <div className="sermon-side-tool-group">
+                <span>Texto</span>
+                <div>
+                  <button
+                    type="button"
+                    className={isActiveBlockType('paragraph') ? 'active' : ''}
+                    aria-pressed={isActiveBlockType('paragraph')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => setActiveBlockType('paragraph'))
+                    }
+                  >
+                    Texto
+                  </button>
                   <button
                     type="button"
                     className={isActiveBlockType('heading', 1) ? 'active' : ''}
                     aria-pressed={isActiveBlockType('heading', 1)}
-                    onClick={() => void setActiveBlockType('heading', 1)}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => setActiveBlockType('heading', 1))
+                    }
                   >
                     H1
                   </button>
@@ -1215,7 +1370,10 @@ export function SermonEditorPage() {
                     type="button"
                     className={isActiveBlockType('heading', 2) ? 'active' : ''}
                     aria-pressed={isActiveBlockType('heading', 2)}
-                    onClick={() => void setActiveBlockType('heading', 2)}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => setActiveBlockType('heading', 2))
+                    }
                   >
                     H2
                   </button>
@@ -1223,155 +1381,174 @@ export function SermonEditorPage() {
                     type="button"
                     className={isActiveBlockType('quote') ? 'active' : ''}
                     aria-pressed={isActiveBlockType('quote')}
-                    onClick={() => void setActiveBlockType('quote')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => setActiveBlockType('quote'))
+                    }
                   >
                     Cita
                   </button>
-                  <button type="button" onClick={() => void changeActiveIndent(-1)}>← Sangría</button>
-                  <button type="button" onClick={() => void changeActiveIndent(1)}>Sangría →</button>
-                </>
-              ) : null}
+                </div>
+              </div>
 
-              {toolMenu === 'list' ? (
-                <>
+              <div className="sermon-side-tool-group">
+                <span>Formato</span>
+                <div>
+                  <button
+                    type="button"
+                    className={isInlineMarkActive('bold') ? 'active' : ''}
+                    aria-pressed={isInlineMarkActive('bold')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => toggleInlineMark('bold'))
+                    }
+                  >
+                    <strong>B</strong>
+                  </button>
+                  <button
+                    type="button"
+                    className={isInlineMarkActive('italic') ? 'active' : ''}
+                    aria-pressed={isInlineMarkActive('italic')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => toggleInlineMark('italic'))
+                    }
+                  >
+                    <span className="sermon-toolbar-italic">I</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={isInlineMarkActive('underline') ? 'active' : ''}
+                    aria-pressed={isInlineMarkActive('underline')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => toggleInlineMark('underline'))
+                    }
+                  >
+                    <u>U</u>
+                  </button>
+                  <button
+                    type="button"
+                    className={isInlineMarkActive('strike') ? 'active' : ''}
+                    aria-pressed={isInlineMarkActive('strike')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => toggleInlineMark('strike'))
+                    }
+                  >
+                    <s>S</s>
+                  </button>
+                </div>
+              </div>
+
+              <div className="sermon-side-tool-group">
+                <span>Listas y sangría</span>
+                <div>
                   <button
                     type="button"
                     className={isActiveBlockType('bullet') ? 'active' : ''}
                     aria-pressed={isActiveBlockType('bullet')}
-                    onClick={() => void setActiveBlockType('bullet')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => setActiveBlockType('bullet'))
+                    }
                   >
-                    • Viñetas
+                    •
                   </button>
                   <button
                     type="button"
                     className={isActiveBlockType('numbered') ? 'active' : ''}
                     aria-pressed={isActiveBlockType('numbered')}
-                    onClick={() => void setActiveBlockType('numbered')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => setActiveBlockType('numbered'))
+                    }
                   >
-                    1. Numerada
+                    1.
                   </button>
                   <button
                     type="button"
                     className={isActiveBlockType('task') ? 'active' : ''}
                     aria-pressed={isActiveBlockType('task')}
-                    onClick={() => void setActiveBlockType('task')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => setActiveBlockType('task'))
+                    }
                   >
-                    ☑ Verificación
+                    ☑
                   </button>
-                </>
-              ) : null}
-
-              {toolMenu === 'insert' ? (
-                <>
                   <button
                     type="button"
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => changeActiveIndent(-1))
+                    }
+                    aria-label="Reducir sangría"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => changeActiveIndent(1))
+                    }
+                    aria-label="Aumentar sangría"
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+
+              <div className="sermon-side-tool-group">
+                <span>Insertar</span>
+                <div>
+                  <button
+                    type="button"
+                    onPointerDown={(event) => event.preventDefault()}
                     onClick={() => {
-                      setToolMenu(undefined)
+                      setToolPanelOpen(false)
                       imageInputRef.current?.click()
                     }}
                   >
-                    ▧ Galería
+                    Galería
                   </button>
-                </>
-              ) : null}
+                </div>
+              </div>
             </div>
           ) : null}
 
-          <div className="sermon-compose-toolbar" aria-label="Herramientas de la prédica">
-            <button
-              type="button"
-              className={toolMenu === 'text' ? 'active' : ''}
-              aria-pressed={toolMenu === 'text'}
-              onClick={() => setToolMenu((current) => current === 'text' ? undefined : 'text')}
-              title="Encabezados, cita y sangría"
-            >
-              Aa
-            </button>
-            <button
-              type="button"
-              className={`sermon-toolbar-text${isActiveBlockType('paragraph') ? ' active' : ''}`}
-              aria-pressed={isActiveBlockType('paragraph')}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => void setActiveBlockType('paragraph')}
-              title="Texto normal"
-            >
-              Texto
-            </button>
-            <button
-              type="button"
-              className={isInlineMarkActive('bold') ? 'active' : ''}
-              aria-pressed={isInlineMarkActive('bold')}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => void toggleInlineMark('bold')}
-              title="Negrita"
-            >
-              <strong>B</strong>
-            </button>
-            <button
-              type="button"
-              className={isInlineMarkActive('italic') ? 'active' : ''}
-              aria-pressed={isInlineMarkActive('italic')}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => void toggleInlineMark('italic')}
-              title="Cursiva"
-            >
-              <span className="sermon-toolbar-italic">I</span>
-            </button>
-            <button
-              type="button"
-              className={isInlineMarkActive('underline') ? 'active' : ''}
-              aria-pressed={isInlineMarkActive('underline')}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => void toggleInlineMark('underline')}
-              title="Subrayado"
-            >
-              <u>U</u>
-            </button>
-            <button
-              type="button"
-              className={isInlineMarkActive('strike') ? 'active' : ''}
-              aria-pressed={isInlineMarkActive('strike')}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => void toggleInlineMark('strike')}
-              title="Tachado"
-            >
-              <s>S</s>
-            </button>
-            <button
-              type="button"
-              className={`${toolMenu === 'list' ? 'active' : ''}${['bullet', 'numbered', 'task'].includes(getActiveTextBlock()?.type ?? '') ? ' active' : ''}`.trim()}
-              aria-pressed={
-                toolMenu === 'list' ||
-                ['bullet', 'numbered', 'task'].includes(getActiveTextBlock()?.type ?? '')
-              }
-              onClick={() => setToolMenu((current) => current === 'list' ? undefined : 'list')}
-              title="Listas"
-            >
-              ☷
-            </button>
-            <button
-              type="button"
-              className={toolMenu === 'insert' ? 'active' : ''}
-              aria-pressed={toolMenu === 'insert'}
-              onClick={() => setToolMenu((current) => current === 'insert' ? undefined : 'insert')}
-              title="Insertar"
-            >
-              ＋
-            </button>
-          </div>
-
-          <input
-            ref={imageInputRef}
-            className="sermon-image-input"
-            type="file"
-            accept="image/*"
-            aria-label="Seleccionar imágenes de la galería"
-            multiple
-            onChange={(event) =>
-              void handleImageSelected(event.target.files)
+          <button
+            className="sermon-side-tool-tab"
+            type="button"
+            aria-label={
+              toolPanelOpen
+                ? 'Cerrar herramientas'
+                : 'Abrir herramientas; arrastrar para mover de lado'
             }
-          />
+            aria-expanded={toolPanelOpen}
+            onPointerDown={handleToolTabPointerDown}
+            onPointerMove={handleToolTabPointerMove}
+            onPointerUp={handleToolTabPointerUp}
+            onPointerCancel={() => {
+              toolDragRef.current = undefined
+            }}
+          >
+            Aa
+          </button>
         </div>
+
+        <input
+          ref={imageInputRef}
+          className="sermon-image-input"
+          type="file"
+          accept="image/*"
+          aria-label="Seleccionar imágenes de la galería"
+          multiple
+          onChange={(event) =>
+            void handleImageSelected(event.target.files)
+          }
+        />
       </form>
 
       {referencePreview ? (

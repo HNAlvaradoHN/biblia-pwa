@@ -355,3 +355,29 @@ Reglas:
 - los paneles de herramientas se mueven junto con la barra y se abren sobre ella sin obligar a desplazarse al final de la nota;
 - crear una nueva prédica debe continuar navegando directamente a esta pantalla dedicada;
 - el cambio es de experiencia/navegación, no altera el modelo local, autosave ni estructura del documento.
+
+
+## D-057 — Pestaña lateral móvil de herramientas
+Estado: APROBADA
+
+La barra inferior flotante de edición queda sustituida por una pestaña lateral móvil. Esta decisión reemplaza únicamente la presentación/posición de las herramientas descrita en D-056; la pantalla dedicada de edición de D-056 se mantiene.
+
+Reglas:
+
+- no existe barra de herramientas permanente en la parte inferior del editor;
+- existe una pestaña lateral compacta, fija respecto a la pantalla y separada del flujo del documento;
+- la pestaña puede arrastrarse y colocarse en el lado izquierdo o derecho;
+- también puede ajustarse verticalmente; la posición se limita al viewport visible para evitar que quede inaccesible;
+- la preferencia de lado/altura se guarda localmente y se reutiliza al volver al editor;
+- un toque sin arrastre abre el panel de herramientas;
+- el panel se abre hacia el interior de la pantalla, nunca fuera de ella;
+- al elegir una herramienta, el panel se cierra inmediatamente;
+- tocar fuera del panel también lo cierra;
+- arrastrar la pestaña cierra cualquier panel abierto;
+- el panel preserva la selección/cursor del editor al aplicar B/I/U/S y demás herramientas;
+- Texto sigue siendo la opción prioritaria para volver a párrafo normal;
+- Galería permanece dentro de las herramientas de inserción;
+- esta solución no depende de la posición del teclado ni del scroll del documento;
+- la antigua combinación de barra inferior `sticky`/`fixed` con compensación del teclado queda retirada de la experiencia activa.
+
+La estructura de datos, autosave, formatos y pantalla dedicada no cambian por esta decisión.
