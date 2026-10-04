@@ -15,6 +15,17 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-03 — Hoja de notas e imágenes integradas 0.1.29
+
+- Corregida la presentación del editor para que se sienta como una hoja de notas común: título limpio, contenido continuo y sin cajas independientes alrededor de cada sección.
+- Introducción, Bosquejo/puntos y Conclusión quedan como separadores discretos dentro de la misma hoja, no como paneles separados.
+- La barra de herramientas pasa a una superficie compacta fija en la parte inferior, preparada para las herramientas de edición del siguiente hito.
+- Las imágenes insertadas dejan de ocupar gran parte del viewport: tamaño inicial limitado a aprox. 300 px en móvil y 360 px en pantallas mayores, preservando el archivo original completo.
+- Insertar una imagen crea automáticamente un párrafo editable inmediatamente debajo y mueve allí el cursor para continuar escribiendo.
+- El texto que ya estaba antes de la imagen permanece en su sitio; la imagen queda integrada entre contenido anterior y posterior.
+- Se elimina texto explicativo técnico del editor y estilos obsoletos de la UI de bloques.
+- Build visible actualizado a `0.1.29`.
+
 ## 2026-10-03 — Documento continuo e imágenes 0.1.28
 
 - Corregida la interpretación visual del editor estructurado: los bloques permanecen como arquitectura interna pero dejan de mostrarse como cajitas, números o controles `+ Bloque`.
