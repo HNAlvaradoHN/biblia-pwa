@@ -1524,6 +1524,11 @@ export function SermonEditorPage() {
   }
 
   async function handleRemoveImage(block: SermonBlockRecord) {
+    const confirmed = window.confirm(
+      '¿Eliminar esta imagen de la prédica? Esta acción no se puede deshacer.',
+    )
+    if (!confirmed) return
+
     const removed = await removeSermonImageBlock(block.id)
     if (!removed) return
     clearHistory()
