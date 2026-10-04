@@ -371,3 +371,11 @@ export async function setSermonArchived(id: string, archived: boolean) {
   await db.sermons.put(record)
   return record
 }
+
+export async function deleteSermon(id: string) {
+  const existing = await db.sermons.get(id)
+  if (!existing) return false
+
+  await db.sermons.delete(id)
+  return true
+}

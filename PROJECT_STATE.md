@@ -143,7 +143,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Validar físicamente `0.1.22`: bloqueo modal de referencias, continuidad Biblia ↔ Modo Predicación y pantalla activa cuando sea posible.
+Completar `0.1.23`: añadir eliminación explícita de prédicas sin perder las validaciones físicas pendientes del flujo `0.1.22`.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -192,13 +192,12 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente que la vista rápida bloquee completamente el scroll del contenido de fondo.
-2. En Modo Predicación, confirmar `Cerrar` + `Leer capítulo`.
-3. Confirmar que `Volver a Predicación` regrese a la misma prédica y posición vertical.
-4. Confirmar que Modo Predicación siga funcionando aunque Screen Wake Lock no esté disponible y que, cuando sí esté disponible, intente mantener la pantalla activa.
-5. Con esa validación, cerrar el defecto detectado en `0.1.21` y continuar el refinamiento de Modo Predicación.
+1. Completar CI/PR/merge/publicación de `0.1.23`.
+2. Validar físicamente `Eliminar` en una prédica de prueba: confirmar, borrar y comprobar que desaparece de la lista tras recargar.
+3. Mantener pendiente la validación de `0.1.22`: bloqueo del scroll detrás de la vista rápida, `Cerrar` + `Leer capítulo`, `Volver a Predicación` y retorno a la misma posición.
+4. Después de esas validaciones, continuar el refinamiento de Modo Predicación.
 
-Estado de despliegue actual: `0.1.22` fue fusionada mediante PR #44. El CI del PR pasó instalación, TypeScript, ESLint, build PWA y auditoría de dependencias. GitHub Pages publica actualmente `v0.1.22`, verificado mediante el identificador visible de la aplicación. La validación física del flujo táctil y del retorno exacto sigue pendiente del usuario.
+Estado de despliegue actual: producción está en `0.1.22`. `0.1.23` está implementándose en la rama `feat/sermon-delete-0123` y no debe presentarse como lista para probar hasta completar CI, merge y publicación.
 
 ## Después de este objetivo
 

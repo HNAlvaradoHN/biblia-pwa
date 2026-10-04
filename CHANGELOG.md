@@ -13,6 +13,15 @@
 
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
+## 2026-10-03 — Eliminación de prédicas 0.1.23
+
+- Añadida acción `Eliminar` a cada prédica junto a Abrir, Duplicar y Archivar/Restaurar.
+- La eliminación borra definitivamente la prédica local de IndexedDB.
+- Antes de borrar se exige una confirmación explícita con el título de la prédica y aviso de que la acción no se puede deshacer.
+- La acción destructiva se diferencia visualmente de las acciones normales para reducir eliminaciones accidentales.
+- Se conserva `Archivar` como alternativa reversible.
+- Build visible actualizado a `0.1.23`.
+
 ## 2026-10-03 — Flujo de referencias en Modo Predicación 0.1.22
 
 - Corregido el modal de referencias para impedir que el contenido de fondo siga desplazándose mientras la vista rápida está abierta, tanto en el editor como en Modo Predicación.

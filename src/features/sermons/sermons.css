@@ -182,6 +182,18 @@
   min-height: 38px;
 }
 
+.sermon-delete {
+  border-color: color-mix(in srgb, #b42318 32%, var(--line));
+  background: color-mix(in srgb, #b42318 8%, var(--surface-strong));
+  color: color-mix(in srgb, #b42318 78%, var(--ink));
+}
+
+.sermon-delete:hover,
+.sermon-delete:focus-visible {
+  border-color: #b42318;
+  background: color-mix(in srgb, #b42318 14%, var(--surface-strong));
+}
+
 .sermon-editor-toolbar {
   position: sticky;
   top: 76px;

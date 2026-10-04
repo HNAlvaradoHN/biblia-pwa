@@ -696,3 +696,18 @@ Reglas:
 - si se abrió desde Modo Predicación, `Volver a Predicación` restaura la misma prédica y la posición vertical previa;
 - durante Modo Predicación la aplicación intentará mantener la pantalla activa cuando la plataforma ofrezca Screen Wake Lock, sin convertir esa API en requisito para usar la función;
 - si el navegador no admite Wake Lock o rechaza la solicitud, Modo Predicación debe seguir funcionando normalmente.
+
+
+## D-051 — Eliminación explícita de prédicas
+Estado: APROBADA
+
+Las prédicas pueden eliminarse definitivamente además de archivarse.
+
+Reglas:
+
+- cada prédica muestra una acción `Eliminar`;
+- `Archivar` permanece como opción reversible y distinta de eliminar;
+- eliminar una prédica borra su registro local de IndexedDB;
+- antes del borrado debe mostrarse una confirmación explícita indicando que la acción no se puede deshacer;
+- la acción destructiva debe diferenciarse visualmente de Abrir, Duplicar, Archivar y Restaurar;
+- no se implementa papelera en esta etapa; si en el futuro se aprueba recuperación de borrados, será una función separada.
