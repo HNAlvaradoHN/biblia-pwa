@@ -15,11 +15,13 @@ import {
   saveSermon,
   saveSermonBlockDraft,
   saveSermonBlockFormatting,
+  saveSermonBlockState,
   saveSermonTitle,
   setSermonArchived,
   splitSermonBlock,
   type SermonBlockRecord,
   type SermonBlockType,
+  type SermonInlineColor,
   type SermonInlineMark,
   type SermonInlineMarkType,
   type SermonRecord,
@@ -48,6 +50,52 @@ type SermonToolSide = 'left' | 'right'
 type SermonToolPlacement = {
   side: SermonToolSide
   topRatio: number
+}
+
+type SermonBlockEditableState = Pick<
+  SermonBlockRecord,
+  'type' | 'text' | 'marks' | 'indent' | 'checked' | 'headingLevel'
+>
+
+type SermonHistoryEntry = {
+  blockId: string
+  before: SermonBlockEditableState
+  after: SermonBlockEditableState
+  kind: 'typing' | 'format'
+  at: number
+}
+
+const SERMON_TEXT_COLORS: SermonInlineColor[] = [
+  'accent',
+  'red',
+  'blue',
+  'green',
+]
+
+const SERMON_HIGHLIGHT_COLORS: SermonInlineColor[] = [
+  'amber',
+  'sage',
+  'sky',
+  'rose',
+  'lavender',
+]
+
+function editableBlockState(block: SermonBlockRecord): SermonBlockEditableState {
+  return {
+    type: block.type,
+    text: block.text,
+    marks: block.marks.map((mark) => ({ ...mark })),
+    indent: block.indent,
+    checked: block.checked,
+    headingLevel: block.headingLevel,
+  }
+}
+
+function sameEditableBlockState(
+  left: SermonBlockEditableState,
+  right: SermonBlockEditableState,
+) {
+  return JSON.stringify(left) === JSON.stringify(right)
 }
 
 const SERMON_TOOL_PLACEMENT_KEY = 'biblia-sermon-tool-placement-v1'
