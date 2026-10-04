@@ -499,7 +499,9 @@ function composeSermonSection(
   section: SermonSection,
   fallback: string,
 ) {
-  const sectionBlocks = blocks.filter((block) => block.section === section)
+  const sectionBlocks = blocks.filter(
+    (block) => block.section === section && block.type !== 'image',
+  )
   return sectionBlocks.length > 0
     ? sectionBlocks.map((block) => block.text).join('\n')
     : fallback
