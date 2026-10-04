@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.33**. `0.1.34` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.33`.
+- Producción confirmada: **v0.1.34**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -164,7 +164,7 @@ PUBLICADO en `0.1.32`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Esperar a que GitHub Pages publique `0.1.34` y validar: `Texto` como segundo acceso directo; B/I/U/S con encendido/apagado; H1/H2/Cita/listas/checklist con segundo toque para regresar a `Texto`. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
+Validar físicamente `0.1.34`: `Texto` como segundo acceso directo; B/I/U/S con encendido/apagado; H1/H2/Cita/listas/checklist con segundo toque para regresar a `Texto`. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
