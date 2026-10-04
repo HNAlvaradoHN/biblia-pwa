@@ -15,6 +15,19 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-03 — Barra compacta de formato 0.1.31
+
+- Añadida barra compacta de edición para la hoja de Prédicas.
+- `Aa` permite Texto, H1, H2, Cita y control de sangría.
+- Añadidos Negrita, Cursiva, Subrayado y Tachado sobre selección de texto.
+- Añadido menú de listas: Ninguna, Viñetas, Numerada y Verificación.
+- `Imagen` fue movida al menú de inserción `+`; ya no aparece como acción independiente.
+- El formato inline se guarda como marks estructurados y persiste en IndexedDB.
+- Los marks se reajustan durante edición de texto y se conservan al dividir/unir párrafos.
+- Añadido render visual de encabezados, citas, listas, checklist y sangría dentro de la hoja.
+- Este hito deja pendiente completar Enlace, color/resaltado y deshacer/rehacer sobre la misma barra.
+- Build visible actualizado a `0.1.31`.
+
 ## 2026-10-03 — División editorial de secciones 0.1.30
 
 - Introducción, Bosquejo y puntos, y Conclusión quedan marcadas como secciones editoriales reales dentro de la misma hoja continua.
