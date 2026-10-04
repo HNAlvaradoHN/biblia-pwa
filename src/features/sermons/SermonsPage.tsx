@@ -278,6 +278,9 @@ export function SermonEditorPage() {
     selectionEnd?: number
   }>({ section: 'outline' })
   const [toolMenu, setToolMenu] = useState<'text' | 'list' | 'insert'>()
+  const [typingMarkOverrides, setTypingMarkOverrides] = useState<
+    Partial<Record<SermonInlineMarkType, boolean>>
+  >({})
   const pendingFocusRef = useRef<{ blockId: string; offset: number } | undefined>(undefined)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
@@ -453,13 +456,7 @@ export function SermonEditorPage() {
     setDirty(true)
   }
 
-  function adjustMarksForTextChange(
-    previousText: string,
-    nextText: string,
-    marks: SermonInlineMark[],
-  ) {
-    if (previousText === nextText || marks.length === 0) return marks
-
+  function getTextChangeRange(previousText: string, nextText: string) {
     let prefix = 0
     while (
       prefix < previousText.length &&
@@ -479,14 +476,56 @@ export function SermonEditorPage() {
       suffix += 1
     }
 
-    const oldChangedEnd = previousText.length - suffix
-    const newChangedEnd = nextText.length - suffix
-    const delta = newChangedEnd - oldChangedEnd
+    return {
+      start: prefix,
+      oldEnd: previousText.length - suffix,
+      newEnd: nextText.length - suffix,
+    }
+  }
+
+  function normalizeMarks(marks: SermonInlineMark[]) {
+    const sorted = [...marks]
+      .filter((mark) => mark.end > mark.start)
+      .sort((a, b) => {
+        const typeDifference = a.type.localeCompare(b.type)
+        if (typeDifference !== 0) return typeDifference
+        const hrefDifference = (a.href ?? '').localeCompare(b.href ?? '')
+        if (hrefDifference !== 0) return hrefDifference
+        return a.start - b.start || a.end - b.end
+      })
+
+    const normalized: SermonInlineMark[] = []
+    for (const mark of sorted) {
+      const previous = normalized.at(-1)
+      if (
+        previous &&
+        previous.type === mark.type &&
+        previous.href === mark.href &&
+        mark.start <= previous.end
+      ) {
+        previous.end = Math.max(previous.end, mark.end)
+      } else {
+        normalized.push({ ...mark })
+      }
+    }
+
+    return normalized
+  }
+
+  function adjustMarksForTextChange(
+    previousText: string,
+    nextText: string,
+    marks: SermonInlineMark[],
+  ) {
+    if (previousText === nextText || marks.length === 0) return marks
+
+    const change = getTextChangeRange(previousText, nextText)
+    const delta = change.newEnd - change.oldEnd
 
     return marks
       .map((mark) => {
-        if (mark.end <= prefix) return mark
-        if (mark.start >= oldChangedEnd) {
+        if (mark.end <= change.start) return mark
+        if (mark.start >= change.oldEnd) {
           return {
             ...mark,
             start: Math.max(0, mark.start + delta),
@@ -496,8 +535,8 @@ export function SermonEditorPage() {
 
         return {
           ...mark,
-          start: Math.min(mark.start, prefix),
-          end: Math.max(prefix, mark.end + delta),
+          start: Math.min(mark.start, change.start),
+          end: Math.max(change.start, mark.end + delta),
         }
       })
       .map((mark) => ({
@@ -510,15 +549,55 @@ export function SermonEditorPage() {
 
   function markBlockDirty(blockId: string, value: string) {
     setBlocks((current) =>
-      current.map((block) =>
-        block.id === blockId
-          ? {
-              ...block,
-              text: value,
-              marks: adjustMarksForTextChange(block.text, value, block.marks),
+      current.map((block) => {
+        if (block.id !== blockId) return block
+
+        const change = getTextChangeRange(block.text, value)
+        let nextMarks = adjustMarksForTextChange(
+          block.text,
+          value,
+          block.marks,
+        )
+
+        if (change.newEnd > change.start) {
+          const inlineTypes: SermonInlineMarkType[] = [
+            'bold',
+            'italic',
+            'underline',
+            'strike',
+          ]
+
+          for (const type of inlineTypes) {
+            const inherited = block.marks.some(
+              (mark) =>
+                mark.type === type &&
+                mark.start <= change.start &&
+                mark.end >= change.start,
+            )
+            const enabled = typingMarkOverrides[type] ?? inherited
+
+            if (enabled) {
+              nextMarks.push({
+                type,
+                start: change.start,
+                end: change.newEnd,
+              })
+            } else {
+              nextMarks = nextMarks.flatMap((mark) =>
+                mark.type === type
+                  ? subtractMark(mark, change.start, change.newEnd)
+                  : [mark],
+              )
             }
-          : block,
-      ),
+          }
+        }
+
+        return {
+          ...block,
+          text: value,
+          marks: normalizeMarks(nextMarks),
+        }
+      }),
     )
     dirtyBlockIdsRef.current.add(blockId)
     editVersionRef.current += 1
@@ -635,6 +714,44 @@ export function SermonEditorPage() {
     return fragments
   }
 
+  function isInlineMarkActive(type: SermonInlineMarkType) {
+    const block = getActiveTextBlock()
+    if (!block) return Boolean(typingMarkOverrides[type])
+
+    const start = Math.max(
+      0,
+      Math.min(
+        activePoint.selectionStart ?? activePoint.offset ?? 0,
+        block.text.length,
+      ),
+    )
+    const end = Math.max(
+      start,
+      Math.min(
+        activePoint.selectionEnd ?? activePoint.offset ?? start,
+        block.text.length,
+      ),
+    )
+
+    if (end > start) {
+      return block.marks.some(
+        (mark) => mark.type === type && mark.start <= start && mark.end >= end,
+      )
+    }
+
+    if (typingMarkOverrides[type] !== undefined) {
+      return Boolean(typingMarkOverrides[type])
+    }
+
+    return block.marks.some(
+      (mark) =>
+        mark.type === type &&
+        mark.start <= start &&
+        mark.end >= start &&
+        mark.end > mark.start,
+    )
+  }
+
   async function toggleInlineMark(type: SermonInlineMarkType) {
     const block = getActiveTextBlock()
     if (!block) return
@@ -653,7 +770,16 @@ export function SermonEditorPage() {
         block.text.length,
       ),
     )
-    if (end <= start) return
+
+    if (end <= start) {
+      const nextEnabled = !isInlineMarkActive(type)
+      setTypingMarkOverrides((current) => ({
+        ...current,
+        [type]: nextEnabled,
+      }))
+      pendingFocusRef.current = { blockId: block.id, offset: start }
+      return
+    }
 
     const covered = block.marks.some(
       (mark) => mark.type === type && mark.start <= start && mark.end >= end,
@@ -665,7 +791,13 @@ export function SermonEditorPage() {
         )
       : [...block.marks, { type, start, end }]
 
-    await applyBlockFormatting(block.id, { marks: nextMarks })
+    await applyBlockFormatting(block.id, {
+      marks: normalizeMarks(nextMarks),
+    })
+    setTypingMarkOverrides((current) => ({
+      ...current,
+      [type]: !covered,
+    }))
     pendingFocusRef.current = { blockId: block.id, offset: end }
   }
 
@@ -1035,7 +1167,7 @@ export function SermonEditorPage() {
                       imageInputRef.current?.click()
                     }}
                   >
-                    ▧ Imagen
+                    ▧ Galería
                   </button>
                 </>
               ) : null}
@@ -1054,6 +1186,8 @@ export function SermonEditorPage() {
             </button>
             <button
               type="button"
+              className={isInlineMarkActive('bold') ? 'active' : ''}
+              aria-pressed={isInlineMarkActive('bold')}
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => void toggleInlineMark('bold')}
               title="Negrita"
@@ -1062,14 +1196,18 @@ export function SermonEditorPage() {
             </button>
             <button
               type="button"
+              className={isInlineMarkActive('italic') ? 'active' : ''}
+              aria-pressed={isInlineMarkActive('italic')}
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => void toggleInlineMark('italic')}
               title="Cursiva"
             >
-              <em>I</em>
+              <span className="sermon-toolbar-italic">I</span>
             </button>
             <button
               type="button"
+              className={isInlineMarkActive('underline') ? 'active' : ''}
+              aria-pressed={isInlineMarkActive('underline')}
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => void toggleInlineMark('underline')}
               title="Subrayado"
@@ -1078,6 +1216,8 @@ export function SermonEditorPage() {
             </button>
             <button
               type="button"
+              className={isInlineMarkActive('strike') ? 'active' : ''}
+              aria-pressed={isInlineMarkActive('strike')}
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => void toggleInlineMark('strike')}
               title="Tachado"
@@ -1109,6 +1249,7 @@ export function SermonEditorPage() {
             className="sermon-image-input"
             type="file"
             accept="image/*"
+            aria-label="Seleccionar imágenes de la galería"
             multiple
             onChange={(event) =>
               void handleImageSelected(event.target.files)

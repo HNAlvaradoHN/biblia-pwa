@@ -530,6 +530,14 @@
   outline: none;
 }
 
+.sermon-toolbar-italic {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .sermon-tool-panel {
   display: flex;
   flex-wrap: wrap;

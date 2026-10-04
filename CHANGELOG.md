@@ -15,6 +15,17 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Formato activo y Galería 0.1.33
+
+- Negrita, Cursiva, Subrayado y Tachado pueden activarse sin selección para aplicar el formato a lo que se escriba a continuación.
+- Si existe una selección, la misma herramienta aplica o quita el formato sobre el texto seleccionado.
+- Los botones B/I/U/S muestran estado activo mientras el formato correspondiente está encendido.
+- La escritura nueva hereda el formato activo y puede desactivarse sin afectar caracteres anteriores.
+- La cursiva usa una `I` tipográficamente reconocible en la barra.
+- La acción `Imagen` del menú `+` pasa a llamarse `Galería`.
+- El selector sigue limitado a imágenes; el navegador/sistema operativo decide si presenta Fotos/Galería/Archivos, ya que una PWA no puede forzar una aplicación nativa concreta.
+- Build visible actualizado a `0.1.33`.
+
 ## 2026-10-04 — Editor dedicado de Prédicas 0.1.32
 
 - Abrir o crear una prédica entra en una pantalla de edición dedicada.
