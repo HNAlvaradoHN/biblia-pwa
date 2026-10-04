@@ -852,12 +852,17 @@ export function SermonEditorPage() {
                 className="sermon-block-row"
                 data-sermon-block-id={block.id}
                 key={block.id}
+                style={{
+                  paddingInlineStart: block.indent > 0 ? `${block.indent * 1.1}rem` : undefined,
+                }}
               >
                 {block.type === 'bullet' ? (
                   <span className="sermon-block-prefix" aria-hidden="true">•</span>
                 ) : null}
                 {block.type === 'numbered' ? (
-                  <span className="sermon-block-prefix" aria-hidden="true">{index + 1}.</span>
+                  <span className="sermon-block-prefix" aria-hidden="true">
+                    {sectionBlocks.slice(0, index + 1).filter((item) => item.type === 'numbered').length}.
+                  </span>
                 ) : null}
                 {block.type === 'task' ? (
                   <input
