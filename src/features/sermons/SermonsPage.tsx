@@ -410,6 +410,14 @@ export function SermonEditorPage() {
     () => (referencePreview ? getReferencePassage(referencePreview) : []),
     [referencePreview],
   )
+  const canUndo = useMemo(
+    () => undoStackRef.current.length > 0,
+    [historyVersion],
+  )
+  const canRedo = useMemo(
+    () => redoStackRef.current.length > 0,
+    [historyVersion],
+  )
 
   function sectionText(section: SermonSection) {
     return blocks
@@ -918,6 +926,7 @@ export function SermonEditorPage() {
     if (!next) return
     dirtyBlockIdsRef.current.delete(block.id)
     pendingFocusRef.current = { blockId: next.id, offset: 0 }
+    clearHistory()
     await reloadBlocks()
     setSavedAt(next.updatedAt)
     setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
@@ -946,6 +955,7 @@ export function SermonEditorPage() {
       blockId: merged.block.id,
       offset: merged.caretOffset,
     }
+    clearHistory()
     await reloadBlocks()
     setSavedAt(merged.block.updatedAt)
     setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
@@ -1454,6 +1464,7 @@ export function SermonEditorPage() {
       latestUpdatedAt = Math.max(latestUpdatedAt, inserted.updatedAt)
     }
 
+    clearHistory()
     let nextBlocks = await reloadBlocks()
 
     if (!paragraphAfterImages) {
@@ -1504,6 +1515,7 @@ export function SermonEditorPage() {
   async function handleRemoveImage(block: SermonBlockRecord) {
     const removed = await removeSermonImageBlock(block.id)
     if (!removed) return
+    clearHistory()
     await reloadBlocks()
     if (activePoint.blockId === block.id) {
       setActivePoint({ section: block.section })
