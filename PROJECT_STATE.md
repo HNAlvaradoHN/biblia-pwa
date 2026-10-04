@@ -119,11 +119,11 @@ IMPLEMENTADO_PENDIENTE_VALIDACIÓN en `main`.
 - la lectura de prédicas se hidrata desde bloques;
 - acciones explícitas de seguridad siguen consolidando el snapshot legado durante la transición;
 - una versión de edición evita carreras entre autosaves viejos y cambios nuevos;
-- GitHub Pages todavía sirve `v0.1.25` en la última comprobación, por lo que `0.1.26` aún no está lista para validación física.
+- GitHub Pages sirve `v0.1.26`, verificado por el identificador visible de la aplicación; falta únicamente validación física del autosave incremental tras recargar.
 
 ## Siguiente paso inmediato
 
-Esperar/publicar `0.1.26` y verificar en dispositivo que un cambio autosalvado reaparece después de recargar la prédica. Si pasa esa prueba, avanzar al **paso 3 de D-053: sustituir el editor de texto plano por el editor estructurado**.
+Verificar en dispositivo que un cambio autosalvado en Introducción, Bosquejo o Conclusión reaparece después de recargar la prédica. Si pasa esa prueba, avanzar al **paso 3 de D-053: sustituir el editor de texto plano por el editor estructurado**.
 
 ## Después de D-053
 
