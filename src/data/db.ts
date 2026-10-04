@@ -552,13 +552,41 @@ export async function getSermonBlocks(id: string) {
   return loadSermonBlocks(id)
 }
 
-export async function saveSermonBlockDraft(blockId: string, text: string) {
+export async function saveSermonBlockDraft(
+  blockId: string,
+  text: string,
+  marks?: SermonInlineMark[],
+) {
   const existing = await db.sermonBlocks.get(blockId)
   if (!existing) return undefined
 
   const block: SermonBlockRecord = {
     ...existing,
     text,
+    marks: marks ?? existing.marks,
+    revision: existing.revision + 1,
+    updatedAt: Date.now(),
+  }
+
+  await db.sermonBlocks.put(block)
+  return block
+}
+
+export async function saveSermonBlockFormatting(
+  blockId: string,
+  changes: Partial<
+    Pick<
+      SermonBlockRecord,
+      'type' | 'marks' | 'indent' | 'checked' | 'headingLevel'
+    >
+  >,
+) {
+  const existing = await db.sermonBlocks.get(blockId)
+  if (!existing) return undefined
+
+  const block: SermonBlockRecord = {
+    ...existing,
+    ...changes,
     revision: existing.revision + 1,
     updatedAt: Date.now(),
   }
@@ -704,13 +732,26 @@ export async function splitSermonBlock(
   const now = Date.now()
   const before = text.slice(0, safeOffset)
   const after = text.slice(safeOffset)
+  const beforeMarks = existing.marks
+    .filter((mark) => mark.start < safeOffset)
+    .map((mark) => ({ ...mark, end: Math.min(mark.end, safeOffset) }))
+    .filter((mark) => mark.end > mark.start)
+  const afterMarks = existing.marks
+    .filter((mark) => mark.end > safeOffset)
+    .map((mark) => ({
+      ...mark,
+      start: Math.max(0, mark.start - safeOffset),
+      end: mark.end - safeOffset,
+    }))
+    .filter((mark) => mark.end > mark.start)
+
   const nextBlock: SermonBlockRecord = {
     ...existing,
     id: makeSermonBlockId(existing.sermonId),
     order: existing.order + 1,
     type: existing.type === 'heading' ? 'paragraph' : existing.type,
     text: after,
-    marks: [],
+    marks: afterMarks,
     revision: 1,
     createdAt: now,
     updatedAt: now,
@@ -728,6 +769,7 @@ export async function splitSermonBlock(
     await db.sermonBlocks.put({
       ...existing,
       text: before,
+      marks: beforeMarks,
       revision: existing.revision + 1,
       updatedAt: now,
     })
@@ -756,6 +798,14 @@ export async function mergeSermonBlockWithPrevious(
   const merged: SermonBlockRecord = {
     ...previous,
     text: previous.text + currentText,
+    marks: [
+      ...previous.marks,
+      ...current.marks.map((mark) => ({
+        ...mark,
+        start: mark.start + previousLength,
+        end: mark.end + previousLength,
+      })),
+    ],
     revision: previous.revision + 1,
     updatedAt: now,
   }

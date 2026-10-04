@@ -306,3 +306,24 @@ Orden corregido:
 5. validar integridad, autosave, retorno exacto, imágenes, duplicado, borrado y offline.
 
 La versión 0.1.27 se considera una etapa técnica transitoria de la arquitectura, no la experiencia visual definitiva.
+
+
+## D-055 — Barra compacta de edición de Prédicas
+Estado: APROBADA
+
+La hoja de Prédicas usa una barra compacta inspirada en aplicaciones de notas. Las funciones frecuentes quedan disponibles sin ocupar una fila sobredimensionada y las funciones de categoría abren paneles pequeños.
+
+Reglas iniciales:
+
+- la barra visible incluye tipo de texto, negrita, cursiva, subrayado, tachado, listas e inserción;
+- `Aa` agrupa párrafo, H1, H2, cita y sangría;
+- listas agrupa ninguna, viñetas, numeración y checklist;
+- `+` agrupa inserciones; Imagen vive aquí y deja de existir como botón independiente;
+- el formato inline se persiste mediante marks estructurados, no HTML;
+- el tipo de párrafo/lista se persiste en el bloque interno;
+- editar texto después de aplicar formato debe reajustar rangos de marks y no perderlos silenciosamente;
+- dividir/unir párrafos debe preservar y trasladar los marks correspondientes;
+- la estructura interna continúa invisible en la hoja normal;
+- enlace, color/resaltado y deshacer/rehacer completarán la misma barra en el siguiente subhito, sin rediseñarla otra vez.
+
+La barra no debe contener controles sin comportamiento real.

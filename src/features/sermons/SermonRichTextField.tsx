@@ -7,6 +7,7 @@ import {
   type KeyboardEvent,
   type MouseEvent,
 } from 'react'
+import type { SermonInlineMark } from '../../data/db'
 import type { SermonBibleReference } from './sermonReferences'
 
 export type SermonRichTextFieldHandle = {
@@ -15,6 +16,7 @@ export type SermonRichTextFieldHandle = {
 
 type SermonRichTextFieldProps = {
   value: string
+  marks: SermonInlineMark[]
   references: SermonBibleReference[]
   placeholder: string
   ariaLabel: string
@@ -23,25 +25,45 @@ type SermonRichTextFieldProps = {
   onReferenceOpen: (reference: SermonBibleReference) => void
   onFocus?: () => void
   onCaretChange?: (offset: number) => void
+  onSelectionChange?: (start: number, end: number) => void
   onSplit?: (offset: number) => void
   onMergeBackward?: () => void
 }
 
-function getCaretOffset(root: HTMLElement) {
+function getSelectionOffsets(root: HTMLElement) {
   const selection = window.getSelection()
-  if (!selection || selection.rangeCount === 0) return root.textContent?.length ?? 0
+  const fallback = root.textContent?.length ?? 0
+  if (!selection || selection.rangeCount === 0) {
+    return { start: fallback, end: fallback }
+  }
 
   const range = selection.getRangeAt(0)
-  if (!root.contains(range.startContainer)) return root.textContent?.length ?? 0
+  if (!root.contains(range.startContainer) || !root.contains(range.endContainer)) {
+    return { start: fallback, end: fallback }
+  }
 
-  const prefix = document.createRange()
-  prefix.selectNodeContents(root)
-  prefix.setEnd(range.startContainer, range.startOffset)
-  return prefix.toString().length
+  const startRange = document.createRange()
+  startRange.selectNodeContents(root)
+  startRange.setEnd(range.startContainer, range.startOffset)
+
+  const endRange = document.createRange()
+  endRange.selectNodeContents(root)
+  endRange.setEnd(range.endContainer, range.endOffset)
+
+  const start = startRange.toString().length
+  const end = endRange.toString().length
+  return start <= end ? { start, end } : { start: end, end: start }
+}
+
+function getCaretOffset(root: HTMLElement) {
+  return getSelectionOffsets(root).end
 }
 
 function setCaretOffset(root: HTMLElement, requestedOffset: number) {
-  const targetOffset = Math.max(0, Math.min(requestedOffset, root.textContent?.length ?? 0))
+  const targetOffset = Math.max(
+    0,
+    Math.min(requestedOffset, root.textContent?.length ?? 0),
+  )
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
   let consumed = 0
   let node = walker.nextNode()
@@ -82,12 +104,25 @@ function insertPlainText(text: string) {
   selection.addRange(range)
 }
 
+function markClasses(marks: SermonInlineMark[]) {
+  const classes: string[] = []
+  for (const mark of marks) {
+    if (mark.type === 'bold') classes.push('sermon-inline-bold')
+    if (mark.type === 'italic') classes.push('sermon-inline-italic')
+    if (mark.type === 'underline') classes.push('sermon-inline-underline')
+    if (mark.type === 'strike') classes.push('sermon-inline-strike')
+    if (mark.type === 'link') classes.push('sermon-inline-link')
+  }
+  return classes
+}
+
 export const SermonRichTextField = forwardRef<
   SermonRichTextFieldHandle,
   SermonRichTextFieldProps
 >(function SermonRichTextField(
   {
     value,
+    marks,
     references,
     placeholder,
     ariaLabel,
@@ -96,6 +131,7 @@ export const SermonRichTextField = forwardRef<
     onReferenceOpen,
     onFocus,
     onCaretChange,
+    onSelectionChange,
     onSplit,
     onMergeBackward,
   },
@@ -104,9 +140,18 @@ export const SermonRichTextField = forwardRef<
   const editorRef = useRef<HTMLDivElement | null>(null)
   const pendingCaretRef = useRef<number | null>(null)
   const referencesRef = useRef(references)
+  const marksRef = useRef(marks)
   referencesRef.current = references
+  marksRef.current = marks
+
   const referenceSignature = references
-    .map((reference) => `${reference.id}:${reference.sourceText}:${reference.startIndex}:${reference.endIndex}`)
+    .map(
+      (reference) =>
+        `${reference.id}:${reference.sourceText}:${reference.startIndex}:${reference.endIndex}`,
+    )
+    .join('|')
+  const marksSignature = marks
+    .map((mark) => `${mark.type}:${mark.start}:${mark.end}:${mark.href ?? ''}`)
     .join('|')
 
   useImperativeHandle(
@@ -127,35 +172,61 @@ export const SermonRichTextField = forwardRef<
     const editor = editorRef.current
     if (!editor) return
 
-    const hadFocus = document.activeElement === editor || editor.contains(document.activeElement)
+    const hadFocus =
+      document.activeElement === editor || editor.contains(document.activeElement)
     const caretOffset = pendingCaretRef.current
     editor.replaceChildren()
 
-    let cursor = 0
-    const sortedReferences = [...referencesRef.current].sort((a, b) => a.startIndex - b.startIndex)
+    const boundaries = new Set<number>([0, value.length])
+    for (const reference of referencesRef.current) {
+      if (reference.startIndex >= 0 && reference.endIndex <= value.length) {
+        boundaries.add(reference.startIndex)
+        boundaries.add(reference.endIndex)
+      }
+    }
+    for (const mark of marksRef.current) {
+      boundaries.add(Math.max(0, Math.min(value.length, mark.start)))
+      boundaries.add(Math.max(0, Math.min(value.length, mark.end)))
+    }
 
-    for (const reference of sortedReferences) {
-      if (reference.startIndex < cursor || reference.endIndex > value.length) continue
+    const sorted = [...boundaries].sort((a, b) => a - b)
+    for (let index = 0; index < sorted.length - 1; index += 1) {
+      const start = sorted[index]
+      const end = sorted[index + 1]
+      if (end <= start) continue
 
-      if (reference.startIndex > cursor) {
-        editor.append(document.createTextNode(value.slice(cursor, reference.startIndex)))
+      const segment = value.slice(start, end)
+      const reference = referencesRef.current.find(
+        (item) => start >= item.startIndex && end <= item.endIndex,
+      )
+      const activeMarks = marksRef.current.filter(
+        (mark) => start >= mark.start && end <= mark.end,
+      )
+
+      const element = document.createElement('span')
+      const classes = markClasses(activeMarks)
+      if (reference) classes.unshift('sermon-inline-reference')
+      if (classes.length > 0) element.className = classes.join(' ')
+
+      if (reference) {
+        element.dataset.sermonReferenceId = reference.id
+        element.setAttribute('role', 'button')
+        element.setAttribute('tabindex', '0')
+        element.setAttribute('contenteditable', 'false')
+        element.setAttribute('aria-label', `Abrir ${reference.sourceText}`)
       }
 
-      const mark = document.createElement('span')
-      mark.className = 'sermon-inline-reference'
-      mark.dataset.sermonReferenceId = reference.id
-      mark.setAttribute('role', 'button')
-      mark.setAttribute('tabindex', '0')
-      mark.setAttribute('contenteditable', 'false')
-      mark.setAttribute('aria-label', `Abrir ${reference.sourceText}`)
-      mark.textContent = reference.sourceText
-      editor.append(mark)
-      cursor = reference.endIndex
+      const link = activeMarks.find((mark) => mark.type === 'link' && mark.href)
+      if (link?.href) {
+        element.dataset.sermonHref = link.href
+        element.title = link.href
+      }
+
+      element.textContent = segment
+      editor.append(element)
     }
 
-    if (cursor < value.length) {
-      editor.append(document.createTextNode(value.slice(cursor)))
-    }
+    if (value.length === 0) editor.append(document.createTextNode(''))
 
     if ((hadFocus || caretOffset !== null) && caretOffset !== null) {
       editor.focus()
@@ -163,26 +234,33 @@ export const SermonRichTextField = forwardRef<
     }
 
     pendingCaretRef.current = null
-  }, [referenceSignature, value])
+  }, [marksSignature, referenceSignature, value])
 
-  function reportCaret() {
+  function reportSelection() {
     const editor = editorRef.current
     if (!editor) return
-    onCaretChange?.(getCaretOffset(editor))
+    const selection = getSelectionOffsets(editor)
+    onCaretChange?.(selection.end)
+    onSelectionChange?.(selection.start, selection.end)
   }
 
   function handleInput() {
     const editor = editorRef.current
     if (!editor) return
     pendingCaretRef.current = getCaretOffset(editor)
-    onCaretChange?.(pendingCaretRef.current)
+    reportSelection()
     onChange(editor.textContent ?? '')
   }
 
   function openReferenceFromTarget(target: EventTarget | null) {
-    const element = target instanceof Element ? target.closest<HTMLElement>('[data-sermon-reference-id]') : null
+    const element =
+      target instanceof Element
+        ? target.closest<HTMLElement>('[data-sermon-reference-id]')
+        : null
     if (!element) return false
-    const reference = references.find((item) => item.id === element.dataset.sermonReferenceId)
+    const reference = references.find(
+      (item) => item.id === element.dataset.sermonReferenceId,
+    )
     if (!reference) return false
     onReferenceOpen(reference)
     return true
@@ -252,14 +330,15 @@ export const SermonRichTextField = forwardRef<
       onInput={handleInput}
       onFocus={() => {
         onFocus?.()
-        reportCaret()
+        reportSelection()
       }}
       onClickCapture={(event) => {
         handleClick(event)
-        reportCaret()
+        reportSelection()
       }}
       onKeyDown={handleKeyDown}
-      onKeyUp={reportCaret}
+      onKeyUp={reportSelection}
+      onSelect={reportSelection}
       onPaste={handlePaste}
     />
   )
