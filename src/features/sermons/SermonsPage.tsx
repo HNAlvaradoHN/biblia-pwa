@@ -379,10 +379,21 @@ export function SermonEditorPage() {
   const [typingMarkOverrides, setTypingMarkOverrides] = useState<
     Partial<Record<SermonInlineMarkType, boolean>>
   >({})
+  const [typingTextColor, setTypingTextColor] = useState<
+    SermonInlineColor | null | undefined
+  >()
+  const [typingHighlight, setTypingHighlight] = useState<
+    SermonInlineColor | null | undefined
+  >()
+  const [typingLinkHref, setTypingLinkHref] = useState<string | null>()
   const pendingFocusRef = useRef<{ blockId: string; offset: number } | undefined>(undefined)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
   const [blocks, setBlocks] = useState<SermonBlockRecord[]>([])
+  const blocksRef = useRef<SermonBlockRecord[]>([])
+  const undoStackRef = useRef<SermonHistoryEntry[]>([])
+  const redoStackRef = useRef<SermonHistoryEntry[]>([])
+  const [historyVersion, setHistoryVersion] = useState(0)
   const [savedAt, setSavedAt] = useState<number>()
   const [dirty, setDirty] = useState(false)
   const dirtyBlockIdsRef = useRef<Set<string>>(new Set())
@@ -410,9 +421,14 @@ export function SermonEditorPage() {
   }
 
 
+  function replaceBlocks(next: SermonBlockRecord[]) {
+    blocksRef.current = next
+    setBlocks(next)
+  }
+
   async function reloadBlocks() {
     const next = await getSermonBlocks(sermonId)
-    setBlocks(next)
+    replaceBlocks(next)
     return next
   }
 
@@ -424,7 +440,7 @@ export function SermonEditorPage() {
         if (cancelled || !record) return
         setSermon(record)
         setTitle(record.title)
-        setBlocks(storedBlocks)
+        replaceBlocks(storedBlocks)
         setSavedAt(record.updatedAt)
 
         const params = new URLSearchParams(location.search)
