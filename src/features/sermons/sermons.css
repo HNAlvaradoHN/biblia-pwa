@@ -307,7 +307,69 @@
 }
 
 .sermon-block-row {
+  display: flex;
+  align-items: flex-start;
   min-width: 0;
+}
+
+.sermon-block-prefix {
+  flex: 0 0 auto;
+  min-width: 1.45em;
+  padding-top: 2px;
+  color: var(--ink);
+  font-weight: 750;
+  line-height: 1.6;
+}
+
+.sermon-task-checkbox {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 5px 8px 0 0;
+  accent-color: var(--accent);
+}
+
+.sermon-block-editor-heading.heading-1 {
+  font-size: 1.28rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.sermon-block-editor-heading.heading-2 {
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.sermon-block-editor-quote {
+  margin: 4px 0;
+  padding-left: 12px;
+  border-left: 3px solid color-mix(in srgb, var(--accent) 62%, var(--line));
+  color: color-mix(in srgb, var(--ink) 82%, var(--muted));
+  font-style: italic;
+}
+
+.sermon-inline-bold {
+  font-weight: 800;
+}
+
+.sermon-inline-italic {
+  font-style: italic;
+}
+
+.sermon-inline-underline {
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+
+.sermon-inline-strike {
+  text-decoration: line-through;
+}
+
+.sermon-inline-link {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .sermon-block-editor {
@@ -405,46 +467,89 @@
 }
 
 
-.sermon-compose-toolbar {
+.sermon-compose-dock {
   position: sticky;
-  bottom: max(10px, env(safe-area-inset-bottom));
+  bottom: max(8px, env(safe-area-inset-bottom));
   z-index: 12;
+  display: grid;
+  gap: 7px;
+}
+
+.sermon-compose-toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 6px;
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+  background: color-mix(in srgb, var(--surface-strong) 90%, transparent);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  scrollbar-width: none;
+}
+
+.sermon-compose-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.sermon-compose-toolbar button {
+  display: grid;
+  flex: 0 0 38px;
+  min-width: 38px;
+  height: 38px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.sermon-compose-toolbar button:hover,
+.sermon-compose-toolbar button:focus-visible,
+.sermon-compose-toolbar button.active {
+  background: color-mix(in srgb, var(--accent-soft) 72%, transparent);
+  color: var(--accent);
+  outline: none;
+}
+
+.sermon-tool-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 9px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-strong) 94%, transparent);
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
-.sermon-compose-toolbar button {
-  min-height: 38px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--accent-soft) 52%, transparent);
+.sermon-tool-panel button {
+  min-height: 36px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
   color: var(--ink);
   cursor: pointer;
   font: inherit;
-  font-size: 0.76rem;
-  font-weight: 800;
+  font-size: 0.74rem;
+  font-weight: 750;
 }
 
-.sermon-compose-toolbar button:hover,
-.sermon-compose-toolbar button:focus-visible {
-  background: color-mix(in srgb, var(--accent-soft) 76%, transparent);
-  outline: 2px solid color-mix(in srgb, var(--accent) 28%, transparent);
-}
-
-.sermon-compose-hint {
-  min-width: 0;
-  color: var(--muted);
-  font-size: 0.68rem;
-  line-height: 1.35;
+.sermon-tool-panel button:hover,
+.sermon-tool-panel button:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+  background: color-mix(in srgb, var(--accent-soft) 45%, transparent);
+  outline: none;
 }
 
 .sermon-image-input {
@@ -823,15 +928,16 @@
     max-height: 200px;
   }
 
-  .sermon-compose-toolbar {
+  .sermon-compose-dock {
     bottom: max(6px, env(safe-area-inset-bottom));
   }
 
-  .sermon-compose-hint {
-    display: none;
+  .sermon-compose-toolbar {
+    justify-content: flex-start;
   }
 
-  .sermon-compose-toolbar button {
-    flex: 1;
+  .sermon-tool-panel {
+    max-height: 36dvh;
+    overflow-y: auto;
   }
 }
