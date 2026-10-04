@@ -15,6 +15,17 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Barra fija con VisualViewport 0.1.36
+
+- Corregida definitivamente la posición de la barra del editor: vuelve a `position: fixed`.
+- Se añade compensación dinámica con `window.visualViewport` para mantener la barra sobre el teclado móvil.
+- El offset inferior se recalcula cuando cambia el tamaño o desplazamiento del viewport visible, al rotar el dispositivo y ante resize.
+- La barra ya no depende de la posición del documento: debe permanecer visible aunque se haga scroll hacia arriba o abajo.
+- Los paneles de herramientas se desplazan junto con la barra.
+- Se restaura espacio inferior en la hoja para que el contenido final no quede oculto detrás de la barra fija.
+- Se conserva sin cambios el orden `Aa → Texto → B → I → U → S → Listas → +` y todos los toggles de formato.
+- Build visible actualizado a `0.1.36`.
+
 ## 2026-10-04 — Restauración de barra flotante sobre teclado 0.1.35
 
 - Corregida una regresión introducida al crear el editor dedicado: la barra de herramientas deja de usar `position: fixed`.
