@@ -15,6 +15,18 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-03 — Modelo de bloques de Prédicas 0.1.25
+
+- Añadida tabla IndexedDB `sermonBlocks` como base del editor estructurado D-053.
+- Cada bloque tiene identificador estable, prédica, sección, orden, tipo, texto, marcas inline, sangría, estado opcional de tarea, nivel de encabezado, revisión y timestamps.
+- La migración de base de datos v6 convierte cada prédica existente en bloques iniciales sin modificar ni borrar los campos de texto actuales.
+- Introducción, Bosquejo y Conclusión se migran conservando exactamente su contenido; incluso las secciones vacías reciben un bloque inicial estable.
+- Mientras la interfaz antigua siga activa, crear/guardar/duplicar mantiene una capa temporal de compatibilidad entre el registro legado y los bloques.
+- Eliminar una prédica elimina también todos sus bloques dentro de la misma transacción.
+- Añadido `getSermonBlocks()` como lectura ordenada para los siguientes pasos del editor.
+- Esta versión no cambia todavía la interfaz visible ni el autosave completo actual; el siguiente hito es persistencia incremental por bloque.
+- Build visible actualizado a `0.1.25`.
+
 ## 2026-10-03 — Compactación de memoria oficial
 
 - Compactados `PROJECT_STATE.md`, `DECISIONS.md` y `CHANGELOG.md` para reducir lectura repetitiva en chats nuevos.
