@@ -42,10 +42,32 @@ export interface HighlightRecord extends BibleLocation {
 }
 
 export type SermonStatus = 'active' | 'archived'
+export type SermonSection = 'introduction' | 'outline' | 'conclusion'
+export type SermonBlockType =
+  | 'paragraph'
+  | 'heading'
+  | 'bullet'
+  | 'numbered'
+  | 'task'
+  | 'quote'
+
+export type SermonInlineMarkType =
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'strike'
+  | 'link'
+
+export interface SermonInlineMark {
+  type: SermonInlineMarkType
+  start: number
+  end: number
+  href?: string
+}
 
 export interface SermonReferenceRecord {
   id: string
-  field: 'introduction' | 'outline' | 'conclusion'
+  field: SermonSection
   sourceText: string
   bookId: string
   bookName: string
@@ -68,6 +90,48 @@ export interface SermonRecord {
   updatedAt: number
 }
 
+export interface SermonBlockRecord {
+  id: string
+  sermonId: string
+  section: SermonSection
+  order: number
+  type: SermonBlockType
+  text: string
+  marks: SermonInlineMark[]
+  indent: number
+  checked?: boolean
+  headingLevel?: 1 | 2
+  revision: number
+  createdAt: number
+  updatedAt: number
+}
+
+const SERMON_SECTIONS: SermonSection[] = [
+  'introduction',
+  'outline',
+  'conclusion',
+]
+
+function makeLegacySermonBlockId(sermonId: string, section: SermonSection) {
+  return `${sermonId}:legacy:${section}`
+}
+
+function makeLegacySermonBlocks(sermon: SermonRecord): SermonBlockRecord[] {
+  return SERMON_SECTIONS.map((section) => ({
+    id: makeLegacySermonBlockId(sermon.id, section),
+    sermonId: sermon.id,
+    section,
+    order: 0,
+    type: 'paragraph',
+    text: sermon[section],
+    marks: [],
+    indent: 0,
+    revision: 1,
+    createdAt: sermon.createdAt,
+    updatedAt: sermon.updatedAt,
+  }))
+}
+
 class BibliaDatabase extends Dexie {
   readingProgress!: Table<ReadingProgress, string>
   activeVerse!: Table<ActiveVerseRecord, string>
@@ -75,6 +139,7 @@ class BibliaDatabase extends Dexie {
   notes!: Table<BibleNoteRecord, string>
   highlights!: Table<HighlightRecord, string>
   sermons!: Table<SermonRecord, string>
+  sermonBlocks!: Table<SermonBlockRecord, string>
 
   constructor() {
     super('biblia-pwa')
@@ -124,6 +189,30 @@ class BibliaDatabase extends Dexie {
               sermon.references = []
             }
           })
+      })
+
+    this.version(6)
+      .stores({
+        readingProgress: 'id,bookId,chapter,updatedAt',
+        activeVerse: 'id,bookId,chapter,verse,updatedAt',
+        favorites: 'id,bookId,chapter,verse,updatedAt',
+        notes: 'id,bookId,chapter,verse,updatedAt',
+        highlights: 'id,bookId,chapter,verse,updatedAt',
+        sermons: 'id,status,updatedAt,title',
+        sermonBlocks:
+          'id,sermonId,[sermonId+section],[sermonId+section+order],section,order,updatedAt',
+      })
+      .upgrade(async (transaction) => {
+        const sermons = await transaction
+          .table<SermonRecord, string>('sermons')
+          .toArray()
+        const blocks = sermons.flatMap(makeLegacySermonBlocks)
+
+        if (blocks.length > 0) {
+          await transaction
+            .table<SermonBlockRecord, string>('sermonBlocks')
+            .bulkPut(blocks)
+        }
       })
   }
 }
@@ -280,13 +369,16 @@ export async function toggleHighlight(location: BibleLocation) {
   return true
 }
 
-
 function makeSermonId() {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID()
   }
 
   return `sermon-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+async function writeLegacySermonBlocks(record: SermonRecord) {
+  await db.sermonBlocks.bulkPut(makeLegacySermonBlocks(record))
 }
 
 export async function getSermons(status?: SermonStatus) {
@@ -296,6 +388,15 @@ export async function getSermons(status?: SermonStatus) {
 
 export async function getSermon(id: string) {
   return db.sermons.get(id)
+}
+
+export async function getSermonBlocks(id: string) {
+  const records = await db.sermonBlocks.where('sermonId').equals(id).toArray()
+  return records.sort((a, b) => {
+    const sectionDifference =
+      SERMON_SECTIONS.indexOf(a.section) - SERMON_SECTIONS.indexOf(b.section)
+    return sectionDifference || a.order - b.order
+  })
 }
 
 export async function createSermon() {
@@ -312,7 +413,11 @@ export async function createSermon() {
     updatedAt: now,
   }
 
-  await db.sermons.add(record)
+  await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
+    await db.sermons.add(record)
+    await writeLegacySermonBlocks(record)
+  })
+
   return record
 }
 
@@ -336,7 +441,11 @@ export async function saveSermon(
     updatedAt: Date.now(),
   }
 
-  await db.sermons.put(record)
+  await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
+    await db.sermons.put(record)
+    await writeLegacySermonBlocks(record)
+  })
+
   return record
 }
 
@@ -354,7 +463,11 @@ export async function duplicateSermon(id: string) {
     updatedAt: now,
   }
 
-  await db.sermons.add(record)
+  await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
+    await db.sermons.add(record)
+    await writeLegacySermonBlocks(record)
+  })
+
   return record
 }
 
@@ -376,6 +489,10 @@ export async function deleteSermon(id: string) {
   const existing = await db.sermons.get(id)
   if (!existing) return false
 
-  await db.sermons.delete(id)
+  await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
+    await db.sermons.delete(id)
+    await db.sermonBlocks.where('sermonId').equals(id).delete()
+  })
+
   return true
 }

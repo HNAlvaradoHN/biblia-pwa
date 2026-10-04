@@ -99,9 +99,21 @@ Funciones objetivo iniciales del editor:
 - No abrir sincronización remota antes de estabilizar el modelo local por bloques.
 - No versionar prédicas reales, notas personales, favoritos, bases locales, dumps ni secretos.
 
+## Hito D-053 en implementación — paso 1
+
+El modelo de bloques y la migración segura están implementados en la rama `feat/sermon-block-model-0125`:
+
+- nueva tabla `sermonBlocks` en esquema IndexedDB v6;
+- migración automática desde las tres secciones de cada prédica existente;
+- bloques iniciales con identificadores estables;
+- compatibilidad temporal de doble escritura mientras el editor legado siga visible;
+- creación, duplicado y eliminación mantienen integridad entre prédica y bloques.
+
+Todavía no debe considerarse cerrado hasta pasar CI, merge y publicación.
+
 ## Siguiente paso inmediato
 
-Implementar **paso 1 de D-053: modelo de bloques + migración segura**, con compatibilidad hacia las prédicas actuales. Después de ese hito, actualizar este archivo con el estado real antes de iniciar persistencia incremental.
+Después de integrar y publicar `0.1.25`, implementar **paso 2 de D-053: persistencia incremental local por bloque**, eliminando la necesidad de reescribir el contenido completo de la prédica en cada autosave.
 
 ## Después de D-053
 
