@@ -5,6 +5,8 @@ export type SermonFieldName = 'introduction' | 'outline' | 'conclusion'
 export interface SermonBibleReference {
   id: string
   field: SermonFieldName
+  blockId?: string
+  fieldStartIndex?: number
   sourceText: string
   bookId: string
   bookName: string
@@ -98,4 +100,50 @@ export function getReferencePassage(reference: SermonBibleReference) {
         verse.number >= reference.verseStart &&
         verse.number <= reference.verseEnd,
     )
+}
+
+
+export function detectSermonBlockReferences(
+  blocks: Array<{
+    id: string
+    section: SermonFieldName
+    order: number
+    text: string
+  }>,
+) {
+  const references: SermonBibleReference[] = []
+
+  for (const field of ['introduction', 'outline', 'conclusion'] as SermonFieldName[]) {
+    const sectionBlocks = blocks
+      .filter((block) => block.section === field)
+      .sort((a, b) => a.order - b.order)
+    let fieldOffset = 0
+
+    for (const block of sectionBlocks) {
+      const blockReferences = detectBibleReferences(field, block.text).map(
+        (reference): SermonBibleReference => ({
+          ...reference,
+          id: `${block.id}:${reference.id}`,
+          blockId: block.id,
+          fieldStartIndex: fieldOffset + reference.startIndex,
+        }),
+      )
+      references.push(...blockReferences)
+      fieldOffset += block.text.length + 1
+    }
+  }
+
+  return references
+}
+
+export function toPersistedSermonReferences(
+  references: SermonBibleReference[],
+) {
+  return references.map((reference) => ({
+    ...reference,
+    startIndex: reference.fieldStartIndex ?? reference.startIndex,
+    endIndex:
+      (reference.fieldStartIndex ?? reference.startIndex) +
+      reference.sourceText.length,
+  }))
 }
