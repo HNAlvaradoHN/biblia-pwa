@@ -634,6 +634,8 @@ export function SermonEditorPage() {
         if (typeDifference !== 0) return typeDifference
         const hrefDifference = (a.href ?? '').localeCompare(b.href ?? '')
         if (hrefDifference !== 0) return hrefDifference
+        const colorDifference = (a.color ?? '').localeCompare(b.color ?? '')
+        if (colorDifference !== 0) return colorDifference
         return a.start - b.start || a.end - b.end
       })
 
@@ -644,6 +646,7 @@ export function SermonEditorPage() {
         previous &&
         previous.type === mark.type &&
         previous.href === mark.href &&
+        previous.color === mark.color &&
         mark.start <= previous.end
       ) {
         previous.end = Math.max(previous.end, mark.end)
