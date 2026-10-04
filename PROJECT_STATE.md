@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.38**. `0.1.39` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.38`.
+- Producción confirmada: **v0.1.39**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -182,7 +182,7 @@ PUBLICADO en `0.1.38`; el usuario reportó el resto de la experiencia como corre
 - operaciones estructurales reinician historial para mantener integridad.
 
 ### Paso 4.4 — selección continua
-IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.39`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 - un único host editable cubre Introducción/Bosquejo/Conclusión;
 - seleccionar todo deja de estar limitado al párrafo activo;
@@ -192,7 +192,7 @@ IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Esperar a que GitHub Pages publique `0.1.39` y validar físicamente `Seleccionar todo → borrar` tanto con teclado móvil como con teclado físico si está disponible. Después adaptar Modo Predicación para renderizar texto enriquecido + imágenes y mantener retorno exacto desde referencias bíblicas; luego ejecutar validación integral del editor.
+Validar físicamente `0.1.39`: `Seleccionar todo → borrar` tanto con teclado móvil como con teclado físico si está disponible. Después adaptar Modo Predicación para renderizar texto enriquecido + imágenes y mantener retorno exacto desde referencias bíblicas; luego ejecutar validación integral del editor.
 
 ## Después de D-053
 
