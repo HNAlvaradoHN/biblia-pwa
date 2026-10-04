@@ -288,6 +288,8 @@ Imágenes:
 - las imágenes se almacenan como adjuntos independientes en IndexedDB, no embebidas como base64 dentro del texto ni dentro del registro completo de la prédica;
 - un bloque de imagen referencia un adjunto mediante identificador estable;
 - insertar una imagen debe respetar la posición de trabajo actual cuando sea posible;
+- una imagen insertada debe quedar integrada en el flujo normal de la nota: texto editable antes y un párrafo editable inmediatamente después;
+- el tamaño visual inicial de una imagen debe ser contenido y no ocupar prácticamente todo el viewport; la imagen completa sigue preservándose como adjunto;
 - eliminar una prédica elimina también sus adjuntos huérfanos asociados;
 - duplicar una prédica debe duplicar también los adjuntos necesarios para que la copia sea autónoma;
 - las imágenes deben funcionar offline y mostrarse también en Modo Predicación cuando ese flujo se adapte al documento estructurado;
