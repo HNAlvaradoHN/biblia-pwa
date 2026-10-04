@@ -271,7 +271,7 @@
 
 .sermon-block-section {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .sermon-block-section-header {
@@ -281,23 +281,20 @@
 }
 
 .sermon-block-section-header > span {
-  color: var(--ink);
-  font-size: 0.76rem;
+  color: var(--muted);
+  font-size: 0.72rem;
   font-weight: 800;
+  letter-spacing: 0.025em;
 }
 
 .sermon-block-list {
   display: grid;
   gap: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--surface-strong) 90%, transparent);
+  min-height: 2.1em;
 }
 
 .sermon-block-list:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 62%, var(--line));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+  outline: none;
 }
 
 .sermon-block-row {
@@ -306,7 +303,7 @@
 
 .sermon-block-editor {
   min-height: 1.6em;
-  padding: 3px 2px;
+  padding: 2px 0;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -324,22 +321,27 @@
 
 .sermon-inline-image {
   display: grid;
-  gap: 7px;
-  margin: 12px 0;
+  width: fit-content;
+  max-width: 100%;
+  gap: 5px;
+  margin: 10px 0;
 }
 
 .sermon-inline-image img,
 .sermon-inline-image-loading {
-  width: 100%;
-  max-height: min(58dvh, 520px);
-  border-radius: 14px;
+  display: block;
+  width: auto;
+  max-width: min(78vw, 320px);
+  max-height: 220px;
+  border-radius: 12px;
   object-fit: contain;
   background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
 }
 
 .sermon-inline-image-loading {
   display: grid;
-  min-height: 150px;
+  width: min(72vw, 280px);
+  min-height: 120px;
   place-items: center;
   color: var(--muted);
   font-size: 0.78rem;
@@ -801,8 +803,10 @@
     gap: 14px;
   }
 
-  .sermon-block-list {
-    padding: 7px 10px;
+  .sermon-inline-image img,
+  .sermon-inline-image-loading {
+    max-width: min(82vw, 300px);
+    max-height: 200px;
   }
 
   .sermon-compose-toolbar {
