@@ -41,14 +41,14 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 
 ## Estado real del editor de Prédicas
 
-La versión publicada `0.1.24` todavía usa texto plano por campos. El autosave actual:
+Producción `0.1.28` ya usa estructura interna por bloques con autosave incremental y adjuntos de imagen locales. Esa estructura **no debe ser visible como cajas**: la experiencia objetivo es una hoja de notas normal.
 
-- actualiza el estado local inmediatamente al escribir;
-- espera aproximadamente 900 ms de inactividad;
-- guarda el registro completo de la prédica en IndexedDB;
-- **no sube nada a Internet** porque no existe sincronización remota.
+`0.1.29` corrige dos detalles de producto detectados físicamente:
 
-La barra de cuatro acciones rápidas de `Bosquejo y puntos` introducida en `0.1.24` fue rechazada como solución definitiva. Es transitoria y debe ser sustituida, no ampliada.
+- quitar el aspecto de áreas/cajas separadas alrededor del texto;
+- insertar imágenes en el punto del cursor, con texto arriba y abajo y tamaño contenido en móvil.
+
+No existe sincronización remota todavía; todo sigue guardándose localmente en IndexedDB.
 
 ## Objetivo activo — D-053
 
@@ -127,20 +127,19 @@ CORREGIDO POR D-054.
 La arquitectura por bloques de `0.1.27` se conserva internamente, pero su representación visual como cajitas/numeración/`+ Bloque` fue rechazada por el usuario. Esa UI es transitoria y se sustituye en `0.1.28` por una experiencia de documento continuo.
 
 ### Paso 3.1 — documento continuo + imágenes
-PUBLICADO en `0.1.28`, PENDIENTE DE VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.28`; CORRECCIÓN `0.1.29` EN IMPLEMENTACIÓN.
 
-- los bloques internos dejan de exponerse visualmente;
-- las tres secciones editables se presentan como superficies continuas;
-- nueva tabla local `sermonAttachments` separa imágenes del texto;
-- se pueden insertar una o varias imágenes desde el dispositivo dentro de la sección activa;
-- las imágenes se guardan offline como adjuntos independientes y se renderizan dentro de la nota;
-- duplicar/eliminar conserva integridad de bloques y adjuntos;
-- referencias bíblicas y texto legado ignoran bloques de imagen al calcular offsets;
-- Modo Predicación todavía no renderiza imágenes; se adaptará junto con el documento estructurado.
+- `0.1.28` añadió adjuntos de imagen locales e hizo invisible la numeración/cajas de bloques.
+- `0.1.29` simplifica todavía más la hoja: sin bordes de campo alrededor del contenido normal.
+- el cursor se rastrea para insertar imágenes exactamente donde se está escribiendo;
+- el párrafo se divide internamente alrededor de la imagen sin mostrar esa estructura;
+- queda escritura inmediata debajo de la imagen;
+- la imagen se muestra compacta por defecto para no ocupar casi toda la pantalla;
+- referencias y autosave incremental deben seguir funcionando igual.
 
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.28`: que la edición se siente continua, que las imágenes se insertan/recargan/eliminan sin pérdida y que el retorno desde Biblia sigue llegando al punto correcto. Después implementar la **barra compacta completa de formato** y adaptar Modo Predicación a texto estructurado + imágenes.
+Completar CI/merge/publicación de `0.1.29` y validar físicamente: escribir texto → insertar imagen en medio → continuar escribiendo debajo → recargar sin pérdida. Después implementar la **barra compacta completa de formato de bloc de notas** y adaptar Modo Predicación a texto estructurado + imágenes.
 
 ## Después de D-053
 
