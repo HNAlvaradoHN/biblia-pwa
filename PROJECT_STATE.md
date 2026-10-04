@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.30**. `0.1.31` está en implementación.
+- Producción confirmada: **v0.1.31**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -138,7 +138,7 @@ PUBLICADO en `0.1.29`, con división editorial de secciones en implementación c
 - referencias y autosave incremental deben seguir funcionando igual.
 
 ### Paso 4 — barra compacta de formato
-IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-format-toolbar-0131`.
+PUBLICADO en `0.1.31`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 - barra visible compacta: Aa, B, I, U, S, listas e inserción;
 - Aa: Texto, H1, H2, Cita y sangría;
@@ -150,7 +150,7 @@ IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-format-toolbar-0131`.
 
 ## Siguiente paso inmediato
 
-Completar CI/merge/publicación de `0.1.31` y validar la barra compacta, persistencia de formato, listas/checklist, sangría e Imagen dentro de `+`. Luego completar Enlace + color/resaltado + deshacer/rehacer sin rediseñar nuevamente la barra. Después adaptar Modo Predicación a texto enriquecido + imágenes.
+Validar físicamente `0.1.31`: barra compacta, persistencia de formato, listas/checklist, sangría e Imagen dentro de `+`. Luego completar Enlace + color/resaltado + deshacer/rehacer sin rediseñar nuevamente la barra. Después adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
