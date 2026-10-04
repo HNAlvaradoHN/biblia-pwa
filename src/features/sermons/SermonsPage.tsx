@@ -212,7 +212,7 @@ export function SermonEditorPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const blockRefs = useRef(new Map<string, SermonRichTextFieldHandle>())
-  const pendingFocusRef = useRef<{ blockId: string; offset: number }>()
+  const pendingFocusRef = useRef<{ blockId: string; offset: number } | undefined>(undefined)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
   const [blocks, setBlocks] = useState<SermonBlockRecord[]>([])
