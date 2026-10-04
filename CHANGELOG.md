@@ -15,6 +15,19 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Selección continua del documento 0.1.39
+
+- El cuerpo de la prédica pasa a usar un único host editable para que la selección nativa no quede limitada a un solo renglón/párrafo.
+- `Seleccionar todo` puede abarcar varios párrafos y las tres secciones del cuerpo.
+- Los bloques internos dejan de ser hosts `contenteditable` independientes, pero mantienen su persistencia/autosave estructurado.
+- Encabezados de sección, imágenes, viñetas/numeración y checkboxes quedan protegidos como contenido no editable.
+- Borrar una selección que atraviesa bloques actualiza el contenido de forma estructurada y compacta los bloques seleccionados contiguos.
+- No se unen bloques a través de imágenes ni entre Introducción/Bosquejo/Conclusión.
+- Añadido manejo `beforeinput` para que borrar selecciones múltiples funcione también con teclado virtual móvil.
+- Enter, Backspace al inicio, pegado de texto plano, marks, referencias y retorno exacto conservan su comportamiento.
+- La apariencia del editor y la pestaña lateral no cambian.
+- Build visible actualizado a `0.1.39`.
+
 ## 2026-10-04 — Enlace, color, resaltado e historial 0.1.38
 
 - El panel lateral añade Deshacer y Rehacer.
