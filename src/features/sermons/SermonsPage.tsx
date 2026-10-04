@@ -1,21 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
+  appendSermonBlock,
   createSermon,
   deleteSermon,
   duplicateSermon,
   getSermon,
+  getSermonBlocks,
   getSermons,
+  mergeSermonBlockWithPrevious,
   saveSermon,
-  saveSermonSectionDraft,
+  saveSermonBlockDraft,
   saveSermonTitle,
   setSermonArchived,
+  splitSermonBlock,
+  type SermonBlockRecord,
   type SermonRecord,
+  type SermonSection,
   type SermonStatus,
 } from '../../data/db'
 import {
-  detectAllSermonReferences,
+  detectSermonBlockReferences,
   getReferencePassage,
+  toPersistedSermonReferences,
   type SermonBibleReference,
   type SermonFieldName,
 } from './sermonReferences'
@@ -204,28 +211,21 @@ export function SermonEditorPage() {
   const { sermonId = '' } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const introductionRef = useRef<SermonRichTextFieldHandle | null>(null)
-  const outlineRef = useRef<SermonRichTextFieldHandle | null>(null)
-  const conclusionRef = useRef<SermonRichTextFieldHandle | null>(null)
+  const blockRefs = useRef(new Map<string, SermonRichTextFieldHandle>())
+  const pendingFocusRef = useRef<{ blockId: string; offset: number } | undefined>(undefined)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
-  const [introduction, setIntroduction] = useState('')
-  const [outline, setOutline] = useState('')
-  const [conclusion, setConclusion] = useState('')
+  const [blocks, setBlocks] = useState<SermonBlockRecord[]>([])
   const [savedAt, setSavedAt] = useState<number>()
   const [dirty, setDirty] = useState(false)
-  const dirtyFieldsRef = useRef<Set<'title' | SermonFieldName>>(new Set())
+  const dirtyBlockIdsRef = useRef<Set<string>>(new Set())
+  const dirtyTitleRef = useRef(false)
   const editVersionRef = useRef(0)
   const [referencePreview, setReferencePreview] = useState<SermonBibleReference>()
 
   const detectedReferences = useMemo(
-    () =>
-      detectAllSermonReferences({
-        introduction,
-        outline,
-        conclusion,
-      }),
-    [conclusion, introduction, outline],
+    () => detectSermonBlockReferences(blocks),
+    [blocks],
   )
 
   const previewPassage = useMemo(
@@ -233,40 +233,84 @@ export function SermonEditorPage() {
     [referencePreview],
   )
 
+  function sectionText(section: SermonSection) {
+    return blocks
+      .filter((block) => block.section === section)
+      .sort((a, b) => a.order - b.order)
+      .map((block) => block.text)
+      .join('\n')
+  }
+
+
+  async function reloadBlocks() {
+    const next = await getSermonBlocks(sermonId)
+    setBlocks(next)
+    return next
+  }
+
   useEffect(() => {
     let cancelled = false
 
-    void getSermon(sermonId).then((record) => {
-      if (cancelled || !record) return
-      setSermon(record)
-      setTitle(record.title)
-      setIntroduction(record.introduction)
-      setOutline(record.outline)
-      setConclusion(record.conclusion)
-      setSavedAt(record.updatedAt)
+    void Promise.all([getSermon(sermonId), getSermonBlocks(sermonId)]).then(
+      ([record, storedBlocks]) => {
+        if (cancelled || !record) return
+        setSermon(record)
+        setTitle(record.title)
+        setBlocks(storedBlocks)
+        setSavedAt(record.updatedAt)
 
-      const params = new URLSearchParams(location.search)
-      const returnField = params.get('returnField') as SermonFieldName | null
-      const returnAt = Number(params.get('returnAt'))
-      if (returnField && Number.isFinite(returnAt)) {
-        window.requestAnimationFrame(() => {
-          const target =
-            returnField === 'introduction'
-              ? introductionRef.current
-              : returnField === 'outline'
-                ? outlineRef.current
-                : conclusionRef.current
-          if (!target) return
-          target.focusAt(returnAt)
+        const params = new URLSearchParams(location.search)
+        const returnBlockId = params.get('returnBlock')
+        const returnField = params.get('returnField') as SermonFieldName | null
+        const returnAt = Number(params.get('returnAt'))
+
+        if (returnBlockId && Number.isFinite(returnAt)) {
+          pendingFocusRef.current = {
+            blockId: returnBlockId,
+            offset: returnAt,
+          }
+        } else if (returnField && Number.isFinite(returnAt)) {
+          let remaining = Math.max(0, returnAt)
+          const sectionBlocks = storedBlocks
+            .filter((block) => block.section === returnField)
+            .sort((a, b) => a.order - b.order)
+
+          for (const block of sectionBlocks) {
+            if (remaining <= block.text.length) {
+              pendingFocusRef.current = {
+                blockId: block.id,
+                offset: remaining,
+              }
+              break
+            }
+            remaining -= block.text.length + 1
+          }
+        }
+
+        if (pendingFocusRef.current) {
           navigate(`/predicas/${sermonId}`, { replace: true })
-        })
-      }
-    })
+        }
+      },
+    )
 
     return () => {
       cancelled = true
     }
   }, [location.search, navigate, sermonId])
+
+  useEffect(() => {
+    const pending = pendingFocusRef.current
+    if (!pending) return
+
+    const frame = window.requestAnimationFrame(() => {
+      const target = blockRefs.current.get(pending.blockId)
+      if (!target) return
+      target.focusAt(pending.offset)
+      pendingFocusRef.current = undefined
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [blocks])
 
   useEffect(() => {
     if (!referencePreview) return
@@ -293,13 +337,14 @@ export function SermonEditorPage() {
     if (!dirty || !sermon) return
 
     const timer = window.setTimeout(() => {
-      const fields = [...dirtyFieldsRef.current]
+      const blockIds = [...dirtyBlockIdsRef.current]
+      const shouldSaveTitle = dirtyTitleRef.current
       const saveVersion = editVersionRef.current
 
       void (async () => {
         let latestSavedAt = 0
 
-        if (fields.includes('title')) {
+        if (shouldSaveTitle) {
           const savedTitle = await saveSermonTitle(sermonId, title)
           if (savedTitle) {
             latestSavedAt = Math.max(latestSavedAt, savedTitle.updatedAt)
@@ -309,19 +354,10 @@ export function SermonEditorPage() {
           }
         }
 
-        const sectionValues: Record<SermonFieldName, string> = {
-          introduction,
-          outline,
-          conclusion,
-        }
-
-        for (const field of fields) {
-          if (field === 'title') continue
-          const savedBlock = await saveSermonSectionDraft(
-            sermonId,
-            field,
-            sectionValues[field],
-          )
+        for (const blockId of blockIds) {
+          const block = blocks.find((item) => item.id === blockId)
+          if (!block) continue
+          const savedBlock = await saveSermonBlockDraft(blockId, block.text)
           if (savedBlock) {
             latestSavedAt = Math.max(latestSavedAt, savedBlock.updatedAt)
           }
@@ -329,42 +365,109 @@ export function SermonEditorPage() {
 
         if (editVersionRef.current !== saveVersion) return
 
-        dirtyFieldsRef.current.clear()
+        dirtyBlockIdsRef.current.clear()
+        dirtyTitleRef.current = false
         if (latestSavedAt > 0) setSavedAt(latestSavedAt)
         setDirty(false)
       })()
     }, 900)
 
     return () => window.clearTimeout(timer)
-  }, [conclusion, dirty, introduction, outline, sermon, sermonId, title])
+  }, [blocks, dirty, sermon, sermonId, title])
 
-  function markDirty(
-    field: 'title' | SermonFieldName,
-    setter: (value: string) => void,
-    value: string,
-  ) {
-    setter(value)
-    dirtyFieldsRef.current.add(field)
+  function markTitleDirty(value: string) {
+    setTitle(value)
+    dirtyTitleRef.current = true
     editVersionRef.current += 1
     setDirty(true)
   }
 
+  function markBlockDirty(blockId: string, value: string) {
+    setBlocks((current) =>
+      current.map((block) =>
+        block.id === blockId ? { ...block, text: value } : block,
+      ),
+    )
+    dirtyBlockIdsRef.current.add(blockId)
+    editVersionRef.current += 1
+    setDirty(true)
+  }
+
+  async function flushDirtyBlocks() {
+    const ids = [...dirtyBlockIdsRef.current]
+    for (const blockId of ids) {
+      const block = blocks.find((item) => item.id === blockId)
+      if (block) await saveSermonBlockDraft(blockId, block.text)
+    }
+    if (dirtyTitleRef.current) {
+      await saveSermonTitle(sermonId, title)
+    }
+  }
+
   async function handleSave() {
+    await flushDirtyBlocks()
+
     const saved = await saveSermon(sermonId, {
       title,
-      introduction,
-      outline,
-      conclusion,
-      references: detectedReferences,
+      introduction: sectionText('introduction'),
+      outline: sectionText('outline'),
+      conclusion: sectionText('conclusion'),
+      references: toPersistedSermonReferences(detectedReferences),
     })
     if (!saved) return
+
     setSermon(saved)
     setTitle(saved.title)
     setSavedAt(saved.updatedAt)
-    dirtyFieldsRef.current.clear()
+    dirtyBlockIdsRef.current.clear()
+    dirtyTitleRef.current = false
     editVersionRef.current += 1
     setDirty(false)
     return saved
+  }
+
+  async function handleSplit(block: SermonBlockRecord, offset: number) {
+    const next = await splitSermonBlock(block.id, block.text, offset)
+    if (!next) return
+    dirtyBlockIdsRef.current.delete(block.id)
+    pendingFocusRef.current = { blockId: next.id, offset: 0 }
+    await reloadBlocks()
+    setSavedAt(next.updatedAt)
+    setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
+  }
+
+  async function handleMerge(block: SermonBlockRecord) {
+    const sectionBlocks = blocks
+      .filter((item) => item.section === block.section)
+      .sort((a, b) => a.order - b.order)
+    const index = sectionBlocks.findIndex((item) => item.id === block.id)
+    if (index <= 0) return
+
+    const previous = sectionBlocks[index - 1]
+    if (dirtyBlockIdsRef.current.has(previous.id)) {
+      await saveSermonBlockDraft(previous.id, previous.text)
+    }
+
+    const merged = await mergeSermonBlockWithPrevious(block.id, block.text)
+    if (!merged) return
+
+    dirtyBlockIdsRef.current.delete(block.id)
+    dirtyBlockIdsRef.current.delete(previous.id)
+    pendingFocusRef.current = {
+      blockId: merged.block.id,
+      offset: merged.caretOffset,
+    }
+    await reloadBlocks()
+    setSavedAt(merged.block.updatedAt)
+    setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
+  }
+
+  async function handleAppend(section: SermonSection) {
+    const block = await appendSermonBlock(sermonId, section)
+    if (!block) return
+    pendingFocusRef.current = { blockId: block.id, offset: 0 }
+    await reloadBlocks()
+    setSavedAt(block.updatedAt)
   }
 
   async function startPresentation() {
@@ -374,19 +477,15 @@ export function SermonEditorPage() {
   }
 
   async function openReferenceInBible(reference: SermonBibleReference) {
-    await saveSermon(sermonId, {
-      title,
-      introduction,
-      outline,
-      conclusion,
-      references: detectedReferences,
-    })
+    const saved = await handleSave()
+    if (!saved) return
 
     window.sessionStorage.setItem(
       'biblia-sermon-return-v1',
       JSON.stringify({
         sermonId,
         field: reference.field,
+        blockId: reference.blockId,
         startIndex: reference.startIndex,
         mode: 'editor',
       }),
@@ -398,14 +497,66 @@ export function SermonEditorPage() {
     )
   }
 
+  function renderSection(
+    section: SermonSection,
+    label: string,
+    placeholder: string,
+  ) {
+    const sectionBlocks = blocks
+      .filter((block) => block.section === section)
+      .sort((a, b) => a.order - b.order)
 
+    return (
+      <section className="sermon-block-section">
+        <header className="sermon-block-section-header">
+          <span>{label}</span>
+          <button type="button" onClick={() => void handleAppend(section)}>
+            + Bloque
+          </button>
+        </header>
+
+        <div className="sermon-block-list">
+          {sectionBlocks.map((block, index) => (
+            <div
+              className="sermon-block-row"
+              data-sermon-block-id={block.id}
+              key={block.id}
+            >
+              <span className="sermon-block-handle" aria-hidden="true">
+                {index + 1}
+              </span>
+              <SermonRichTextField
+                ref={(handle) => {
+                  if (handle) blockRefs.current.set(block.id, handle)
+                  else blockRefs.current.delete(block.id)
+                }}
+                className="sermon-block-editor"
+                value={block.text}
+                references={detectedReferences.filter(
+                  (reference) => reference.blockId === block.id,
+                )}
+                onChange={(value) => markBlockDirty(block.id, value)}
+                onReferenceOpen={setReferencePreview}
+                onSplit={(offset) => void handleSplit(block, offset)}
+                onMergeBackward={() => void handleMerge(block)}
+                placeholder={index === 0 ? placeholder : 'Continuá escribiendo...'}
+                ariaLabel={`${label}, bloque ${index + 1}`}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   if (!sermon) {
     return (
       <section className="sermon-editor-page">
         <div className="sermons-empty glass-panel">
           <strong>Prédica no encontrada.</strong>
-          <Link className="button primary" to="/predicas">Volver a Mis prédicas</Link>
+          <Link className="button primary" to="/predicas">
+            Volver a Mis prédicas
+          </Link>
         </div>
       </section>
     )
@@ -414,7 +565,11 @@ export function SermonEditorPage() {
   return (
     <section className="sermon-editor-page">
       <header className="sermon-editor-toolbar glass-panel">
-        <button className="button secondary" type="button" onClick={() => navigate('/predicas')}>
+        <button
+          className="button secondary"
+          type="button"
+          onClick={() => navigate('/predicas')}
+        >
           ← Mis prédicas
         </button>
         <div className="sermon-save-state">
@@ -422,107 +577,60 @@ export function SermonEditorPage() {
           {savedAt ? <small>{formatUpdatedAt(savedAt)}</small> : null}
         </div>
         <div className="sermon-toolbar-actions">
-          <button className="button secondary" type="button" onClick={() => void startPresentation()}>
+          <button
+            className="button secondary"
+            type="button"
+            onClick={() => void startPresentation()}
+          >
             Predicar
           </button>
-          <button className="button primary" type="button" onClick={() => void handleSave()}>
+          <button
+            className="button primary"
+            type="button"
+            onClick={() => void handleSave()}
+          >
             Guardar
           </button>
         </div>
       </header>
 
-      <form className="sermon-editor-sheet" onSubmit={(event) => event.preventDefault()}>
+      <form
+        className="sermon-editor-sheet"
+        onSubmit={(event) => event.preventDefault()}
+      >
         <label className="sermon-field sermon-title-field">
           <span>Título</span>
           <input
             value={title}
-            onChange={(event) => markDirty('title', setTitle, event.target.value)}
+            onChange={(event) => markTitleDirty(event.target.value)}
             placeholder="Título de la prédica"
           />
         </label>
 
-        <div className="sermon-field">
-          <span>Introducción</span>
-          <SermonRichTextField
-            ref={introductionRef}
-            value={introduction}
-            references={detectedReferences.filter((reference) => reference.field === 'introduction')}
-            onChange={(value) => markDirty('introduction', setIntroduction, value)}
-            onReferenceOpen={setReferencePreview}
-            placeholder="Idea de apertura, contexto o propósito..."
-            ariaLabel="Introducción"
-          />
-        </div>
+        {renderSection(
+          'introduction',
+          'Introducción',
+          'Idea de apertura, contexto o propósito...',
+        )}
 
-        <div className="sermon-field">
-          <div className="sermon-field-heading">
-            <span>Bosquejo y puntos</span>
-            <div className="sermon-outline-tools" aria-label="Ajustes rápidos de bosquejo">
-              <button
-                type="button"
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => outlineRef.current?.applyLineAction('number')}
-                title="Numerar líneas seleccionadas"
-              >
-                1.
-              </button>
-              <button
-                type="button"
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => outlineRef.current?.applyLineAction('bullet')}
-                title="Convertir en viñetas"
-              >
-                •
-              </button>
-              <button
-                type="button"
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => outlineRef.current?.applyLineAction('indent')}
-                title="Aumentar sangría"
-              >
-                →|
-              </button>
-              <button
-                type="button"
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => outlineRef.current?.applyLineAction('outdent')}
-                title="Reducir sangría"
-              >
-                |←
-              </button>
-            </div>
-          </div>
-          <SermonRichTextField
-            ref={outlineRef}
-            className="sermon-rich-editor-outline"
-            value={outline}
-            references={detectedReferences.filter((reference) => reference.field === 'outline')}
-            onChange={(value) => markDirty('outline', setOutline, value)}
-            onReferenceOpen={setReferencePreview}
-            placeholder={"1. Punto principal\n   - Subpunto\n   - Aplicación\n\n2. Siguiente punto..."}
-            ariaLabel="Bosquejo y puntos"
-          />
-        </div>
+        {renderSection(
+          'outline',
+          'Bosquejo y puntos',
+          'Punto principal, desarrollo o aplicación...',
+        )}
 
-        <div className="sermon-field">
-          <span>Conclusión</span>
-          <SermonRichTextField
-            ref={conclusionRef}
-            value={conclusion}
-            references={detectedReferences.filter((reference) => reference.field === 'conclusion')}
-            onChange={(value) => markDirty('conclusion', setConclusion, value)}
-            onReferenceOpen={setReferencePreview}
-            placeholder="Cierre, llamado o idea final..."
-            ariaLabel="Conclusión"
-          />
-        </div>
+        {renderSection(
+          'conclusion',
+          'Conclusión',
+          'Cierre, llamado o idea final...',
+        )}
 
         <aside className="sermon-editor-note">
-          <strong>Referencias inteligentes activas</strong>
+          <strong>Editor por bloques activo</strong>
           <p>
-            Escribí referencias disponibles en el corpus, por ejemplo Juan 1:1 o
-            Génesis 1:1-3. Quedarán remarcadas dentro del mismo texto. Tocá una referencia
-            para ver el pasaje y, si querés, leer el capítulo completo.
+            Cada párrafo es independiente y se guarda por separado. Enter crea
+            un bloque nuevo; borrar al inicio de un bloque lo une con el
+            anterior. Las referencias bíblicas siguen siendo consultables.
           </p>
         </aside>
       </form>
@@ -543,7 +651,9 @@ export function SermonEditorPage() {
             <header>
               <div>
                 <span>Vista rápida</span>
-                <strong id="sermon-reference-title">{referencePreview.sourceText}</strong>
+                <strong id="sermon-reference-title">
+                  {referencePreview.sourceText}
+                </strong>
               </div>
               <button
                 type="button"

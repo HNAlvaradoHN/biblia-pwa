@@ -38,6 +38,7 @@ type SermonReturnPoint = {
   sermonId: string
   field: 'introduction' | 'outline' | 'conclusion'
   startIndex: number
+  blockId?: string
   mode?: 'editor' | 'presentation'
   scrollY?: number
 }
@@ -890,8 +891,16 @@ export function ReaderPage() {
       return
     }
 
+    const params = new URLSearchParams({
+      returnField: sermonReturnPoint.field,
+      returnAt: String(sermonReturnPoint.startIndex),
+    })
+    if (sermonReturnPoint.blockId) {
+      params.set('returnBlock', sermonReturnPoint.blockId)
+    }
+
     navigate(
-      `/predicas/${sermonReturnPoint.sermonId}?returnField=${sermonReturnPoint.field}&returnAt=${sermonReturnPoint.startIndex}`,
+      `/predicas/${sermonReturnPoint.sermonId}?${params.toString()}`,
     )
   }
 

@@ -15,6 +15,20 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-03 — Editor estructurado por bloques 0.1.27
+
+- Añadida migración IndexedDB v7 que convierte los tres bloques legados de cada prédica en bloques estructurados independientes por línea, conservando el texto.
+- Las nuevas prédicas nacen directamente con bloques estructurados estables; ya no dependen de IDs `legacy`.
+- El editor visible deja de trabajar como tres campos monolíticos y renderiza bloques independientes dentro de Introducción, Bosquejo/puntos y Conclusión.
+- Enter divide un bloque en dos; Backspace al inicio une con el bloque anterior; cada sección permite añadir un bloque explícitamente.
+- El autosave continúa siendo incremental: solo se persisten los bloques modificados.
+- Duplicar conserva la estructura de bloques; eliminar sigue borrando prédica y bloques en una sola transacción.
+- Las referencias bíblicas se detectan por bloque sin perder su posición global de sección para compatibilidad.
+- Al abrir Biblia desde el editor se guarda `blockId` + posición local; al volver, el editor enfoca ese bloque exacto después de renderizarlo.
+- Se elimina la barra transitoria de cuatro ajustes rápidos de `0.1.24`; no se acumula sobre el editor nuevo.
+- Esta versión todavía no incorpora la barra completa de formato; ese es el paso 4 de D-053.
+- Build visible actualizado a `0.1.27`.
+
 ## 2026-10-03 — Autosave incremental de Prédicas 0.1.26
 
 - El editor deja de reescribir el contenido completo de la prédica en cada autosave por texto.
