@@ -99,6 +99,21 @@ input:focus-visible {
   padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
 
+.sermon-editor-shell {
+  min-height: 100dvh;
+  background: var(--reader-surface);
+}
+
+.sermon-editor-shell .app-content {
+  width: min(100%, 920px);
+  min-height: 100dvh;
+  padding:
+    max(8px, env(safe-area-inset-top))
+    max(10px, env(safe-area-inset-right))
+    calc(88px + env(safe-area-inset-bottom))
+    max(10px, env(safe-area-inset-left));
+}
+
 .topbar {
   position: sticky;
   top: 0;
