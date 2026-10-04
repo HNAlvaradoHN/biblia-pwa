@@ -223,7 +223,7 @@
   display: grid;
   gap: 18px;
   min-height: calc(100dvh - 76px);
-  padding: clamp(18px, 4vw, 30px) clamp(14px, 4vw, 30px) 108px;
+  padding: clamp(18px, 4vw, 30px);
   border: 0;
   border-radius: 0;
   background: var(--reader-surface);
@@ -475,13 +475,11 @@
 
 
 .sermon-compose-dock {
-  position: fixed;
-  right: max(12px, env(safe-area-inset-right));
+  position: sticky;
   bottom: max(8px, env(safe-area-inset-bottom));
-  left: max(12px, env(safe-area-inset-left));
   z-index: 30;
   display: grid;
-  width: min(calc(100% - 24px), 760px);
+  width: min(100%, 760px);
   margin-inline: auto;
   gap: 7px;
 }

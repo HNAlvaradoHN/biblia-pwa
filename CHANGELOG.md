@@ -15,6 +15,16 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Restauración de barra flotante sobre teclado 0.1.35
+
+- Corregida una regresión introducida al crear el editor dedicado: la barra de herramientas deja de usar `position: fixed`.
+- La barra vuelve a usar comportamiento `sticky` al borde inferior visible, como antes de 0.1.32.
+- En móvil, al aparecer el teclado, la barra debe permanecer dentro del viewport visible y encima del teclado en lugar de quedar debajo o perderse.
+- Se elimina el espacio inferior extra reservado exclusivamente para la barra fija.
+- Se conserva sin cambios el orden de 0.1.34: `Aa → Texto → B → I → U → S → Listas → +`.
+- Se conserva sin cambios la deselección rápida de B/I/U/S y de H1/H2/Cita/listas/checklist.
+- Build visible actualizado a `0.1.35`.
+
 ## 2026-10-04 — Prioridad de Texto y deselección rápida 0.1.34
 
 - La barra visible cambia a `Aa → Texto → B → I → U → S → Listas → +`.
