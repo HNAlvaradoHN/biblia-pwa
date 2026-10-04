@@ -99,21 +99,28 @@ Funciones objetivo iniciales del editor:
 - No abrir sincronización remota antes de estabilizar el modelo local por bloques.
 - No versionar prédicas reales, notas personales, favoritos, bases locales, dumps ni secretos.
 
-## Hito D-053 en implementación — paso 1
+## Hitos D-053
 
-El modelo de bloques y la migración segura están implementados en la rama `feat/sermon-block-model-0125`:
+### Paso 1 — modelo de bloques + migración
+IMPLEMENTADO Y PUBLICADO en `0.1.25`.
 
-- nueva tabla `sermonBlocks` en esquema IndexedDB v6;
-- migración automática desde las tres secciones de cada prédica existente;
-- bloques iniciales con identificadores estables;
-- compatibilidad temporal de doble escritura mientras el editor legado siga visible;
-- creación, duplicado y eliminación mantienen integridad entre prédica y bloques.
+- tabla `sermonBlocks` en IndexedDB v6;
+- migración automática desde las tres secciones existentes;
+- bloques iniciales estables;
+- compatibilidad temporal con el modelo legado.
 
-Todavía no debe considerarse cerrado hasta pasar CI, merge y publicación.
+### Paso 2 — persistencia incremental
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/incremental-sermon-autosave-0126`.
+
+- el autosave de contenido escribe solo la sección/bloque modificado;
+- el título se guarda separadamente como metadato;
+- la lectura de prédicas se hidrata desde bloques;
+- acciones explícitas de seguridad siguen consolidando el snapshot legado durante la transición;
+- una versión de edición evita carreras entre autosaves viejos y cambios nuevos.
 
 ## Siguiente paso inmediato
 
-Después de integrar y publicar `0.1.25`, implementar **paso 2 de D-053: persistencia incremental local por bloque**, eliminando la necesidad de reescribir el contenido completo de la prédica en cada autosave.
+Completar CI/merge/publicación de `0.1.26` y verificar que una edición autosalvada reaparece correctamente después de recargar. Después avanzar al **paso 3 de D-053: sustituir el editor de texto plano por el editor estructurado**.
 
 ## Después de D-053
 
