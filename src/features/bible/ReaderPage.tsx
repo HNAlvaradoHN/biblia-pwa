@@ -876,12 +876,16 @@ export function ReaderPage() {
     window.sessionStorage.removeItem('biblia-sermon-return-v1')
 
     if (sermonReturnPoint.mode === 'presentation') {
-      const returnScroll =
-        typeof sermonReturnPoint.scrollY === 'number' && Number.isFinite(sermonReturnPoint.scrollY)
-          ? Math.max(0, Math.round(sermonReturnPoint.scrollY))
-          : 0
+      const params = new URLSearchParams({
+        returnField: sermonReturnPoint.field,
+        returnAt: String(sermonReturnPoint.startIndex),
+      })
+      if (typeof sermonReturnPoint.scrollY === 'number' && Number.isFinite(sermonReturnPoint.scrollY)) {
+        params.set('returnScroll', String(Math.max(0, Math.round(sermonReturnPoint.scrollY))))
+      }
+
       navigate(
-        `/predicas/${sermonReturnPoint.sermonId}/presentar?returnScroll=${returnScroll}`,
+        `/predicas/${sermonReturnPoint.sermonId}/presentar?${params.toString()}`,
       )
       return
     }

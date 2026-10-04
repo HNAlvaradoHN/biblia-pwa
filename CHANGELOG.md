@@ -13,6 +13,16 @@
 
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
+## 2026-10-03 — Retorno exacto y herramientas de bosquejo 0.1.24
+
+- Corregido el regreso desde `Leer capítulo` hacia Modo Predicación: el retorno ya no depende únicamente del valor de scroll.
+- La referencia de origen queda identificada por campo y posición; al volver, la app espera a que la prédica esté renderizada, localiza esa misma referencia y la centra en pantalla.
+- El valor de scroll anterior se conserva únicamente como fallback si la referencia ya no puede localizarse.
+- La referencia recuperada recibe un foco visual temporal para ubicar rápidamente dónde se estaba predicando.
+- `Bosquejo y puntos` incorpora ajustes rápidos de texto plano: numeración, viñetas, aumentar sangría y reducir sangría.
+- Las acciones rápidas operan sobre las líneas seleccionadas o la línea actual sin guardar HTML ni romper referencias bíblicas.
+- Build visible actualizado a `0.1.24`.
+
 ## 2026-10-03 — Eliminación de prédicas 0.1.23
 
 - Añadida acción `Eliminar` a cada prédica junto a Abrir, Duplicar y Archivar/Restaurar.

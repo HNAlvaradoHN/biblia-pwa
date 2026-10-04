@@ -416,7 +416,43 @@ export function SermonEditorPage() {
         </div>
 
         <div className="sermon-field">
-          <span>Bosquejo y puntos</span>
+          <div className="sermon-field-heading">
+            <span>Bosquejo y puntos</span>
+            <div className="sermon-outline-tools" aria-label="Ajustes rápidos de bosquejo">
+              <button
+                type="button"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => outlineRef.current?.applyLineAction('number')}
+                title="Numerar líneas seleccionadas"
+              >
+                1.
+              </button>
+              <button
+                type="button"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => outlineRef.current?.applyLineAction('bullet')}
+                title="Convertir en viñetas"
+              >
+                •
+              </button>
+              <button
+                type="button"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => outlineRef.current?.applyLineAction('indent')}
+                title="Aumentar sangría"
+              >
+                →|
+              </button>
+              <button
+                type="button"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => outlineRef.current?.applyLineAction('outdent')}
+                title="Reducir sangría"
+              >
+                |←
+              </button>
+            </div>
+          </div>
           <SermonRichTextField
             ref={outlineRef}
             className="sermon-rich-editor-outline"

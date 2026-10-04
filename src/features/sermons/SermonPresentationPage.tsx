@@ -48,6 +48,8 @@ function PresentationText({
             className="sermon-presentation-reference"
             type="button"
             key={part.reference.id}
+            data-sermon-field={field}
+            data-sermon-start-index={part.reference.startIndex}
             onClick={() => onReferenceOpen(part.reference!)}
           >
             {part.text}
@@ -106,15 +108,41 @@ export function SermonPresentationPage() {
   }, [referencePreview])
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    const returnScroll = Number(params.get('returnScroll'))
-    if (!Number.isFinite(returnScroll)) return
+    if (!sermon) return
 
-    window.requestAnimationFrame(() => {
-      window.scrollTo({ top: Math.max(0, returnScroll), behavior: 'auto' })
-      navigate(`/predicas/${sermonId}/presentar`, { replace: true })
+    const params = new URLSearchParams(location.search)
+    const returnField = params.get('returnField') as SermonFieldName | null
+    const returnAt = Number(params.get('returnAt'))
+    const returnScroll = Number(params.get('returnScroll'))
+    if (!returnField && !Number.isFinite(returnScroll)) return
+
+    let highlightTimer: number | undefined
+    const frame = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const target =
+          returnField && Number.isFinite(returnAt)
+            ? document.querySelector<HTMLElement>(
+                `[data-sermon-field="${returnField}"][data-sermon-start-index="${returnAt}"]`,
+              )
+            : null
+
+        if (target) {
+          target.scrollIntoView({ block: 'center', behavior: 'auto' })
+          target.classList.add('return-focus')
+          highlightTimer = window.setTimeout(() => target.classList.remove('return-focus'), 2000)
+        } else if (Number.isFinite(returnScroll)) {
+          window.scrollTo({ top: Math.max(0, returnScroll), behavior: 'auto' })
+        }
+
+        navigate(`/predicas/${sermonId}/presentar`, { replace: true })
+      })
     })
-  }, [location.search, navigate, sermonId])
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      if (highlightTimer) window.clearTimeout(highlightTimer)
+    }
+  }, [location.search, navigate, sermon, sermonId])
 
   useEffect(() => {
     type WakeLockSentinelLike = {

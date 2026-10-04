@@ -228,6 +228,51 @@
   gap: 7px;
 }
 
+.sermon-field-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sermon-field-heading > span {
+  color: var(--ink);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.sermon-outline-tools {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
+}
+
+.sermon-outline-tools button {
+  display: grid;
+  min-width: 32px;
+  height: 30px;
+  place-items: center;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.sermon-outline-tools button:hover,
+.sermon-outline-tools button:focus-visible {
+  background: color-mix(in srgb, var(--accent-soft) 50%, transparent);
+  color: var(--accent);
+  outline: none;
+}
+
 .sermon-title-field input {
   min-height: 54px;
   padding: 0 15px;
@@ -643,5 +688,27 @@
 
   .sermon-presentation-exit {
     align-self: end;
+  }
+}
+
+.sermon-presentation-reference.return-focus {
+  outline: 3px solid color-mix(in srgb, var(--accent) 46%, transparent);
+  outline-offset: 4px;
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+@media (max-width: 560px) {
+  .sermon-field-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sermon-outline-tools {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+
+  .sermon-outline-tools button {
+    flex: 1;
   }
 }
