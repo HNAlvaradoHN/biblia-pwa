@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.39**. `0.1.40` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.39`.
+- Producción confirmada: **v0.1.40**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -191,7 +191,7 @@ PUBLICADO en `0.1.39`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - no cambia la apariencia ni la pestaña lateral.
 
 ### Paso 5 — Modo Predicación sobre documento estructurado
-IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.40`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 - Modo Predicación consume bloques estructurados;
 - imágenes aparecen en el mismo flujo de la prédica;
@@ -202,7 +202,7 @@ IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Esperar a que GitHub Pages publique `0.1.40` y validar físicamente: imagen visible al predicar, orden correcto, formato enriquecido, referencia bíblica → Leer capítulo → Volver a Predicación al mismo punto, y confirmación obligatoria antes de eliminar una imagen. Después ejecutar validación integral del editor y Modo Predicación.
+Validar físicamente `0.1.40`: imagen visible al predicar, orden correcto, formato enriquecido, referencia bíblica → Leer capítulo → Volver a Predicación al mismo punto, y confirmación obligatoria antes de eliminar una imagen. Después ejecutar validación integral del editor y Modo Predicación.
 
 ## Después de D-053
 
