@@ -169,7 +169,10 @@ export const SermonRichTextField = forwardRef<
       focusAt(offset: number) {
         const editor = editorRef.current
         if (!editor) return
-        editor.focus()
+        const documentEditor = editor.closest<HTMLElement>(
+          '[data-sermon-document-editor]',
+        )
+        documentEditor?.focus()
         setCaretOffset(editor, offset)
         editor.scrollIntoView({ block: 'center' })
       },
@@ -181,9 +184,13 @@ export const SermonRichTextField = forwardRef<
     const editor = editorRef.current
     if (!editor) return
 
-    const hadFocus =
-      document.activeElement === editor || editor.contains(document.activeElement)
-    const caretOffset = pendingCaretRef.current
+    const selection = window.getSelection()
+    const selectionInside =
+      Boolean(selection?.anchorNode && editor.contains(selection.anchorNode)) ||
+      Boolean(selection?.focusNode && editor.contains(selection.focusNode))
+    const caretOffset =
+      pendingCaretRef.current ??
+      (selectionInside ? getCaretOffset(editor) : null)
     editor.replaceChildren()
 
     const boundaries = new Set<number>([0, value.length])
@@ -237,8 +244,11 @@ export const SermonRichTextField = forwardRef<
 
     if (value.length === 0) editor.append(document.createTextNode(''))
 
-    if ((hadFocus || caretOffset !== null) && caretOffset !== null) {
-      editor.focus()
+    if ((selectionInside || caretOffset !== null) && caretOffset !== null) {
+      const documentEditor = editor.closest<HTMLElement>(
+        '[data-sermon-document-editor]',
+      )
+      documentEditor?.focus()
       setCaretOffset(editor, caretOffset)
     }
 
@@ -329,7 +339,6 @@ export const SermonRichTextField = forwardRef<
     <div
       ref={editorRef}
       className={['sermon-rich-editor', className].filter(Boolean).join(' ')}
-      contentEditable
       suppressContentEditableWarning
       role="textbox"
       aria-label={ariaLabel}
