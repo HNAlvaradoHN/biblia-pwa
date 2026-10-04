@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.28**.
+- Producción confirmada: **v0.1.29**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -127,7 +127,7 @@ CORREGIDO POR D-054.
 La arquitectura por bloques de `0.1.27` se conserva internamente, pero su representación visual como cajitas/numeración/`+ Bloque` fue rechazada por el usuario. Esa UI es transitoria y se sustituye en `0.1.28` por una experiencia de documento continuo.
 
 ### Paso 3.1 — documento continuo + imágenes
-PUBLICADO en `0.1.29`, PENDIENTE DE VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.29`, con división editorial de secciones en implementación como `0.1.30`.
 
 - `0.1.28` añadió adjuntos de imagen locales e hizo invisible la numeración/cajas de bloques.
 - `0.1.29` simplifica todavía más la hoja: sin bordes de campo alrededor del contenido normal.
@@ -139,7 +139,7 @@ PUBLICADO en `0.1.29`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.29`: escribir texto → insertar imagen en medio → continuar escribiendo debajo → recargar sin pérdida. Después implementar la **barra compacta completa de formato de bloc de notas** y adaptar Modo Predicación a texto estructurado + imágenes.
+Completar CI/merge/publicación de `0.1.30` y validar que Introducción, Bosquejo y puntos, y Conclusión se distinguen claramente sin romper la apariencia de una sola hoja. Después implementar la **barra compacta completa de formato de bloc de notas** y adaptar Modo Predicación a texto estructurado + imágenes.
 
 ## Después de D-053
 
