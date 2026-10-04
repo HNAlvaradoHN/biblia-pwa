@@ -654,9 +654,12 @@ export function SermonEditorPage() {
       .sort((a, b) => a.order - b.order)
 
     return (
-      <section className="sermon-block-section">
+      <section
+        className="sermon-block-section"
+        aria-labelledby={`sermon-section-${section}`}
+      >
         <header className="sermon-block-section-header">
-          <span>{label}</span>
+          <h2 id={`sermon-section-${section}`}>{label}</h2>
         </header>
 
         <div className="sermon-block-list">
