@@ -693,58 +693,186 @@ export function SermonEditorPage() {
       .filter((mark) => mark.end > mark.start)
   }
 
-  function markBlockDirty(blockId: string, value: string) {
-    setBlocks((current) =>
-      current.map((block) => {
-        if (block.id !== blockId) return block
-
-        const change = getTextChangeRange(block.text, value)
-        let nextMarks = adjustMarksForTextChange(
-          block.text,
-          value,
-          block.marks,
-        )
-
-        if (change.newEnd > change.start) {
-          const inlineTypes: SermonInlineMarkType[] = [
-            'bold',
-            'italic',
-            'underline',
-            'strike',
-          ]
-
-          for (const type of inlineTypes) {
-            const inherited = block.marks.some(
-              (mark) =>
-                mark.type === type &&
-                mark.start <= change.start &&
-                mark.end >= change.start,
-            )
-            const enabled = typingMarkOverrides[type] ?? inherited
-
-            if (enabled) {
-              nextMarks.push({
-                type,
-                start: change.start,
-                end: change.newEnd,
-              })
-            } else {
-              nextMarks = nextMarks.flatMap((mark) =>
-                mark.type === type
-                  ? subtractMark(mark, change.start, change.newEnd)
-                  : [mark],
-              )
-            }
-          }
-        }
-
-        return {
-          ...block,
-          text: value,
-          marks: normalizeMarks(nextMarks),
-        }
-      }),
+  function replaceBlockLocal(block: SermonBlockRecord) {
+    const next = blocksRef.current.map((item) =>
+      item.id === block.id ? block : item,
     )
+    blocksRef.current = next
+    setBlocks(next)
+  }
+
+  function clearHistory() {
+    undoStackRef.current = []
+    redoStackRef.current = []
+    setHistoryVersion((version) => version + 1)
+  }
+
+  function recordHistory(
+    blockId: string,
+    before: SermonBlockEditableState,
+    after: SermonBlockEditableState,
+    kind: SermonHistoryEntry['kind'],
+  ) {
+    if (sameEditableBlockState(before, after)) return
+
+    const now = Date.now()
+    const previous = undoStackRef.current.at(-1)
+
+    if (
+      kind === 'typing' &&
+      previous?.kind === 'typing' &&
+      previous.blockId === blockId &&
+      now - previous.at <= 900
+    ) {
+      previous.after = after
+      previous.at = now
+    } else {
+      undoStackRef.current.push({
+        blockId,
+        before,
+        after,
+        kind,
+        at: now,
+      })
+      if (undoStackRef.current.length > 80) {
+        undoStackRef.current.shift()
+      }
+    }
+
+    redoStackRef.current = []
+    setHistoryVersion((version) => version + 1)
+  }
+
+  function markBlockDirty(blockId: string, value: string) {
+    const block = blocksRef.current.find((item) => item.id === blockId)
+    if (!block) return
+
+    const change = getTextChangeRange(block.text, value)
+    let nextMarks = adjustMarksForTextChange(
+      block.text,
+      value,
+      block.marks,
+    )
+
+    if (change.newEnd > change.start) {
+      const inlineTypes: SermonInlineMarkType[] = [
+        'bold',
+        'italic',
+        'underline',
+        'strike',
+      ]
+
+      for (const type of inlineTypes) {
+        const inherited = block.marks.some(
+          (mark) =>
+            mark.type === type &&
+            mark.start <= change.start &&
+            mark.end >= change.start,
+        )
+        const enabled = typingMarkOverrides[type] ?? inherited
+
+        if (enabled) {
+          nextMarks.push({
+            type,
+            start: change.start,
+            end: change.newEnd,
+          })
+        } else {
+          nextMarks = nextMarks.flatMap((mark) =>
+            mark.type === type
+              ? subtractMark(mark, change.start, change.newEnd)
+              : [mark],
+          )
+        }
+      }
+
+      const inheritedTextColor = block.marks.find(
+        (mark) =>
+          mark.type === 'textColor' &&
+          mark.start <= change.start &&
+          mark.end >= change.start,
+      )?.color
+      const nextTextColor =
+        typingTextColor === undefined
+          ? inheritedTextColor
+          : typingTextColor
+
+      nextMarks = nextMarks.flatMap((mark) =>
+        mark.type === 'textColor'
+          ? subtractMark(mark, change.start, change.newEnd)
+          : [mark],
+      )
+      if (nextTextColor) {
+        nextMarks.push({
+          type: 'textColor',
+          color: nextTextColor,
+          start: change.start,
+          end: change.newEnd,
+        })
+      }
+
+      const inheritedHighlight = block.marks.find(
+        (mark) =>
+          mark.type === 'highlight' &&
+          mark.start <= change.start &&
+          mark.end >= change.start,
+      )?.color
+      const nextHighlight =
+        typingHighlight === undefined
+          ? inheritedHighlight
+          : typingHighlight
+
+      nextMarks = nextMarks.flatMap((mark) =>
+        mark.type === 'highlight'
+          ? subtractMark(mark, change.start, change.newEnd)
+          : [mark],
+      )
+      if (nextHighlight) {
+        nextMarks.push({
+          type: 'highlight',
+          color: nextHighlight,
+          start: change.start,
+          end: change.newEnd,
+        })
+      }
+
+      const inheritedHref = block.marks.find(
+        (mark) =>
+          mark.type === 'link' &&
+          mark.start <= change.start &&
+          mark.end >= change.start,
+      )?.href
+      const nextHref =
+        typingLinkHref === undefined ? inheritedHref : typingLinkHref
+
+      nextMarks = nextMarks.flatMap((mark) =>
+        mark.type === 'link'
+          ? subtractMark(mark, change.start, change.newEnd)
+          : [mark],
+      )
+      if (nextHref) {
+        nextMarks.push({
+          type: 'link',
+          href: nextHref,
+          start: change.start,
+          end: change.newEnd,
+        })
+      }
+    }
+
+    const nextBlock: SermonBlockRecord = {
+      ...block,
+      text: value,
+      marks: normalizeMarks(nextMarks),
+    }
+
+    recordHistory(
+      blockId,
+      editableBlockState(block),
+      editableBlockState(nextBlock),
+      'typing',
+    )
+    replaceBlockLocal(nextBlock)
     dirtyBlockIdsRef.current.add(blockId)
     editVersionRef.current += 1
     setDirty(true)
