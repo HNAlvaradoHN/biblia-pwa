@@ -276,6 +276,19 @@
   pointer-events: none;
 }
 
+.sermon-document-editor {
+  display: grid;
+  min-width: 0;
+  outline: 0;
+  caret-color: var(--accent);
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.sermon-document-editor:focus {
+  outline: 0;
+}
+
 .sermon-block-section {
   display: grid;
   gap: 8px;
