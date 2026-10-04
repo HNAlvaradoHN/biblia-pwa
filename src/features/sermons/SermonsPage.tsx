@@ -6,9 +6,12 @@ import {
   deleteSermon,
   duplicateSermon,
   getSermon,
+  getSermonAttachment,
   getSermonBlocks,
   getSermons,
+  insertSermonImageBlock,
   mergeSermonBlockWithPrevious,
+  removeSermonImageBlock,
   saveSermon,
   saveSermonBlockDraft,
   saveSermonTitle,
@@ -207,11 +210,66 @@ export function SermonsPage() {
   )
 }
 
+function SermonImageBlock({
+  block,
+  onActivate,
+  onRemove,
+}: {
+  block: SermonBlockRecord
+  onActivate: () => void
+  onRemove: () => void
+}) {
+  const [src, setSrc] = useState<string>()
+
+  useEffect(() => {
+    if (!block.attachmentId) return
+
+    let disposed = false
+    let objectUrl: string | undefined
+
+    void getSermonAttachment(block.attachmentId).then((attachment) => {
+      if (disposed || !attachment) return
+      objectUrl = URL.createObjectURL(attachment.blob)
+      setSrc(objectUrl)
+    })
+
+    return () => {
+      disposed = true
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+    }
+  }, [block.attachmentId])
+
+  return (
+    <figure
+      className="sermon-inline-image"
+      data-sermon-block-id={block.id}
+      onClick={onActivate}
+    >
+      {src ? (
+        <img src={src} alt={block.altText || 'Imagen de la prédica'} />
+      ) : (
+        <div className="sermon-inline-image-loading">Cargando imagen…</div>
+      )}
+      <figcaption>
+        <span>{block.altText || 'Imagen'}</span>
+        <button type="button" onClick={onRemove}>
+          Eliminar imagen
+        </button>
+      </figcaption>
+    </figure>
+  )
+}
+
 export function SermonEditorPage() {
   const { sermonId = '' } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const blockRefs = useRef(new Map<string, SermonRichTextFieldHandle>())
+  const imageInputRef = useRef<HTMLInputElement | null>(null)
+  const [activePoint, setActivePoint] = useState<{
+    section: SermonSection
+    blockId?: string
+  }>({ section: 'outline' })
   const pendingFocusRef = useRef<{ blockId: string; offset: number } | undefined>(undefined)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
@@ -462,12 +520,34 @@ export function SermonEditorPage() {
     setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
   }
 
-  async function handleAppend(section: SermonSection) {
-    const block = await appendSermonBlock(sermonId, section)
-    if (!block) return
-    pendingFocusRef.current = { blockId: block.id, offset: 0 }
+  async function handleImageSelected(file?: File) {
+    if (!file) return
+    if (!file.type.startsWith('image/')) return
+
+    const inserted = await insertSermonImageBlock(
+      sermonId,
+      activePoint.section,
+      file,
+      activePoint.blockId,
+    )
+    if (!inserted) return
+
+    setActivePoint({
+      section: inserted.section,
+      blockId: inserted.id,
+    })
     await reloadBlocks()
-    setSavedAt(block.updatedAt)
+    setSavedAt(inserted.updatedAt)
+    if (imageInputRef.current) imageInputRef.current.value = ''
+  }
+
+  async function handleRemoveImage(block: SermonBlockRecord) {
+    const removed = await removeSermonImageBlock(block.id)
+    if (!removed) return
+    await reloadBlocks()
+    if (activePoint.blockId === block.id) {
+      setActivePoint({ section: block.section })
+    }
   }
 
   async function startPresentation() {
@@ -510,40 +590,51 @@ export function SermonEditorPage() {
       <section className="sermon-block-section">
         <header className="sermon-block-section-header">
           <span>{label}</span>
-          <button type="button" onClick={() => void handleAppend(section)}>
-            + Bloque
-          </button>
         </header>
 
         <div className="sermon-block-list">
-          {sectionBlocks.map((block, index) => (
-            <div
-              className="sermon-block-row"
-              data-sermon-block-id={block.id}
-              key={block.id}
-            >
-              <span className="sermon-block-handle" aria-hidden="true">
-                {index + 1}
-              </span>
-              <SermonRichTextField
-                ref={(handle) => {
-                  if (handle) blockRefs.current.set(block.id, handle)
-                  else blockRefs.current.delete(block.id)
-                }}
-                className="sermon-block-editor"
-                value={block.text}
-                references={detectedReferences.filter(
-                  (reference) => reference.blockId === block.id,
-                )}
-                onChange={(value) => markBlockDirty(block.id, value)}
-                onReferenceOpen={setReferencePreview}
-                onSplit={(offset) => void handleSplit(block, offset)}
-                onMergeBackward={() => void handleMerge(block)}
-                placeholder={index === 0 ? placeholder : 'Continuá escribiendo...'}
-                ariaLabel={`${label}, bloque ${index + 1}`}
+          {sectionBlocks.map((block, index) =>
+            block.type === 'image' ? (
+              <SermonImageBlock
+                key={block.id}
+                block={block}
+                onActivate={() =>
+                  setActivePoint({ section: block.section, blockId: block.id })
+                }
+                onRemove={() => void handleRemoveImage(block)}
               />
-            </div>
-          ))}
+            ) : (
+              <div
+                className="sermon-block-row"
+                data-sermon-block-id={block.id}
+                key={block.id}
+              >
+                <SermonRichTextField
+                  ref={(handle) => {
+                    if (handle) blockRefs.current.set(block.id, handle)
+                    else blockRefs.current.delete(block.id)
+                  }}
+                  className="sermon-block-editor"
+                  value={block.text}
+                  references={detectedReferences.filter(
+                    (reference) => reference.blockId === block.id,
+                  )}
+                  onChange={(value) => markBlockDirty(block.id, value)}
+                  onReferenceOpen={setReferencePreview}
+                  onFocus={() =>
+                    setActivePoint({
+                      section: block.section,
+                      blockId: block.id,
+                    })
+                  }
+                  onSplit={(offset) => void handleSplit(block, offset)}
+                  onMergeBackward={() => void handleMerge(block)}
+                  placeholder={index === 0 ? placeholder : ''}
+                  ariaLabel={`${label}, párrafo ${index + 1}`}
+                />
+              </div>
+            ),
+          )}
         </div>
       </section>
     )
@@ -625,12 +716,35 @@ export function SermonEditorPage() {
           'Cierre, llamado o idea final...',
         )}
 
+        <div className="sermon-compose-toolbar" aria-label="Herramientas de la prédica">
+          <button
+            type="button"
+            onClick={() => imageInputRef.current?.click()}
+            title="Insertar imagen"
+          >
+            <span aria-hidden="true">▧</span>
+            Imagen
+          </button>
+          <input
+            ref={imageInputRef}
+            className="sermon-image-input"
+            type="file"
+            accept="image/*"
+            onChange={(event) =>
+              void handleImageSelected(event.target.files?.[0])
+            }
+          />
+          <span className="sermon-compose-hint">
+            La imagen se inserta en la sección donde estás escribiendo.
+          </span>
+        </div>
+
         <aside className="sermon-editor-note">
-          <strong>Editor por bloques activo</strong>
+          <strong>Documento continuo</strong>
           <p>
-            Cada párrafo es independiente y se guarda por separado. Enter crea
-            un bloque nuevo; borrar al inicio de un bloque lo une con el
-            anterior. Las referencias bíblicas siguen siendo consultables.
+            Escribí como en una nota normal. La estructura por bloques queda
+            oculta y se usa únicamente para autosave, retorno exacto y futura
+            sincronización.
           </p>
         </aside>
       </form>
