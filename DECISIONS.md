@@ -425,3 +425,24 @@ Reglas:
 - Enter sigue dividiendo el bloque activo y Backspace al inicio sigue uniendo con el bloque anterior cuando corresponde;
 - pegar texto sigue siendo texto plano y respeta una selección que atraviese más de un bloque;
 - la corrección no cambia la apariencia, la pestaña lateral, el modelo de datos ni el autosave.
+
+
+## D-060 — Paridad visual entre edición y Modo Predicación
+Estado: APROBADA
+
+Todo contenido que Prédicas permita insertar o formatear en edición debe tener una representación coherente en Modo Predicación. No se acepta que una imagen visible en edición desaparezca al predicar.
+
+Reglas:
+
+- Modo Predicación consume los bloques estructurados reales, no únicamente los campos legacy concatenados;
+- las imágenes se cargan desde `sermonAttachments` y se muestran en el mismo orden relativo en que fueron insertadas;
+- encabezados, párrafos, cita, viñetas, numeración, checklist, sangría y marks inline se renderizan en presentación;
+- negrita, cursiva, subrayado, tachado, enlaces, color y resaltado conservan representación visual;
+- las referencias bíblicas se detectan por bloque y conservan `blockId` para retorno exacto;
+- al abrir Biblia desde Modo Predicación se guarda `blockId` junto con sección, índice local y scroll;
+- al regresar desde Biblia se intenta primero el bloque/referencia exactos y solo después se usa scroll como fallback;
+- las imágenes en presentación deben ajustarse al ancho disponible y no cubrir de forma desproporcionada la pantalla móvil;
+- eliminar una imagen desde edición requiere confirmación explícita antes de borrar el bloque y su adjunto;
+- ninguna acción destructiva de imagen puede ejecutarse con un solo toque sin confirmación.
+
+Este hito corrige la inconsistencia existente entre edición y presentación y completa la adaptación inicial de Modo Predicación al documento estructurado.
