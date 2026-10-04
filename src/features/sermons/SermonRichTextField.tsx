@@ -112,6 +112,12 @@ function markClasses(marks: SermonInlineMark[]) {
     if (mark.type === 'underline') classes.push('sermon-inline-underline')
     if (mark.type === 'strike') classes.push('sermon-inline-strike')
     if (mark.type === 'link') classes.push('sermon-inline-link')
+    if (mark.type === 'textColor' && mark.color) {
+      classes.push(`sermon-text-color-${mark.color}`)
+    }
+    if (mark.type === 'highlight' && mark.color) {
+      classes.push(`sermon-highlight-${mark.color}`)
+    }
   }
   return classes
 }
@@ -151,7 +157,10 @@ export const SermonRichTextField = forwardRef<
     )
     .join('|')
   const marksSignature = marks
-    .map((mark) => `${mark.type}:${mark.start}:${mark.end}:${mark.href ?? ''}`)
+    .map(
+      (mark) =>
+        `${mark.type}:${mark.start}:${mark.end}:${mark.href ?? ''}:${mark.color ?? ''}`,
+    )
     .join('|')
 
   useImperativeHandle(
