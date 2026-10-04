@@ -378,25 +378,134 @@ function makeSermonId() {
 }
 
 async function writeLegacySermonBlocks(record: SermonRecord) {
-  await db.sermonBlocks.bulkPut(makeLegacySermonBlocks(record))
+  const blocks: SermonBlockRecord[] = []
+
+  for (const section of SERMON_SECTIONS) {
+    const id = makeLegacySermonBlockId(record.id, section)
+    const existing = await db.sermonBlocks.get(id)
+    blocks.push({
+      id,
+      sermonId: record.id,
+      section,
+      order: 0,
+      type: 'paragraph',
+      text: record[section],
+      marks: [],
+      indent: 0,
+      revision: (existing?.revision ?? 0) + 1,
+      createdAt: existing?.createdAt ?? record.createdAt,
+      updatedAt: record.updatedAt,
+    })
+  }
+
+  await db.sermonBlocks.bulkPut(blocks)
 }
 
-export async function getSermons(status?: SermonStatus) {
-  const records = await db.sermons.orderBy('updatedAt').reverse().toArray()
-  return status ? records.filter((record) => record.status === status) : records
-}
-
-export async function getSermon(id: string) {
-  return db.sermons.get(id)
-}
-
-export async function getSermonBlocks(id: string) {
+async function loadSermonBlocks(id: string) {
   const records = await db.sermonBlocks.where('sermonId').equals(id).toArray()
   return records.sort((a, b) => {
     const sectionDifference =
       SERMON_SECTIONS.indexOf(a.section) - SERMON_SECTIONS.indexOf(b.section)
     return sectionDifference || a.order - b.order
   })
+}
+
+function composeSermonSection(
+  blocks: SermonBlockRecord[],
+  section: SermonSection,
+  fallback: string,
+) {
+  const sectionBlocks = blocks.filter((block) => block.section === section)
+  return sectionBlocks.length > 0
+    ? sectionBlocks.map((block) => block.text).join('\n')
+    : fallback
+}
+
+async function hydrateSermon(record: SermonRecord) {
+  const blocks = await loadSermonBlocks(record.id)
+  if (blocks.length === 0) return record
+
+  const blockUpdatedAt = blocks.reduce(
+    (latest, block) => Math.max(latest, block.updatedAt),
+    record.updatedAt,
+  )
+
+  return {
+    ...record,
+    introduction: composeSermonSection(
+      blocks,
+      'introduction',
+      record.introduction,
+    ),
+    outline: composeSermonSection(blocks, 'outline', record.outline),
+    conclusion: composeSermonSection(
+      blocks,
+      'conclusion',
+      record.conclusion,
+    ),
+    updatedAt: blockUpdatedAt,
+  }
+}
+
+export async function getSermons(status?: SermonStatus) {
+  const storedRecords = await db.sermons.toArray()
+  const records = await Promise.all(storedRecords.map(hydrateSermon))
+  const filtered = status
+    ? records.filter((record) => record.status === status)
+    : records
+
+  return filtered.sort((a, b) => b.updatedAt - a.updatedAt)
+}
+
+export async function getSermon(id: string) {
+  const record = await db.sermons.get(id)
+  return record ? hydrateSermon(record) : undefined
+}
+
+export async function getSermonBlocks(id: string) {
+  return loadSermonBlocks(id)
+}
+
+export async function saveSermonSectionDraft(
+  id: string,
+  section: SermonSection,
+  text: string,
+) {
+  const sermon = await db.sermons.get(id)
+  if (!sermon) return undefined
+
+  const blockId = makeLegacySermonBlockId(id, section)
+  const existing = await db.sermonBlocks.get(blockId)
+  const now = Date.now()
+  const block: SermonBlockRecord = {
+    id: blockId,
+    sermonId: id,
+    section,
+    order: 0,
+    type: 'paragraph',
+    text,
+    marks: existing?.marks ?? [],
+    indent: existing?.indent ?? 0,
+    checked: existing?.checked,
+    headingLevel: existing?.headingLevel,
+    revision: (existing?.revision ?? 0) + 1,
+    createdAt: existing?.createdAt ?? sermon.createdAt,
+    updatedAt: now,
+  }
+
+  await db.sermonBlocks.put(block)
+  return block
+}
+
+export async function saveSermonTitle(id: string, title: string) {
+  const normalizedTitle = title.trim() || 'Sin título'
+  const updatedAt = Date.now()
+  const updated = await db.sermons.update(id, {
+    title: normalizedTitle,
+    updatedAt,
+  })
+
+  return updated ? { title: normalizedTitle, updatedAt } : undefined
 }
 
 export async function createSermon() {
@@ -450,7 +559,7 @@ export async function saveSermon(
 }
 
 export async function duplicateSermon(id: string) {
-  const existing = await db.sermons.get(id)
+  const existing = await getSermon(id)
   if (!existing) return undefined
 
   const now = Date.now()
