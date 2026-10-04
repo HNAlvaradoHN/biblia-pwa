@@ -15,6 +15,17 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-03 — Autosave incremental de Prédicas 0.1.26
+
+- El editor deja de reescribir el contenido completo de la prédica en cada autosave por texto.
+- Cada cambio en Introducción, Bosquejo o Conclusión se persiste únicamente en el bloque correspondiente después del debounce local.
+- El título se persiste como metadato independiente cuando cambia.
+- `getSermon()` y `getSermons()` hidratan el contenido desde `sermonBlocks`, por lo que una recarga recupera el último autosave incremental aunque los campos legados no hayan sido consolidados todavía.
+- La fecha efectiva de actualización considera también los timestamps de los bloques.
+- Se conserva una consolidación completa de compatibilidad en acciones seguras como `Guardar`, `Predicar` y abrir una referencia en Biblia.
+- Se añadió control de versión de edición para evitar que un autosave anterior marque como guardados cambios más nuevos todavía pendientes.
+- Build visible actualizado a `0.1.26`.
+
 ## 2026-10-03 — Modelo de bloques de Prédicas 0.1.25
 
 - Añadida tabla IndexedDB `sermonBlocks` como base del editor estructurado D-053.
