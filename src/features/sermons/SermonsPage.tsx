@@ -1844,7 +1844,7 @@ export function SermonEditorPage() {
       : undefined
   }
 
-  function handleDocumentInput(_event: ReactFormEvent<HTMLDivElement>) {
+  function handleDocumentInput() {
     syncDocumentInput()
   }
 
