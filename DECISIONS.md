@@ -727,3 +727,54 @@ Reglas:
 - `Bosquejo y puntos` ofrece acciones rápidas iniciales para numeración, viñetas, aumentar sangría y reducir sangría;
 - las acciones trabajan sobre línea/selección y mantienen el contenido persistido como texto plano;
 - no se introduce HTML persistido ni un editor enriquecido completo en esta etapa.
+
+
+## D-053 — Editor estructurado de prédicas y persistencia incremental
+Estado: APROBADA
+
+El editor de Prédicas deja de evolucionar como un campo de texto plano con botones aislados y pasa a planificarse como un editor estructurado de notas/artículos, inspirado en patrones de uso de Telegram, Joplin y aplicaciones de notas similares.
+
+Esta decisión sustituye únicamente la parte de herramientas rápidas de `Bosquejo y puntos` definida en D-052. La regla de retorno semántico a Modo Predicación de D-052 sigue vigente.
+
+Objetivo de experiencia:
+
+- formato rápido de texto: negrita, cursiva, subrayado y tachado;
+- jerarquía de texto: párrafo, título/subtítulo;
+- estructura: lista numerada, lista con viñetas y lista de tareas;
+- bloques útiles: cita;
+- enlace;
+- aumentar/reducir sangría cuando aplique a listas;
+- deshacer/rehacer;
+- limpiar formato;
+- controles compactos y agrupados, sin una fila sobredimensionada de botones permanentes;
+- en móvil, priorizar acciones frecuentes y mover acciones secundarias a un menú `Más` o superficie equivalente.
+
+Arquitectura de contenido:
+
+- no persistir HTML como fuente canónica del documento;
+- separar metadatos de la prédica del contenido editable;
+- representar el contenido mediante bloques estructurados con identificadores estables;
+- cada bloque debe declarar su sección (`introduction`, `outline`, `conclusion`), orden, tipo y contenido;
+- el formato inline debe representarse como datos estructurados/marks, no como HTML arbitrario;
+- las referencias bíblicas siguen siendo datos derivados del contenido y deben conservar capacidad de detección, vista rápida y retorno exacto;
+- las prédicas existentes deben migrarse sin pérdida desde los campos de texto actuales.
+
+Persistencia y sincronización futura:
+
+- el autosave local debe actualizar únicamente los bloques realmente modificados, no reescribir la prédica completa por cada cambio de texto;
+- escribir caracteres modifica estado local inmediato; la persistencia se agrupa con debounce y afecta solo al bloque activo/cambiado;
+- cambios de estructura (crear, eliminar, mover o cambiar tipo de bloque) se guardan de forma transaccional;
+- el modelo debe quedar preparado para sincronización futura por bloques/versiones, evitando depender de subir un documento completo por cada edición;
+- mientras no exista sincronización remota, todo sigue guardándose únicamente en IndexedDB del dispositivo;
+- no introducir colaboración en tiempo real, CRDT o dependencias pesadas sin una necesidad concreta posterior.
+
+Plan de implementación obligatorio:
+
+1. definir/migrar el modelo de bloques y mantener compatibilidad con prédicas existentes;
+2. implementar persistencia incremental local y pruebas de migración;
+3. sustituir el editor actual por el editor estructurado;
+4. implementar la barra compacta de formato y sus acciones;
+5. adaptar detección de referencias bíblicas y Modo Predicación al nuevo documento;
+6. validar autosave, edición, referencias, retorno exacto, duplicar, archivar, eliminar y modo offline antes de cerrar la migración.
+
+No se considerará terminada esta migración mediante una colección parcial de botones sobre el editor de texto plano actual.
