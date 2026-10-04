@@ -143,7 +143,20 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Publicar y validar físicamente `0.1.24`: el retorno exacto hacia Modo Predicación y las herramientas rápidas de `Bosquejo y puntos` ya están fusionados en `main`, pero GitHub Pages todavía sirve `v0.1.23`.
+Rediseñar el editor de Prédicas sobre un modelo estructurado e incremental antes de seguir acumulando controles sobre el campo de texto actual.
+
+El usuario rechazó explícitamente la fila de cuatro ajustes rápidos introducida en `0.1.24` como solución insuficiente. La nueva dirección aprobada es un editor de notas/artículos con formato real y controles compactos, inspirado en patrones de Telegram/Joplin/Easy Notes, junto con persistencia local por bloques para no reescribir el documento completo en cada autosave.
+
+Orden obligatorio de implementación:
+
+1. modelo y migración de bloques;
+2. persistencia incremental local;
+3. editor estructurado;
+4. barra compacta con negrita, cursiva, subrayado, tachado, títulos, listas, tareas, cita, enlace, sangría, deshacer/rehacer y limpiar formato;
+5. adaptación de referencias bíblicas y Modo Predicación;
+6. validación integral antes de abrir sincronización/multidispositivo.
+
+La parte de retorno exacto de `0.1.24` sigue vigente y debe preservarse durante la migración. La barra rápida actual será sustituida, no ampliada.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -192,13 +205,14 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI/PR/merge/publicación de `0.1.24`.
-2. Validar físicamente el flujo `Predicar → referencia → Leer capítulo → Volver a Predicación` y confirmar que regresa a la referencia exacta, centrada y marcada temporalmente.
-3. Validar numeración, viñetas, aumentar sangría y reducir sangría dentro de `Bosquejo y puntos`, tanto en una línea como sobre varias líneas seleccionadas.
-4. Validar `Eliminar` en una prédica de prueba y comprobar persistencia del borrado tras recargar.
-5. Con esas validaciones, continuar el refinamiento de Modo Predicación sin acumular fallos de navegación/editor.
+1. Diseñar e implementar una nueva tabla/modelo de bloques de prédica con identificadores estables y migración desde `introduction`, `outline` y `conclusion`.
+2. Cambiar autosave para persistir únicamente bloques modificados mediante debounce local, manteniendo transacciones para operaciones estructurales.
+3. Sustituir la barra de cuatro botones de `0.1.24` por el editor estructurado y su barra de formato compacta.
+4. Adaptar referencias bíblicas, vista rápida y Modo Predicación al documento estructurado.
+5. Validar que las prédicas existentes no pierdan contenido y que crear/editar/duplicar/archivar/eliminar/offline sigan funcionando.
+6. Solo después de cerrar esta migración continuar con sincronización/multidispositivo.
 
-Estado de despliegue actual: `0.1.24` fue fusionada a `main` mediante PR #48 y su CI pasó TypeScript, ESLint, build PWA y auditoría. GitHub Pages todavía sirve `v0.1.23`, por lo que `0.1.24` permanece PENDIENTE DE PUBLICACIÓN y no debe presentarse todavía como lista para probar.
+Estado de despliegue actual: producción sirve `v0.1.24`. Esa versión conserva el retorno semántico mejorado, pero su barra rápida de `Bosquejo y puntos` queda marcada como solución transitoria a reemplazar por D-053.
 
 ## Después de este objetivo
 
