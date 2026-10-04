@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.33**.
+- Producción confirmada: **v0.1.33**. `0.1.34` corrige prioridad y deselección de herramientas.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -140,14 +140,16 @@ PUBLICADO en `0.1.29`, con división editorial de secciones en implementación c
 ### Paso 4 — barra compacta de formato
 PUBLICADO en `0.1.33`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
-- barra visible compacta: Aa, B, I, U, S, listas e inserción;
-- Aa: Texto, H1, H2, Cita y sangría;
-- listas: ninguna, viñetas, numeración y checklist;
+- `0.1.34`: orden visible `Aa → Texto → B → I → U → S → Listas → +`;
+- `Texto` es acceso directo para párrafo normal;
+- `Aa`: H1, H2, Cita y sangría;
+- listas: viñetas, numeración y checklist;
 - Imagen fue movida al menú `+`;
 - marks inline persistentes para negrita/cursiva/subrayado/tachado;
 - división/unión y edición de texto preservan formato;
 - `0.1.33`: B/I/U/S pueden quedar activos para escritura futura y muestran estado visual activo;
 - `0.1.33`: Imagen pasa a llamarse Galería dentro de `+`; la PWA restringe a imágenes pero no puede imponer una app nativa específica;
+- `0.1.34`: H1/H2/Cita/listas/checklist muestran estado activo y se desactivan tocándolos de nuevo, volviendo a `Texto`;
 - quedan para el siguiente subhito de la misma barra: Enlace, color/resaltado y deshacer/rehacer.
 
 ### Paso 4.1 — pantalla de edición dedicada
@@ -162,7 +164,7 @@ PUBLICADO en `0.1.32`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.33`: activar B/I/U/S sin selección, escribir, comprobar estado activo, desactivar y continuar en texto normal; además confirmar que `+` muestra Galería. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
+Completar CI/merge/publicación de `0.1.34` y validar: `Texto` como segundo acceso directo; B/I/U/S con encendido/apagado; H1/H2/Cita/listas/checklist con segundo toque para regresar a `Texto`. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
