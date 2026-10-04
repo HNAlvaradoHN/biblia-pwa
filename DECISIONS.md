@@ -406,3 +406,22 @@ Reglas:
 - elegir cualquiera de estas herramientas cierra el panel lateral, según D-057.
 
 Después de este hito, el siguiente trabajo es adaptar Modo Predicación al documento enriquecido completo y ejecutar validación integral.
+
+
+## D-059 — Selección de documento continuo
+Estado: APROBADA
+
+La hoja de Prédicas debe comportarse como un documento editable continuo también para selección nativa. Los párrafos/bloques internos ya no pueden actuar como hosts `contenteditable` independientes.
+
+Reglas:
+
+- Introducción, Bosquejo y Conclusión comparten un único host `contenteditable` para el cuerpo de la prédica;
+- los bloques internos siguen existiendo para persistencia/autosave, pero heredan edición del host común y no crean límites nativos de selección;
+- `Seleccionar todo` debe poder abarcar varios párrafos y secciones del cuerpo;
+- encabezados editoriales de sección, imágenes, prefijos de lista y controles de checklist no son contenido editable y no deben borrarse accidentalmente;
+- borrar una selección que cruza bloques se procesa de forma estructurada, actualizando texto/marks y compactando únicamente bloques seleccionados contiguos;
+- no se unen bloques a través de imágenes ni entre secciones;
+- Android/móvil debe usar también `beforeinput` para borrar selecciones estructuradas, porque el teclado virtual no garantiza eventos `keydown`;
+- Enter sigue dividiendo el bloque activo y Backspace al inicio sigue uniendo con el bloque anterior cuando corresponde;
+- pegar texto sigue siendo texto plano y respeta una selección que atraviese más de un bloque;
+- la corrección no cambia la apariencia, la pestaña lateral, el modelo de datos ni el autosave.
