@@ -953,8 +953,28 @@ export function SermonEditorPage() {
 
   function getActiveTextBlock() {
     if (!activePoint.blockId) return undefined
-    const block = blocks.find((item) => item.id === activePoint.blockId)
+    const block = blocksRef.current.find(
+      (item) => item.id === activePoint.blockId,
+    )
     return block?.type === 'image' ? undefined : block
+  }
+
+  function getActiveSelection(block: SermonBlockRecord) {
+    const start = Math.max(
+      0,
+      Math.min(
+        activePoint.selectionStart ?? activePoint.offset ?? 0,
+        block.text.length,
+      ),
+    )
+    const end = Math.max(
+      start,
+      Math.min(
+        activePoint.selectionEnd ?? activePoint.offset ?? start,
+        block.text.length,
+      ),
+    )
+    return { start, end }
   }
 
   async function applyBlockFormatting(
@@ -966,12 +986,19 @@ export function SermonEditorPage() {
       >
     >,
   ) {
+    const beforeBlock = blocksRef.current.find((item) => item.id === blockId)
+    if (!beforeBlock) return
+
     const saved = await saveSermonBlockFormatting(blockId, changes)
     if (!saved) return
 
-    setBlocks((current) =>
-      current.map((block) => (block.id === blockId ? saved : block)),
+    recordHistory(
+      blockId,
+      editableBlockState(beforeBlock),
+      editableBlockState(saved),
+      'format',
     )
+    replaceBlockLocal(saved)
     setSavedAt(saved.updatedAt)
   }
 
