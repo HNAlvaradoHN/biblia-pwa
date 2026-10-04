@@ -109,6 +109,7 @@ export function detectSermonBlockReferences(
     section: SermonFieldName
     order: number
     text: string
+    type?: string
   }>,
 ) {
   const references: SermonBibleReference[] = []
@@ -120,6 +121,8 @@ export function detectSermonBlockReferences(
     let fieldOffset = 0
 
     for (const block of sectionBlocks) {
+      if (block.type === 'image') continue
+
       const blockReferences = detectBibleReferences(field, block.text).map(
         (reference): SermonBibleReference => ({
           ...reference,
