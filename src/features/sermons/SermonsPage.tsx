@@ -295,6 +295,7 @@ export function SermonEditorPage() {
     return blocks
       .filter((block) => block.section === section)
       .sort((a, b) => a.order - b.order)
+      .filter((block) => block.type !== 'image')
       .map((block) => block.text)
       .join('\n')
   }
@@ -502,6 +503,8 @@ export function SermonEditorPage() {
     if (index <= 0) return
 
     const previous = sectionBlocks[index - 1]
+    if (previous.type === 'image') return
+
     if (dirtyBlockIdsRef.current.has(previous.id)) {
       await saveSermonBlockDraft(previous.id, previous.text)
     }
@@ -520,24 +523,33 @@ export function SermonEditorPage() {
     setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
   }
 
-  async function handleImageSelected(file?: File) {
-    if (!file) return
-    if (!file.type.startsWith('image/')) return
+  async function handleImageSelected(files?: FileList | null) {
+    if (!files || files.length === 0) return
 
-    const inserted = await insertSermonImageBlock(
-      sermonId,
-      activePoint.section,
-      file,
-      activePoint.blockId,
-    )
-    if (!inserted) return
+    let afterBlockId = activePoint.blockId
+    let latestUpdatedAt = 0
 
-    setActivePoint({
-      section: inserted.section,
-      blockId: inserted.id,
-    })
+    for (const file of Array.from(files)) {
+      if (!file.type.startsWith('image/')) continue
+      const inserted = await insertSermonImageBlock(
+        sermonId,
+        activePoint.section,
+        file,
+        afterBlockId,
+      )
+      if (!inserted) continue
+      afterBlockId = inserted.id
+      latestUpdatedAt = Math.max(latestUpdatedAt, inserted.updatedAt)
+    }
+
+    if (afterBlockId) {
+      setActivePoint({
+        section: activePoint.section,
+        blockId: afterBlockId,
+      })
+    }
     await reloadBlocks()
-    setSavedAt(inserted.updatedAt)
+    if (latestUpdatedAt > 0) setSavedAt(latestUpdatedAt)
     if (imageInputRef.current) imageInputRef.current.value = ''
   }
 
@@ -730,8 +742,9 @@ export function SermonEditorPage() {
             className="sermon-image-input"
             type="file"
             accept="image/*"
+            multiple
             onChange={(event) =>
-              void handleImageSelected(event.target.files?.[0])
+              void handleImageSelected(event.target.files)
             }
           />
           <span className="sermon-compose-hint">
