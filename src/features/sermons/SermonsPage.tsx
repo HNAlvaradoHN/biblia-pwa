@@ -1102,6 +1102,195 @@ export function SermonEditorPage() {
     pendingFocusRef.current = { blockId: block.id, offset: end }
   }
 
+  function activeColorFor(
+    type: 'textColor' | 'highlight',
+  ): SermonInlineColor | undefined {
+    const block = getActiveTextBlock()
+    if (!block) {
+      return type === 'textColor'
+        ? typingTextColor ?? undefined
+        : typingHighlight ?? undefined
+    }
+
+    const { start, end } = getActiveSelection(block)
+    const typingValue =
+      type === 'textColor' ? typingTextColor : typingHighlight
+
+    if (end === start && typingValue !== undefined) {
+      return typingValue ?? undefined
+    }
+
+    return block.marks.find(
+      (mark) =>
+        mark.type === type &&
+        mark.start <= start &&
+        mark.end >= (end > start ? end : start),
+    )?.color
+  }
+
+  async function applyColorMark(
+    type: 'textColor' | 'highlight',
+    color: SermonInlineColor | null,
+  ) {
+    const block = getActiveTextBlock()
+    if (!block) return
+    const { start, end } = getActiveSelection(block)
+
+    if (type === 'textColor') {
+      setTypingTextColor(color)
+    } else {
+      setTypingHighlight(color)
+    }
+
+    if (end <= start) {
+      pendingFocusRef.current = { blockId: block.id, offset: start }
+      return
+    }
+
+    let nextMarks = block.marks.flatMap((mark) =>
+      mark.type === type ? subtractMark(mark, start, end) : [mark],
+    )
+    if (color) {
+      nextMarks = [
+        ...nextMarks,
+        {
+          type,
+          color,
+          start,
+          end,
+        },
+      ]
+    }
+
+    await applyBlockFormatting(block.id, {
+      marks: normalizeMarks(nextMarks),
+    })
+    pendingFocusRef.current = { blockId: block.id, offset: end }
+  }
+
+  function activeLinkHref() {
+    const block = getActiveTextBlock()
+    if (!block) return typingLinkHref ?? undefined
+
+    const { start, end } = getActiveSelection(block)
+    if (end === start && typingLinkHref !== undefined) {
+      return typingLinkHref ?? undefined
+    }
+
+    return block.marks.find(
+      (mark) =>
+        mark.type === 'link' &&
+        mark.start <= start &&
+        mark.end >= (end > start ? end : start),
+    )?.href
+  }
+
+  function normalizeLinkHref(value: string) {
+    const trimmed = value.trim()
+    if (!trimmed) return undefined
+    if (/^(https?:\/\/|mailto:|tel:)/i.test(trimmed)) return trimmed
+    return `https://${trimmed}`
+  }
+
+  async function toggleLinkMark() {
+    const block = getActiveTextBlock()
+    if (!block) return
+    const { start, end } = getActiveSelection(block)
+    const currentHref = activeLinkHref()
+
+    if (currentHref) {
+      setTypingLinkHref(null)
+      if (end > start) {
+        const nextMarks = block.marks.flatMap((mark) =>
+          mark.type === 'link' ? subtractMark(mark, start, end) : [mark],
+        )
+        await applyBlockFormatting(block.id, {
+          marks: normalizeMarks(nextMarks),
+        })
+      }
+      pendingFocusRef.current = {
+        blockId: block.id,
+        offset: end > start ? end : start,
+      }
+      return
+    }
+
+    const rawHref = window.prompt('Enlace', 'https://')
+    if (rawHref === null) return
+    const href = normalizeLinkHref(rawHref)
+    if (!href) return
+
+    setTypingLinkHref(href)
+
+    if (end > start) {
+      const withoutLinks = block.marks.flatMap((mark) =>
+        mark.type === 'link' ? subtractMark(mark, start, end) : [mark],
+      )
+      await applyBlockFormatting(block.id, {
+        marks: normalizeMarks([
+          ...withoutLinks,
+          { type: 'link', href, start, end },
+        ]),
+      })
+    }
+
+    pendingFocusRef.current = {
+      blockId: block.id,
+      offset: end > start ? end : start,
+    }
+  }
+
+  async function restoreHistoryEntry(
+    entry: SermonHistoryEntry,
+    state: SermonBlockEditableState,
+  ) {
+    const saved = await saveSermonBlockState(entry.blockId, state)
+    if (!saved) return false
+
+    replaceBlockLocal(saved)
+    dirtyBlockIdsRef.current.delete(entry.blockId)
+    setSavedAt(saved.updatedAt)
+    setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
+
+    const currentOffset =
+      activePoint.blockId === entry.blockId
+        ? activePoint.offset ?? state.text.length
+        : state.text.length
+    pendingFocusRef.current = {
+      blockId: entry.blockId,
+      offset: Math.min(currentOffset, state.text.length),
+    }
+    return true
+  }
+
+  async function undoHistory() {
+    const entry = undoStackRef.current.pop()
+    if (!entry) return
+
+    const restored = await restoreHistoryEntry(entry, entry.before)
+    if (!restored) {
+      undoStackRef.current.push(entry)
+      return
+    }
+
+    redoStackRef.current.push(entry)
+    setHistoryVersion((version) => version + 1)
+  }
+
+  async function redoHistory() {
+    const entry = redoStackRef.current.pop()
+    if (!entry) return
+
+    const restored = await restoreHistoryEntry(entry, entry.after)
+    if (!restored) {
+      redoStackRef.current.push(entry)
+      return
+    }
+
+    undoStackRef.current.push(entry)
+    setHistoryVersion((version) => version + 1)
+  }
+
   function isActiveBlockType(
     type: SermonBlockType,
     headingLevel?: 1 | 2,
