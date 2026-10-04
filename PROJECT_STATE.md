@@ -110,7 +110,7 @@ IMPLEMENTADO Y PUBLICADO en `0.1.25`.
 - compatibilidad temporal con el modelo legado.
 
 ### Paso 2 — persistencia incremental
-IMPLEMENTADO_PENDIENTE_VALIDACIÓN en `main`.
+VALIDADO FÍSICAMENTE en `0.1.26`.
 
 - PR #53 fusionado;
 - TypeScript, ESLint, build PWA y auditoría pasaron en verde;
@@ -119,11 +119,16 @@ IMPLEMENTADO_PENDIENTE_VALIDACIÓN en `main`.
 - la lectura de prédicas se hidrata desde bloques;
 - acciones explícitas de seguridad siguen consolidando el snapshot legado durante la transición;
 - una versión de edición evita carreras entre autosaves viejos y cambios nuevos;
-- GitHub Pages sirve `v0.1.26`, verificado por el identificador visible de la aplicación; falta únicamente validación física del autosave incremental tras recargar.
+- GitHub Pages sirve `v0.1.26` y el usuario confirmó físicamente que un cambio autosalvado reaparece después de recargar sin presionar `Guardar`.
+
+### Paso 3 — editor estructurado
+ACTIVO en la rama `feat/structured-sermon-editor-0127`.
+
+Criterio obligatorio de continuidad: al abrir una referencia bíblica desde una prédica y volver desde Biblia, el retorno debe identificar `sermonId + blockId + posición/referencia dentro del bloque + modo de origen`. Debe restaurarse después de renderizar el bloque; el scroll por píxeles queda únicamente como fallback. Aplica tanto al editor como a Modo Predicación.
 
 ## Siguiente paso inmediato
 
-Verificar en dispositivo que un cambio autosalvado en Introducción, Bosquejo o Conclusión reaparece después de recargar la prédica. Si pasa esa prueba, avanzar al **paso 3 de D-053: sustituir el editor de texto plano por el editor estructurado**.
+Sustituir el editor de texto plano por el editor estructurado sobre `sermonBlocks`, preservando el autosave incremental ya validado. Después implementar la barra compacta de formato y adaptar referencias/Modo Predicación al identificador estable de bloque.
 
 ## Después de D-053
 
