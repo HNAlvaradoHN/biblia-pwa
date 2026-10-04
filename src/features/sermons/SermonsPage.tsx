@@ -1765,6 +1765,28 @@ export function SermonEditorPage() {
               aria-label="Herramientas de edición"
             >
               <div className="sermon-side-tool-group">
+                <span>Historial</span>
+                <div>
+                  <button
+                    type="button"
+                    disabled={!canUndo}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() => runToolAction(undoHistory)}
+                  >
+                    ↶ Deshacer
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!canRedo}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() => runToolAction(redoHistory)}
+                  >
+                    ↷ Rehacer
+                  </button>
+                </div>
+              </div>
+
+              <div className="sermon-side-tool-group">
                 <span>Texto</span>
                 <div>
                   <button
@@ -1861,6 +1883,93 @@ export function SermonEditorPage() {
                   >
                     <s>S</s>
                   </button>
+                  <button
+                    type="button"
+                    className={activeLinkHref() ? 'active' : ''}
+                    aria-pressed={Boolean(activeLinkHref())}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() => runToolAction(toggleLinkMark)}
+                  >
+                    Enlace
+                  </button>
+                </div>
+              </div>
+
+              <div className="sermon-side-tool-group">
+                <span>Color de texto</span>
+                <div className="sermon-color-options">
+                  <button
+                    type="button"
+                    className={!activeColorFor('textColor') ? 'active' : ''}
+                    aria-pressed={!activeColorFor('textColor')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => applyColorMark('textColor', null))
+                    }
+                  >
+                    Normal
+                  </button>
+                  {SERMON_TEXT_COLORS.map((color) => (
+                    <button
+                      type="button"
+                      className={
+                        activeColorFor('textColor') === color ? 'active' : ''
+                      }
+                      aria-label={`Color de texto ${color}`}
+                      aria-pressed={activeColorFor('textColor') === color}
+                      key={`text-${color}`}
+                      onPointerDown={(event) => event.preventDefault()}
+                      onClick={() =>
+                        runToolAction(() =>
+                          applyColorMark('textColor', color),
+                        )
+                      }
+                    >
+                      <span
+                        className={`sermon-color-swatch sermon-color-swatch-${color}`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sermon-side-tool-group">
+                <span>Resaltado</span>
+                <div className="sermon-color-options">
+                  <button
+                    type="button"
+                    className={!activeColorFor('highlight') ? 'active' : ''}
+                    aria-pressed={!activeColorFor('highlight')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => applyColorMark('highlight', null))
+                    }
+                  >
+                    Sin
+                  </button>
+                  {SERMON_HIGHLIGHT_COLORS.map((color) => (
+                    <button
+                      type="button"
+                      className={
+                        activeColorFor('highlight') === color ? 'active' : ''
+                      }
+                      aria-label={`Resaltado ${color}`}
+                      aria-pressed={activeColorFor('highlight') === color}
+                      key={`highlight-${color}`}
+                      onPointerDown={(event) => event.preventDefault()}
+                      onClick={() =>
+                        runToolAction(() =>
+                          applyColorMark('highlight', color),
+                        )
+                      }
+                    >
+                      <span
+                        className={`sermon-highlight-swatch sermon-highlight-swatch-${color}`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  ))}
                 </div>
               </div>
 
