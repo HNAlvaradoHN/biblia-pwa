@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
   createSermon,
+  deleteSermon,
   duplicateSermon,
   getSermon,
   getSermons,
@@ -71,6 +72,17 @@ export function SermonsPage() {
 
   async function handleArchive(id: string, archived: boolean) {
     await setSermonArchived(id, archived)
+    await refresh()
+  }
+
+  async function handleDelete(sermon: SermonRecord) {
+    const confirmed = window.confirm(
+      `¿Eliminar definitivamente “${sermon.title}”? Esta acción no se puede deshacer.`,
+    )
+    if (!confirmed) return
+
+    const deleted = await deleteSermon(sermon.id)
+    if (!deleted) return
     await refresh()
   }
 
@@ -169,6 +181,13 @@ export function SermonsPage() {
                   onClick={() => void handleArchive(sermon.id, sermon.status === 'active')}
                 >
                   {sermon.status === 'active' ? 'Archivar' : 'Restaurar'}
+                </button>
+                <button
+                  className="button sermon-delete"
+                  type="button"
+                  onClick={() => void handleDelete(sermon)}
+                >
+                  Eliminar
                 </button>
               </div>
             </article>
