@@ -10,11 +10,11 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
 
 Visibilidad actual: pública desde el 2026-09-16 por autorización explícita del usuario.
 
-La versión `0.1.21` está integrada en `main`, pasó CI y se publicó correctamente mediante GitHub Pages. La validación automatizada confirmó build, navegación y publicación; queda pendiente la validación física del usuario en su dispositivo para el toque normal de referencias inline, la vista rápida centrada y la primera base de Modo Predicación.
+La versión `0.1.21` está integrada en `main`, pasó CI y se publicó correctamente mediante GitHub Pages. La prueba física del usuario detectó un defecto real: al abrir una referencia, la vista rápida no bloquea el scroll del contenido de fondo. También se confirmó como refinamiento deseado que, desde Modo Predicación, la referencia permita `Leer capítulo` y regresar al mismo punto del modo.
 
 El 2026-10-02 se incorporó el paquete maestro general v4. El 2026-10-03 el dueño aclaró que nunca autorizó eliminar la identidad secuencial. La gobernanza queda corregida: todo chat nuevo inicia en `LOCKED_READ_ONLY`, completa lectura/sincronización, reserva y verifica `Ing. Bibia 📖 #N`, emite `LOCKED_READ_ONLY_REPORT` y solo modifica producto con una tarea autorizada. `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` siguen vigentes.
 
-El objetivo funcional activo es validar físicamente `0.1.21` desde GitHub Pages. Después de esa validación, el siguiente objetivo oficial es refinar Modo Predicación y continuar el roadmap de Prédicas, manteniendo las referencias inteligentes y el regreso exacto como base.
+El objetivo funcional activo es completar `0.1.22`: corregir el scroll de fondo de la vista rápida, permitir `Cerrar` + `Leer capítulo` dentro de Modo Predicación, regresar al mismo punto después de leer y avanzar con el refinamiento oficial de mantener la pantalla activa cuando la plataforma lo permita.
 
 ## Completado
 
@@ -137,13 +137,13 @@ Pendiente específico:
 ## Estado de gobernanza
 
 - Identidad secuencial obligatoria restaurada e integrada con v4.
-- Último contador válido: `CURRENT_SESSION: 2`, `NEXT_SESSION: 3`.
-- Este chat de reparación no recibe identidad retroactiva; el próximo chat nuevo debe reservar `#3`.
+- Contador vigente: `CURRENT_SESSION: 3`, `NEXT_SESSION: 4`.
+- El chat actual trabaja oficialmente como `Ing. Bibia 📖 #3`.
 - La memoria oficial debe actualizarse durante el trabajo después de hitos significativos, manteniendo el orden real de implementación, validación y documentación.
 
 ## Objetivo activo
 
-Validar físicamente `0.1.21`: toque normal sobre referencias inline, vista rápida centrada con controles discretos y primera base de Modo Predicación.
+Completar `0.1.22`: corregir el bloqueo modal de referencias y la continuidad Biblia ↔ Modo Predicación, manteniendo el refinamiento de pantalla activa como siguiente paso aprobado dentro del mismo objetivo.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -192,18 +192,18 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Validar físicamente `0.1.21` desde GitHub Pages.
-2. Confirmar que un toque normal sobre una referencia abre la vista rápida sin mantener presionado.
-3. Confirmar que la vista rápida aparece centrada y que `Seguir escribiendo` / `Leer capítulo` son discretos.
-4. Probar `Predicar`: vista de solo lectura, sin navegación principal, referencias consultables y `Volver a editar`.
-5. Con esa validación, cerrar D-047/D-048 y continuar refinando Modo Predicación.
+1. Completar CI/PR/merge/publicación de `0.1.22`.
+2. Validar físicamente que la vista rápida bloquee completamente el scroll del contenido de fondo.
+3. En Modo Predicación, confirmar `Cerrar` + `Leer capítulo`.
+4. Confirmar que `Volver a Predicación` regrese a la misma prédica y posición vertical.
+5. Confirmar que Modo Predicación siga funcionando aunque Screen Wake Lock no esté disponible y que, cuando sí esté disponible, intente mantener la pantalla activa.
+6. Con esa validación, cerrar el defecto detectado en `0.1.21` y continuar el refinamiento de Modo Predicación.
 
-Estado de despliegue actual: `0.1.21` está fusionada a `main` en `18c47f12b6286ad2c2cb4a73687f1dac4fcca8a8`. El CI de `main` terminó en `success` y GitHub Pages completó correctamente TypeScript, ESLint, build PWA, auditoría, artefacto y publicación. El workflow de Pages publicó el artefacto construido desde este mismo commit, cuyo build visible está configurado como `0.1.21`. La validación automatizada de navegador no pudo ejecutarse por indisponibilidad del servicio externo de prueba, por lo que el comportamiento táctil y Modo Predicación quedan pendientes de validación física del usuario; no se consideran físicamente verificados todavía.
-
+Estado de despliegue actual: producción sigue en `0.1.21` sobre GitHub Pages. `0.1.22` está implementándose en la rama `fix/presentation-reference-flow-0122` y todavía no debe considerarse lista para probar hasta completar PR/CI, merge, CI de `main` y publicación.
 
 ## Después de este objetivo
 
-Después de estabilizar `0.1.21`, el siguiente objetivo oficial será refinar la experiencia de Modo Predicación según la validación física y continuar el roadmap de Prédicas.
+Después de estabilizar `0.1.22`, el siguiente objetivo oficial será continuar refinando Modo Predicación sobre la base ya validada de referencias rápidas, lectura enfocada, retorno exacto y pantalla activa cuando sea posible.
 
 ## Regla de actualización
 
