@@ -15,6 +15,17 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-03 — Hoja de notas e imágenes en el cursor 0.1.29
+
+- El editor deja de mostrar bordes/cajas alrededor del contenido de cada sección y se presenta como una hoja de notas más limpia y continua.
+- Las imágenes ahora se insertan en el punto actual del cursor cuando se está escribiendo dentro de un párrafo.
+- Insertar una imagen divide internamente el párrafo sin exponer esa estructura: texto anterior arriba, imagen en medio y texto posterior abajo.
+- Siempre se conserva o crea un párrafo editable después de la imagen para seguir escribiendo inmediatamente.
+- El editor registra la posición actual del cursor para colocar adjuntos con mayor precisión.
+- Las imágenes se muestran con un tamaño máximo contenido para móvil, evitando que una sola imagen ocupe casi toda la pantalla.
+- La arquitectura interna por bloques sigue invisible y se conserva únicamente para autosave, retorno exacto y futura sincronización.
+- Build visible actualizado a `0.1.29`.
+
 ## 2026-10-03 — Documento continuo e imágenes 0.1.28
 
 - Corregida la interpretación visual del editor estructurado: los bloques permanecen como arquitectura interna pero dejan de mostrarse como cajitas, números o controles `+ Bloque`.

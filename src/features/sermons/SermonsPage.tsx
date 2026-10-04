@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
+  appendSermonBlock,
   createSermon,
   deleteSermon,
   duplicateSermon,
@@ -268,6 +269,7 @@ export function SermonEditorPage() {
   const [activePoint, setActivePoint] = useState<{
     section: SermonSection
     blockId?: string
+    offset?: number
   }>({ section: 'outline' })
   const pendingFocusRef = useRef<{ blockId: string; offset: number } | undefined>(undefined)
   const [sermon, setSermon] = useState<SermonRecord>()
@@ -525,8 +527,26 @@ export function SermonEditorPage() {
   async function handleImageSelected(files?: FileList | null) {
     if (!files || files.length === 0) return
 
-    let afterBlockId = activePoint.blockId
+    const activeBlock = activePoint.blockId
+      ? blocks.find((block) => block.id === activePoint.blockId)
+      : undefined
+    let insertAfterId = activeBlock?.id
+    let paragraphAfterImages: SermonBlockRecord | undefined
     let latestUpdatedAt = 0
+
+    if (activeBlock && activeBlock.type !== 'image') {
+      const offset = Math.max(
+        0,
+        Math.min(activePoint.offset ?? activeBlock.text.length, activeBlock.text.length),
+      )
+      const split = await splitSermonBlock(activeBlock.id, activeBlock.text, offset)
+      if (split) {
+        dirtyBlockIdsRef.current.delete(activeBlock.id)
+        paragraphAfterImages = split
+        insertAfterId = activeBlock.id
+        latestUpdatedAt = Math.max(latestUpdatedAt, split.updatedAt)
+      }
+    }
 
     for (const file of Array.from(files)) {
       if (!file.type.startsWith('image/')) continue
@@ -534,21 +554,57 @@ export function SermonEditorPage() {
         sermonId,
         activePoint.section,
         file,
-        afterBlockId,
+        insertAfterId,
       )
       if (!inserted) continue
-      afterBlockId = inserted.id
+      insertAfterId = inserted.id
       latestUpdatedAt = Math.max(latestUpdatedAt, inserted.updatedAt)
     }
 
-    if (afterBlockId) {
-      setActivePoint({
-        section: activePoint.section,
-        blockId: afterBlockId,
-      })
+    let nextBlocks = await reloadBlocks()
+
+    if (!paragraphAfterImages) {
+      const sectionBlocks = nextBlocks
+        .filter((block) => block.section === activePoint.section)
+        .sort((a, b) => a.order - b.order)
+      const imageIndex = insertAfterId
+        ? sectionBlocks.findIndex((block) => block.id === insertAfterId)
+        : -1
+      paragraphAfterImages =
+        imageIndex >= 0
+          ? sectionBlocks.slice(imageIndex + 1).find((block) => block.type !== 'image')
+          : undefined
+
+      if (!paragraphAfterImages) {
+        paragraphAfterImages = await appendSermonBlock(
+          sermonId,
+          activePoint.section,
+        )
+        if (paragraphAfterImages) {
+          latestUpdatedAt = Math.max(
+            latestUpdatedAt,
+            paragraphAfterImages.updatedAt,
+          )
+          nextBlocks = await reloadBlocks()
+        }
+      }
     }
-    await reloadBlocks()
+
+    if (paragraphAfterImages) {
+      pendingFocusRef.current = {
+        blockId: paragraphAfterImages.id,
+        offset: 0,
+      }
+      setActivePoint({
+        section: paragraphAfterImages.section,
+        blockId: paragraphAfterImages.id,
+        offset: 0,
+      })
+      setBlocks(nextBlocks)
+    }
+
     if (latestUpdatedAt > 0) setSavedAt(latestUpdatedAt)
+    setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
     if (imageInputRef.current) imageInputRef.current.value = ''
   }
 
@@ -610,7 +666,10 @@ export function SermonEditorPage() {
                 key={block.id}
                 block={block}
                 onActivate={() =>
-                  setActivePoint({ section: block.section, blockId: block.id })
+                  setActivePoint({
+                    section: block.section,
+                    blockId: block.id,
+                  })
                 }
                 onRemove={() => void handleRemoveImage(block)}
               />
@@ -633,9 +692,20 @@ export function SermonEditorPage() {
                   onChange={(value) => markBlockDirty(block.id, value)}
                   onReferenceOpen={setReferencePreview}
                   onFocus={() =>
+                    setActivePoint((current) => ({
+                      section: block.section,
+                      blockId: block.id,
+                      offset:
+                        current.blockId === block.id
+                          ? current.offset
+                          : block.text.length,
+                    }))
+                  }
+                  onCaretChange={(offset) =>
                     setActivePoint({
                       section: block.section,
                       blockId: block.id,
+                      offset,
                     })
                   }
                   onSplit={(offset) => void handleSplit(block, offset)}
@@ -747,18 +817,9 @@ export function SermonEditorPage() {
             }
           />
           <span className="sermon-compose-hint">
-            La imagen se inserta en la sección donde estás escribiendo.
+            Insertar imagen en el punto de escritura
           </span>
         </div>
-
-        <aside className="sermon-editor-note">
-          <strong>Documento continuo</strong>
-          <p>
-            Escribí como en una nota normal. La estructura por bloques queda
-            oculta y se usa únicamente para autosave, retorno exacto y futura
-            sincronización.
-          </p>
-        </aside>
       </form>
 
       {referencePreview ? (
