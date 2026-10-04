@@ -7,6 +7,8 @@ import {
   getSermon,
   getSermons,
   saveSermon,
+  saveSermonSectionDraft,
+  saveSermonTitle,
   setSermonArchived,
   type SermonRecord,
   type SermonStatus,
@@ -212,6 +214,8 @@ export function SermonEditorPage() {
   const [conclusion, setConclusion] = useState('')
   const [savedAt, setSavedAt] = useState<number>()
   const [dirty, setDirty] = useState(false)
+  const dirtyFieldsRef = useRef<Set<'title' | SermonFieldName>>(new Set())
+  const editVersionRef = useRef(0)
   const [referencePreview, setReferencePreview] = useState<SermonBibleReference>()
 
   const detectedReferences = useMemo(
@@ -289,26 +293,59 @@ export function SermonEditorPage() {
     if (!dirty || !sermon) return
 
     const timer = window.setTimeout(() => {
-      void saveSermon(sermonId, {
-        title,
-        introduction,
-        outline,
-        conclusion,
-        references: detectedReferences,
-      }).then((saved) => {
-        if (!saved) return
-        setSermon(saved)
-        setTitle(saved.title)
-        setSavedAt(saved.updatedAt)
+      const fields = [...dirtyFieldsRef.current]
+      const saveVersion = editVersionRef.current
+
+      void (async () => {
+        let latestSavedAt = 0
+
+        if (fields.includes('title')) {
+          const savedTitle = await saveSermonTitle(sermonId, title)
+          if (savedTitle) {
+            latestSavedAt = Math.max(latestSavedAt, savedTitle.updatedAt)
+            if (editVersionRef.current === saveVersion) {
+              setTitle(savedTitle.title)
+            }
+          }
+        }
+
+        const sectionValues: Record<SermonFieldName, string> = {
+          introduction,
+          outline,
+          conclusion,
+        }
+
+        for (const field of fields) {
+          if (field === 'title') continue
+          const savedBlock = await saveSermonSectionDraft(
+            sermonId,
+            field,
+            sectionValues[field],
+          )
+          if (savedBlock) {
+            latestSavedAt = Math.max(latestSavedAt, savedBlock.updatedAt)
+          }
+        }
+
+        if (editVersionRef.current !== saveVersion) return
+
+        dirtyFieldsRef.current.clear()
+        if (latestSavedAt > 0) setSavedAt(latestSavedAt)
         setDirty(false)
-      })
+      })()
     }, 900)
 
     return () => window.clearTimeout(timer)
-  }, [conclusion, detectedReferences, dirty, introduction, outline, sermon, sermonId, title])
+  }, [conclusion, dirty, introduction, outline, sermon, sermonId, title])
 
-  function markDirty(setter: (value: string) => void, value: string) {
+  function markDirty(
+    field: 'title' | SermonFieldName,
+    setter: (value: string) => void,
+    value: string,
+  ) {
     setter(value)
+    dirtyFieldsRef.current.add(field)
+    editVersionRef.current += 1
     setDirty(true)
   }
 
@@ -324,6 +361,8 @@ export function SermonEditorPage() {
     setSermon(saved)
     setTitle(saved.title)
     setSavedAt(saved.updatedAt)
+    dirtyFieldsRef.current.clear()
+    editVersionRef.current += 1
     setDirty(false)
     return saved
   }
@@ -397,7 +436,7 @@ export function SermonEditorPage() {
           <span>Título</span>
           <input
             value={title}
-            onChange={(event) => markDirty(setTitle, event.target.value)}
+            onChange={(event) => markDirty('title', setTitle, event.target.value)}
             placeholder="Título de la prédica"
           />
         </label>
@@ -408,7 +447,7 @@ export function SermonEditorPage() {
             ref={introductionRef}
             value={introduction}
             references={detectedReferences.filter((reference) => reference.field === 'introduction')}
-            onChange={(value) => markDirty(setIntroduction, value)}
+            onChange={(value) => markDirty('introduction', setIntroduction, value)}
             onReferenceOpen={setReferencePreview}
             placeholder="Idea de apertura, contexto o propósito..."
             ariaLabel="Introducción"
@@ -458,7 +497,7 @@ export function SermonEditorPage() {
             className="sermon-rich-editor-outline"
             value={outline}
             references={detectedReferences.filter((reference) => reference.field === 'outline')}
-            onChange={(value) => markDirty(setOutline, value)}
+            onChange={(value) => markDirty('outline', setOutline, value)}
             onReferenceOpen={setReferencePreview}
             placeholder={"1. Punto principal\n   - Subpunto\n   - Aplicación\n\n2. Siguiente punto..."}
             ariaLabel="Bosquejo y puntos"
@@ -471,7 +510,7 @@ export function SermonEditorPage() {
             ref={conclusionRef}
             value={conclusion}
             references={detectedReferences.filter((reference) => reference.field === 'conclusion')}
-            onChange={(value) => markDirty(setConclusion, value)}
+            onChange={(value) => markDirty('conclusion', setConclusion, value)}
             onReferenceOpen={setReferencePreview}
             placeholder="Cierre, llamado o idea final..."
             ariaLabel="Conclusión"
