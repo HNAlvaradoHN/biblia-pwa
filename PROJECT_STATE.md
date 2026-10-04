@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.36**. `0.1.37` sustituye la barra inferior por pestaña lateral móvil.
+- Producción confirmada: **v0.1.36**. `0.1.37` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.36`.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -162,7 +162,7 @@ PUBLICADO en `0.1.32`.
 - no cambia persistencia, autosave ni estructura de datos.
 
 ### Paso 4.2 — pestaña lateral de herramientas
-IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-side-tool-tab-0137`.
+IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
 
 - no hay barra inferior;
 - pestaña lateral móvil con lado y altura persistentes;
@@ -173,7 +173,7 @@ IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-side-tool-tab-0137`.
 
 ## Siguiente paso inmediato
 
-Completar CI/merge/publicación de `0.1.37` y validar físicamente: mover la pestaña a izquierda/derecha y distintas alturas; abrir/cerrar; seleccionar una herramienta y confirmar cierre automático; tocar fuera y confirmar cierre; hacer scroll y usar teclado sin que la pestaña dependa de la zona inferior. Después completar Enlace + color/resaltado + deshacer/rehacer dentro del mismo panel lateral y adaptar Modo Predicación a texto enriquecido + imágenes.
+Esperar a que GitHub Pages publique `0.1.37` y validar físicamente: mover la pestaña a izquierda/derecha y distintas alturas; abrir/cerrar; seleccionar una herramienta y confirmar cierre automático; tocar fuera y confirmar cierre; hacer scroll y usar teclado sin que la pestaña dependa de la zona inferior. Después completar Enlace + color/resaltado + deshacer/rehacer dentro del mismo panel lateral y adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
