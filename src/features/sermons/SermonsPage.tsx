@@ -1,4 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ClipboardEvent as ReactClipboardEvent,
+  type FormEvent as ReactFormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+} from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
   appendSermonBlock,
@@ -351,6 +360,7 @@ export function SermonEditorPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const blockRefs = useRef(new Map<string, SermonRichTextFieldHandle>())
+  const documentEditorRef = useRef<HTMLDivElement | null>(null)
   const imageInputRef = useRef<HTMLInputElement | null>(null)
   const [activePoint, setActivePoint] = useState<{
     section: SermonSection
