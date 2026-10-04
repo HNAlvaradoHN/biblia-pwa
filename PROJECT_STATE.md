@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.35**. `0.1.36` implementa la barra fija con compensación real del teclado.
+- Producción confirmada: **v0.1.36**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -164,7 +164,7 @@ PUBLICADO en `0.1.32`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Completar CI/merge/publicación de `0.1.36` y validar físicamente dos recorridos: (1) teclado cerrado + scroll arriba/abajo: barra siempre visible; (2) teclado abierto + scroll arriba/abajo: barra fija inmediatamente encima del teclado. Conservar sin cambios el orden y toggles actuales. Después completar Enlace + color/resaltado + deshacer/rehacer y adaptar Modo Predicación a texto enriquecido + imágenes.
+Validar físicamente `0.1.36` en dos recorridos: (1) teclado cerrado + scroll arriba/abajo: barra siempre visible; (2) teclado abierto + scroll arriba/abajo: barra fija inmediatamente encima del teclado. Conservar sin cambios el orden y toggles actuales. Después completar Enlace + color/resaltado + deshacer/rehacer y adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
