@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.29**.
+- Producción confirmada: **v0.1.29**. `0.1.30` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.29`.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -139,7 +139,7 @@ PUBLICADO en `0.1.29`, con división editorial de secciones en implementación c
 
 ## Siguiente paso inmediato
 
-Completar CI/merge/publicación de `0.1.30` y validar que Introducción, Bosquejo y puntos, y Conclusión se distinguen claramente sin romper la apariencia de una sola hoja. Después implementar la **barra compacta completa de formato de bloc de notas** y adaptar Modo Predicación a texto estructurado + imágenes.
+Esperar a que GitHub Pages publique `0.1.30` y validar que Introducción, Bosquejo y puntos, y Conclusión se distinguen claramente sin romper la apariencia de una sola hoja. Después implementar la **barra compacta completa de formato de bloc de notas** y adaptar Modo Predicación a texto estructurado + imágenes.
 
 ## Después de D-053
 
