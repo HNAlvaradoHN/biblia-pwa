@@ -182,7 +182,7 @@ PUBLICADO en `0.1.38`; el usuario reportó el resto de la experiencia como corre
 - operaciones estructurales reinician historial para mantener integridad.
 
 ### Paso 4.4 — selección continua
-PUBLICADO en `0.1.39`, PENDIENTE DE VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.39`, VALIDADO FÍSICAMENTE.
 
 - un único host editable cubre Introducción/Bosquejo/Conclusión;
 - seleccionar todo deja de estar limitado al párrafo activo;
@@ -191,7 +191,7 @@ PUBLICADO en `0.1.39`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - no cambia la apariencia ni la pestaña lateral.
 
 ### Paso 5 — Modo Predicación sobre documento estructurado
-PUBLICADO en `0.1.40`, VALIDACIÓN FÍSICA PARCIAL.
+PUBLICADO en `0.1.40`, VALIDADO FÍSICAMENTE.
 
 - Modo Predicación consume bloques estructurados;
 - imágenes aparecen en el mismo flujo de la prédica;
@@ -201,15 +201,18 @@ PUBLICADO en `0.1.40`, VALIDACIÓN FÍSICA PARCIAL.
 - borrar imagen en edición exige confirmación irreversible;
 - VALIDADO FÍSICAMENTE por el usuario: las imágenes insertadas aparecen en Modo Predicación;
 - VALIDADO FÍSICAMENTE por el usuario: eliminar una imagen pide confirmación antes de borrar;
-- VALIDADO FÍSICAMENTE por el usuario: referencia bíblica → Leer capítulo → Volver a Predicación regresa al mismo punto.
+- VALIDADO FÍSICAMENTE por el usuario: referencia bíblica → Leer capítulo → Volver a Predicación regresa al mismo punto;
+- VALIDADO FÍSICAMENTE por el usuario: validación integral final sin regresiones reportadas en edición continua, autosave, selección/borrado, formatos, listas, imágenes, referencias y Modo Predicación.
+
+## Cierre de D-053
+
+COMPLETADA Y VALIDADA FÍSICAMENTE en `0.1.40`.
+
+La migración del editor estructurado quedó cerrada con validación integral del usuario sobre edición continua, autosave, selección/borrado, formato, listas, imágenes, referencias, regreso exacto y Modo Predicación.
 
 ## Siguiente paso inmediato
 
-Ejecutar validación integral del editor y Modo Predicación: edición continua, autosave, selección/borrado, formatos, listas, imágenes, referencias, regreso exacto y representación en presentación. Si no aparecen regresiones, cerrar D-053 y abrir sincronización/multidispositivo.
-
-## Después de D-053
-
-Terminar los refinamientos pendientes de Modo Predicación sobre el documento estructurado. Luego abrir sincronización/multidispositivo.
+Abrir diseño de sincronización/multidispositivo. Antes de implementar, definir modelo de identidad, alcance de datos sincronizados, estrategia de conflicto/versionado por bloques, tratamiento separado de adjuntos e imágenes, modo offline, recuperación ante errores y protección de datos personales.
 
 ## Memoria histórica
 

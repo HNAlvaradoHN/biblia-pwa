@@ -15,6 +15,15 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Cierre validado de D-053
+
+- El usuario confirma validación integral satisfactoria del editor estructurado de Prédicas.
+- Validado: edición continua, autosave, selección/borrado, formato, listas, imágenes, referencias bíblicas y regreso exacto.
+- Validado: Modo Predicación muestra contenido estructurado e imágenes y conserva el retorno desde Biblia.
+- Validado: eliminar imágenes exige confirmación.
+- D-053 queda cerrada como completada y validada físicamente.
+- El siguiente objetivo oficial pasa a ser diseño de sincronización/multidispositivo.
+
 ## 2026-10-04 — Imágenes y documento enriquecido en Modo Predicación 0.1.40
 
 - Modo Predicación deja de leer únicamente los campos legacy y pasa a renderizar los bloques estructurados reales de la prédica.
