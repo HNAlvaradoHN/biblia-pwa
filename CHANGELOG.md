@@ -15,6 +15,14 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-03 — División editorial de secciones 0.1.30
+
+- Introducción, Bosquejo y puntos, y Conclusión quedan marcadas como secciones editoriales reales dentro de la misma hoja continua.
+- Cada sección usa un encabezado semántico visible y accesible.
+- Entre secciones se añade separación vertical y una línea divisoria discreta, sin volver a cajas independientes.
+- La estructura interna por bloques continúa invisible para el usuario.
+- Build visible actualizado a `0.1.30`.
+
 ## 2026-10-03 — Hoja de notas e imágenes en el cursor 0.1.29
 
 - El editor deja de mostrar bordes/cajas alrededor del contenido de cada sección y se presenta como una hoja de notas más limpia y continua.
