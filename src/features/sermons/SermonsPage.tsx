@@ -338,6 +338,7 @@ function SermonImageBlock({
     <figure
       className="sermon-inline-image"
       data-sermon-block-id={block.id}
+      contentEditable={false}
       onClick={onActivate}
     >
       {src ? (
@@ -1992,7 +1993,10 @@ export function SermonEditorPage() {
         className="sermon-block-section"
         aria-labelledby={`sermon-section-${section}`}
       >
-        <header className="sermon-block-section-header">
+        <header
+          className="sermon-block-section-header"
+          contentEditable={false}
+        >
           <h2 id={`sermon-section-${section}`}>{label}</h2>
         </header>
 
@@ -2020,16 +2024,27 @@ export function SermonEditorPage() {
                 }}
               >
                 {block.type === 'bullet' ? (
-                  <span className="sermon-block-prefix" aria-hidden="true">•</span>
+                  <span
+                    className="sermon-block-prefix"
+                    contentEditable={false}
+                    aria-hidden="true"
+                  >
+                    •
+                  </span>
                 ) : null}
                 {block.type === 'numbered' ? (
-                  <span className="sermon-block-prefix" aria-hidden="true">
+                  <span
+                    className="sermon-block-prefix"
+                    contentEditable={false}
+                    aria-hidden="true"
+                  >
                     {sectionBlocks.slice(0, index + 1).filter((item) => item.type === 'numbered').length}.
                   </span>
                 ) : null}
                 {block.type === 'task' ? (
                   <input
                     className="sermon-task-checkbox"
+                    contentEditable={false}
                     type="checkbox"
                     checked={Boolean(block.checked)}
                     aria-label={`Marcar tarea ${index + 1}`}
@@ -2148,23 +2163,41 @@ export function SermonEditorPage() {
           />
         </label>
 
-        {renderSection(
-          'introduction',
-          'Introducción',
-          'Idea de apertura, contexto o propósito...',
-        )}
+        <div
+          ref={documentEditorRef}
+          className="sermon-document-editor"
+          data-sermon-document-editor
+          contentEditable
+          suppressContentEditableWarning
+          role="textbox"
+          aria-label="Contenido de la prédica"
+          aria-multiline="true"
+          spellCheck
+          onInput={handleDocumentInput}
+          onKeyDown={handleDocumentKeyDown}
+          onKeyUp={reportDocumentSelection}
+          onPointerUp={reportDocumentSelection}
+          onSelect={reportDocumentSelection}
+          onPaste={handleDocumentPaste}
+        >
+          {renderSection(
+            'introduction',
+            'Introducción',
+            'Idea de apertura, contexto o propósito...',
+          )}
 
-        {renderSection(
-          'outline',
-          'Bosquejo y puntos',
-          'Punto principal, desarrollo o aplicación...',
-        )}
+          {renderSection(
+            'outline',
+            'Bosquejo y puntos',
+            'Punto principal, desarrollo o aplicación...',
+          )}
 
-        {renderSection(
-          'conclusion',
-          'Conclusión',
-          'Cierre, llamado o idea final...',
-        )}
+          {renderSection(
+            'conclusion',
+            'Conclusión',
+            'Cierre, llamado o idea final...',
+          )}
+        </div>
 
         {toolPanelOpen ? (
           <button
