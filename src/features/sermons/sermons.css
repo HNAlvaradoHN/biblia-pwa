@@ -1055,6 +1055,89 @@
   font-family: inherit;
 }
 
+.sermon-presentation-blocks {
+  display: grid;
+  gap: 8px;
+}
+
+.sermon-presentation-block {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  color: var(--reader-text);
+  font-family: var(--reader-font-family);
+  font-size: calc(clamp(1.18rem, 4.4vw, 1.6rem) * var(--reader-font-scale));
+  line-height: 1.72;
+}
+
+.sermon-presentation-block p {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.sermon-presentation-block-heading.heading-1 {
+  font-size: calc(clamp(1.42rem, 5.2vw, 1.9rem) * var(--reader-font-scale));
+  font-weight: 850;
+  line-height: 1.42;
+}
+
+.sermon-presentation-block-heading.heading-2 {
+  font-size: calc(clamp(1.28rem, 4.8vw, 1.72rem) * var(--reader-font-scale));
+  font-weight: 800;
+  line-height: 1.48;
+}
+
+.sermon-presentation-block-quote {
+  margin-block: 4px;
+  padding-left: 14px;
+  border-left: 3px solid color-mix(in srgb, var(--accent) 62%, var(--line));
+  font-style: italic;
+}
+
+.sermon-presentation-prefix {
+  flex: 0 0 auto;
+  min-width: 1.7em;
+  color: color-mix(in srgb, var(--reader-text) 84%, var(--accent));
+  font-weight: 800;
+}
+
+.sermon-presentation-image,
+.sermon-presentation-image-loading {
+  display: grid;
+  width: fit-content;
+  max-width: 100%;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.sermon-presentation-image img {
+  display: block;
+  width: auto;
+  max-width: min(100%, 680px);
+  max-height: min(62dvh, 560px);
+  border-radius: 16px;
+  object-fit: contain;
+  background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.sermon-presentation-image figcaption {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.sermon-presentation-image-loading {
+  min-width: min(72vw, 280px);
+  min-height: 140px;
+  place-items: center;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .sermon-presentation-reference {
   display: inline;
   padding: 0.06em 0.2em;
@@ -1086,6 +1169,11 @@
 
   .sermon-presentation-exit {
     align-self: end;
+  }
+
+  .sermon-presentation-image img {
+    max-width: 100%;
+    max-height: 50dvh;
   }
 }
 

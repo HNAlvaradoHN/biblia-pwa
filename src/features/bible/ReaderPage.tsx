@@ -881,8 +881,17 @@ export function ReaderPage() {
         returnField: sermonReturnPoint.field,
         returnAt: String(sermonReturnPoint.startIndex),
       })
-      if (typeof sermonReturnPoint.scrollY === 'number' && Number.isFinite(sermonReturnPoint.scrollY)) {
-        params.set('returnScroll', String(Math.max(0, Math.round(sermonReturnPoint.scrollY))))
+      if (sermonReturnPoint.blockId) {
+        params.set('returnBlock', sermonReturnPoint.blockId)
+      }
+      if (
+        typeof sermonReturnPoint.scrollY === 'number' &&
+        Number.isFinite(sermonReturnPoint.scrollY)
+      ) {
+        params.set(
+          'returnScroll',
+          String(Math.max(0, Math.round(sermonReturnPoint.scrollY))),
+        )
       }
 
       navigate(

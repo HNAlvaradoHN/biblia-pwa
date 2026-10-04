@@ -15,6 +15,19 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Imágenes y documento enriquecido en Modo Predicación 0.1.40
+
+- Modo Predicación deja de leer únicamente los campos legacy y pasa a renderizar los bloques estructurados reales de la prédica.
+- Las imágenes insertadas durante edición aparecen en Modo Predicación en su posición correspondiente.
+- Las imágenes se leen desde IndexedDB mediante sus adjuntos y usan object URLs temporales con limpieza al desmontar.
+- Encabezados, párrafos, cita, listas, checklist, sangría y formato inline se representan en presentación.
+- Negrita, cursiva, subrayado, tachado, enlaces, color y resaltado conservan su representación.
+- Las referencias bíblicas en presentación se detectan por bloque y guardan `blockId`.
+- El regreso desde Biblia usa primero `blockId + startIndex` para volver a la referencia exacta y mantiene scroll como fallback.
+- Eliminar una imagen desde edición ahora exige confirmación irreversible antes de borrar.
+- Las imágenes en presentación se limitan por ancho/alto para mantener legibilidad en móvil.
+- Build visible actualizado a `0.1.40`.
+
 ## 2026-10-04 — Selección continua del documento 0.1.39
 
 - El cuerpo de la prédica pasa a usar un único host editable para que la selección nativa no quede limitada a un solo renglón/párrafo.
