@@ -143,7 +143,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.24`: corregir el retorno exacto desde Biblia hacia Modo Predicación y añadir herramientas rápidas de trabajo en `Bosquejo y puntos`, manteniendo pendiente la validación física de eliminación de prédicas.
+Publicar y validar físicamente `0.1.24`: el retorno exacto hacia Modo Predicación y las herramientas rápidas de `Bosquejo y puntos` ya están fusionados en `main`, pero GitHub Pages todavía sirve `v0.1.23`.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -198,7 +198,7 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 4. Validar `Eliminar` en una prédica de prueba y comprobar persistencia del borrado tras recargar.
 5. Con esas validaciones, continuar el refinamiento de Modo Predicación sin acumular fallos de navegación/editor.
 
-Estado de despliegue actual: `0.1.23` ya fue fusionada a `main` mediante PR #46 y pasó CI del PR. `0.1.24` está implementándose en la rama `fix/presentation-return-outline-tools-0124` y no debe presentarse como lista para probar hasta completar CI, merge y publicación.
+Estado de despliegue actual: `0.1.24` fue fusionada a `main` mediante PR #48 y su CI pasó TypeScript, ESLint, build PWA y auditoría. GitHub Pages todavía sirve `v0.1.23`, por lo que `0.1.24` permanece PENDIENTE DE PUBLICACIÓN y no debe presentarse todavía como lista para probar.
 
 ## Después de este objetivo
 
