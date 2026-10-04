@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.26**.
+- Producción confirmada: **v0.1.27**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -122,7 +122,7 @@ VALIDADO FÍSICAMENTE en `0.1.26`.
 - GitHub Pages sirve `v0.1.26` y el usuario confirmó físicamente que un cambio autosalvado reaparece después de recargar sin presionar `Guardar`.
 
 ### Paso 3 — editor estructurado
-IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/structured-sermon-editor-0127`.
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN FÍSICA en `main` y publicado como `0.1.27`.
 
 - migración v7 convierte bloques legados en bloques independientes sin perder texto;
 - nuevas prédicas nacen directamente sobre bloques estructurados;
@@ -135,7 +135,7 @@ IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/structured-sermon-editor-012
 
 ## Siguiente paso inmediato
 
-Completar CI/merge/publicación de `0.1.27` y validar creación/división/unión/autosave y retorno exacto desde Biblia al bloque. Después avanzar al **paso 4 de D-053: barra compacta de formato**.
+Validar físicamente `0.1.27`: Enter divide bloques, Backspace al inicio une con el anterior, `+ Bloque` agrega contenido, autosave sobrevive recarga y Editor → Biblia → Editor regresa al bloque exacto. Con esa validación, avanzar al **paso 4 de D-053: barra compacta de formato**.
 
 ## Después de D-053
 
