@@ -598,7 +598,7 @@ export async function insertSermonImageBlock(
     createdAt: now,
     updatedAt: now,
   }
-  const block: SermonBlockRecord = {
+  const imageBlock: SermonBlockRecord = {
     id: makeSermonBlockId(sermonId),
     sermonId,
     section,
@@ -609,6 +609,19 @@ export async function insertSermonImageBlock(
     indent: 0,
     attachmentId: attachment.id,
     altText: file.name || 'Imagen',
+    revision: 1,
+    createdAt: now,
+    updatedAt: now,
+  }
+  const followingBlock: SermonBlockRecord = {
+    id: makeSermonBlockId(sermonId),
+    sermonId,
+    section,
+    order: insertOrder + 1,
+    type: 'paragraph',
+    text: '',
+    marks: [],
+    indent: 0,
     revision: 1,
     createdAt: now,
     updatedAt: now,
@@ -624,14 +637,14 @@ export async function insertSermonImageBlock(
         .equals([sermonId, section])
         .filter((item) => item.order >= insertOrder)
         .modify((item) => {
-          item.order += 1
+          item.order += 2
         })
       await db.sermonAttachments.add(attachment)
-      await db.sermonBlocks.add(block)
+      await db.sermonBlocks.bulkAdd([imageBlock, followingBlock])
     },
   )
 
-  return block
+  return { imageBlock, followingBlock }
 }
 
 export async function removeSermonImageBlock(blockId: string) {
