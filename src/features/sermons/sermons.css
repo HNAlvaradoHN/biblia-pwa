@@ -229,6 +229,10 @@
   gap: 7px;
 }
 
+.sermon-title-field > span {
+  display: none;
+}
+
 .sermon-title-field input {
   min-height: 50px;
   padding: 0;
