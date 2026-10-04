@@ -1,225 +1,116 @@
-# PROJECT_STATE.md — ESTADO ACTUAL
+# PROJECT_STATE.md — ESTADO OPERATIVO
 
 Última actualización: 2026-10-03
 
-## Estado general
+## Fuente de verdad y alcance de este archivo
 
-Etapa: implementación de Fase 1 del lector bíblico y datos personales locales.
+Este archivo contiene únicamente memoria operativa necesaria para continuar el proyecto. Las reglas permanentes viven en `AGENTS.md`, `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md`; no se duplican aquí.
 
-Repositorio oficial: `HNAlvaradoHN/biblia-pwa`.
+La historia completa previa a esta compactación se conserva en `docs/history/PROJECT_STATE_2026-10-03_PRE_COMPACTION.md`. Las decisiones antiguas completas y changelog histórico también están archivados en `docs/history/`.
 
-Visibilidad actual: pública desde el 2026-09-16 por autorización explícita del usuario.
+Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización explícita del dueño.
 
-La versión `0.1.21` está integrada en `main`, pasó CI y se publicó correctamente mediante GitHub Pages. La prueba física del usuario detectó un defecto real: al abrir una referencia, la vista rápida no bloquea el scroll del contenido de fondo. También se confirmó como refinamiento deseado que, desde Modo Predicación, la referencia permita `Leer capítulo` y regresar al mismo punto del modo.
+## Estado actual
 
-El 2026-10-02 se incorporó el paquete maestro general v4. El 2026-10-03 el dueño aclaró que nunca autorizó eliminar la identidad secuencial. La gobernanza queda corregida: todo chat nuevo inicia en `LOCKED_READ_ONLY`, completa lectura/sincronización, reserva y verifica `Ing. Bibia 📖 #N`, emite `LOCKED_READ_ONLY_REPORT` y solo modifica producto con una tarea autorizada. `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` siguen vigentes.
+- Plataforma: PWA offline-first.
+- Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
+- Publicación principal: GitHub Pages. Vercel es respaldo opcional.
+- Producción confirmada: **v0.1.24**.
+- Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
+- Datos personales: locales al dispositivo; no se versionan ni publican.
+- Sincronización remota/multidispositivo: todavía no implementada.
 
-El objetivo funcional activo es validar físicamente `0.1.22` ya publicada: bloqueo del scroll de fondo, `Cerrar` + `Leer capítulo` dentro de Modo Predicación, retorno al mismo punto y mantenimiento de pantalla activa cuando la plataforma lo permita.
+## Funcionalidad estable ya disponible
 
-## Completado
+### Biblia y lectura
+- Inicio con continuidad de lectura y guardados recientes.
+- Selector de libros/capítulos y búsqueda bíblica.
+- Lector continuo y modos enfocados.
+- Versículos separados o corridos.
+- Favoritos, notas, resaltados, copiar, compartir y selección múltiple.
+- Temas curados, tipografía/tamaño y menús móviles/contextuales.
 
-### Base y reglas
+### Prédicas
+- Lista `Mis prédicas`.
+- Crear, buscar, abrir, autosave local, duplicar, archivar/restaurar y eliminar con confirmación.
+- Campos actuales: título, Introducción, Bosquejo/puntos y Conclusión.
+- Referencias bíblicas inline, vista rápida y lectura bíblica enfocada.
+- Modo Predicación de solo lectura con navegación general oculta.
+- `Leer capítulo` desde Modo Predicación y retorno semántico hacia la referencia de origen.
+- Intento de Screen Wake Lock durante Modo Predicación cuando la plataforma lo soporta.
 
-- PWA elegida como plataforma inicial, con enfoque offline-first.
-- Repositorio oficial público y documentación de continuidad, seguridad, UI y entregas establecidos.
-- Stack de Fase 1: React + TypeScript + Vite, React Router, IndexedDB + Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
-- Corpus bíblico separado de datos personales y detrás de un proveedor reemplazable.
-- RVR60 sigue siendo la traducción deseada, pero no se incorporará ni redistribuirá contenido sin procedencia y permisos verificables.
-- La aplicación puede publicarse para terceros en el futuro, por lo que las licencias del corpus y encabezados son requisito real.
+## Estado real del editor de Prédicas
 
-### Continuidad y seguridad vigentes
+La versión publicada `0.1.24` todavía usa texto plano por campos. El autosave actual:
 
-- `AGENTS.md` contiene el paquete maestro general v4 de autonomía controlada y revisores automáticos.
-- Todo chat nuevo comienza en `LOCKED_READ_ONLY`; puede leer, revisar y diagnosticar. Antes de una tarea autorizada solo puede realizar la reserva estrictamente limitada de `CURRENT_SESSION`/`NEXT_SESSION` exigida por `AGENTS.md`.
-- La primera respuesta sincronizada debe comenzar con la identidad exacta `Ing. Bibia 📖 #N` ya reservada y verificada, seguida del `LOCKED_READ_ONLY_REPORT` definido por `AGENTS.md`.
-- Si cambia `AGENTS.md`, `protocol_version` o una regla fundamental durante una sesión, el chat vuelve a `LOCKED_READ_ONLY / UNSYNCED` y debe resincronizar.
-- `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` siguen vigentes como reglas específicas del proyecto.
-- `SECURITY.md` trata todo contenido versionado, ramas e historial como públicamente accesibles.
-- Se prohíben secretos, tokens, credenciales, claves privadas, URLs firmadas temporales, datos personales reales, bases personales y material privado en Git.
-- Antes de cada merge debe revisarse el diff por secretos/datos personales y cualquier referencia auxiliar creada por el cambio.
+- actualiza el estado local inmediatamente al escribir;
+- espera aproximadamente 900 ms de inactividad;
+- guarda el registro completo de la prédica en IndexedDB;
+- **no sube nada a Internet** porque no existe sincronización remota.
 
-### Auditoría del repositorio público — 2026-09-16
+La barra de cuatro acciones rápidas de `Bosquejo y puntos` introducida en `0.1.24` fue rechazada como solución definitiva. Es transitoria y debe ser sustituida, no ampliada.
 
-- Confirmado que el repositorio oficial está público por decisión explícita del usuario.
-- Revisado el árbol actual de `main`: no se observaron `.env`, claves privadas, archivos de credenciales, bases locales, dumps, backups ni datasets personales versionados.
-- Ejecutadas búsquedas de alta señal en el árbol público actual para prefijos/patrones comunes de GitHub, Google, AWS, OpenAI, Slack, GitLab, Stripe y claves privadas; no se detectaron coincidencias evidentes.
-- Revisado el workflow principal: permisos de contenido en solo lectura y verificaciones con `npm ci`, TypeScript, ESLint, build PWA y `npm audit --omit=dev --audit-level=high`.
-- El CI del PR de endurecimiento, que antes no lograba iniciar runner mientras el repositorio era privado, se reejecutó después del cambio a público y completó en verde.
-- Revisadas las ramas públicas. Se detectó `recibos-apk-build`, una rama ajena al proyecto Biblia con código de una aplicación de recibos.
-- En el historial antiguo de esa rama se detectó un valor de contraseña de firma incrustado en configuración Android. No se detectó un archivo de keystore versionado mediante la revisión del historial de esa ruta.
-- La referencia pública `recibos-apk-build` se movió al mismo commit limpio de `main`, retirando de la punta de la rama todo el árbol ajeno al proyecto Biblia.
-- El valor histórico debe considerarse comprometido si fue utilizado o reutilizado fuera de este repositorio. Mover la referencia no garantiza purgar inmediatamente objetos históricos, cachés o copias externas.
-- Las demás ramas públicas revisadas corresponden a trabajo histórico de Biblia; sus diferencias actuales respecto de `main` no mostraron archivos adicionales de credenciales ni datos personales.
-- `main` no tiene actualmente reglas de protección/rulesets configurados. Esto no expone por sí solo un secreto, pero queda como endurecimiento recomendable para exigir PR/CI en cambios futuros cuando la configuración de GitHub disponible lo permita.
+## Objetivo activo — D-053
 
-### Lectura bíblica existente
+Construir un editor estructurado de notas/artículos para Prédicas, manteniendo offline-first y preparando sincronización futura sin reescribir el documento completo en cada autosave.
 
-- Inicio compacto, moderno y responsive con `Continuar leyendo`, `Lectura del día` y barra inferior glass.
-- Pantalla Biblia con búsqueda rápida de libros y selector de capítulos.
-- Lector normal vertical continuo entre capítulos disponibles.
-- Títulos/encabezados de sección integrados en el modelo bíblico.
-- Última posición persistida con ancla estable de versículo.
-- PWA con aviso de actualización y versión visible.
-- Contenido ficticio de desarrollo identificado explícitamente como demostración; no es RVR60.
+Dirección aprobada:
 
-### Versiones publicadas confirmadas
+- contenido persistido por bloques con identificadores estables;
+- secciones: `introduction`, `outline`, `conclusion`;
+- formato inline como datos/marks, no HTML arbitrario;
+- autosave incremental de bloques modificados;
+- cambios estructurales transaccionales;
+- migración sin pérdida de las prédicas existentes;
+- barra compacta tipo aplicación de notas, no una fila grande de botones.
 
-- `0.1.0`: primera base ejecutable.
-- `0.1.1`: Inicio móvil compactado y accesos duplicados eliminados.
-- `0.1.2`: Inicio visual reforzado y barra inferior glass.
-- `0.1.3`: `Guardados recientes` añadido al Inicio y confirmado en dispositivo real.
-- `0.1.4`: Favoritos y Notas reales, confirmado por el usuario en la publicación de producción.
+Funciones objetivo iniciales del editor:
 
-### Favoritos y Notas 0.1.4 — cerrado
+- negrita, cursiva, subrayado y tachado;
+- párrafo, título/subtítulo;
+- lista numerada, viñetas y tareas;
+- cita y enlace;
+- sangría cuando aplique;
+- deshacer/rehacer;
+- limpiar formato;
+- en móvil, acciones frecuentes visibles y acciones secundarias agrupadas en `Más`.
 
-- IndexedDB/Dexie ampliado con tablas separadas para favoritos y notas bíblicas.
-- Guardados basados en referencia estructurada `bookId + capítulo + versículo`, sin copiar el corpus dentro de los datos personales.
-- Pantalla completa `Mis favoritos` con lista real, estado vacío, acceso al versículo exacto y opción de quitar favoritos.
-- Pantalla completa `Mis notas` con lista real, estado vacío, texto de la nota, contexto bíblico, acceso al versículo exacto y opción de eliminar.
-- Tarjetas `Favoritos` y `Notas` del Inicio abren sus colecciones y muestran el dato más reciente cuando existe.
-- Eliminadas las vistas previas ficticias de guardados del Inicio.
-- En el lector normal, tocar un versículo abre un panel contextual compacto.
-- Desde ese panel se puede guardar/quitar Favorito y crear/guardar/eliminar una nota asociada al versículo.
-- Los enlaces desde Favoritos y Notas vuelven al versículo exacto usando el ancla estable del lector.
-- Build visible identificado como `0.1.4`.
-- Rama, PR #6 y `main` pasaron instalación bloqueada, TypeScript, ESLint, build PWA y auditoría de dependencias en verde.
-- El usuario confirmó en un dispositivo real que la publicación `v0.1.4` se ve correctamente; entrega cerrada.
+## Orden obligatorio de implementación
 
-## APK externa como referencia técnica
+1. Definir tablas/modelo de bloques y migración desde los campos de texto actuales.
+2. Implementar persistencia incremental local y validar migración.
+3. Sustituir el editor de texto plano por el editor estructurado.
+4. Implementar la barra compacta de formato.
+5. Adaptar referencias bíblicas y Modo Predicación al nuevo documento.
+6. Validar crear/editar/autosave/duplicar/archivar/eliminar/offline/referencias/retorno exacto.
+7. Solo después abrir sincronización/multidispositivo.
 
-Estado: VERIFICADO / USO COMO REFERENCIA, NO COMO BASE DE CÓDIGO.
+## Validaciones físicas aún relevantes
 
-El usuario aportó el paquete Android `Santa Biblia Reina Valera_0.1.4.apks` para estudiar qué elementos útiles pueden rescatarse o reconstruirse en Biblia PWA.
+- Confirmar en dispositivo que `Eliminar` persiste tras recargar.
+- Confirmar que `Predicar → referencia → Leer capítulo → Volver a Predicación` regresa a la referencia exacta en `0.1.24`.
+- La barra rápida actual no requiere refinamiento físico adicional porque será reemplazada por D-053.
 
-Hallazgos verificados del paquete analizado:
+## Riesgos / restricciones vigentes
 
-- es un bundle `.apks` con una aplicación Flutter compilada;
-- incluye datos bíblicos locales y puede funcionar con el corpus empaquetado sin depender de una consulta remota para leer esos archivos;
-- contiene tres datasets bíblicos locales: español (`bible_rvr.json`), inglés KJV y portugués;
-- el dataset español contiene 66 libros;
-- cada libro incluye identificadores, nombre, grupo, autor, indicador de Antiguo/Nuevo Testamento, capítulos y versículos;
-- cada versículo está estructurado individualmente y puede incluir un campo `title`;
-- se verificó, por ejemplo, que Génesis 1:1 contiene un encabezado de sección en `title`;
-- el paquete contiene recursos visuales, tipografías y librerías/servicios de terceros que deben evaluarse individualmente antes de reutilizar;
-- se observaron valores de configuración/credenciales dentro de recursos empaquetados de la app externa. No deben copiarse, publicarse ni reutilizarse en este repositorio.
-
-Decisión de uso:
-
-- Biblia PWA sigue siendo el proyecto principal; no se reemplaza por Flutter ni por el APK externo;
-- la app externa se trata como referencia/donante para identificar funciones, estructura de datos, organización y UX que puedan mejorar el proyecto;
-- funciones útiles se reconstruyen con código propio dentro de la arquitectura actual cuando tengan sentido;
-- no se copiará código compilado, secretos, configuración privada ni dependencias externas innecesarias;
-- texto RVR60, títulos editoriales, iconos, fuentes u otros assets solo podrán incorporarse si su licencia/procedencia permite redistribución pública;
-- la estructura de datos sí puede inspirar el modelo interno, siempre manteniendo corpus y datos personales separados;
-- antes de integrar algo proveniente de la app externa, clasificarlo como: `REUTILIZABLE VERIFICADO`, `RECONSTRUIBLE`, `REQUIERE LICENCIA` o `NO REUTILIZAR`.
-
-Pendiente específico:
-
-- completar un inventario comparativo entre la APK externa y Biblia PWA para identificar funciones útiles que aún falten;
-- verificar por separado procedencia/licencia del corpus español y de los encabezados editoriales antes de cualquier incorporación;
-- no asumir que el hecho de estar dentro de una APK descargable concede permiso de redistribución.
-
-### Referencias bíblicas inteligentes 0.1.19 — publicada; refinamiento físico solicitado
-
-- PR #36 implementó detección y persistencia estructurada de referencias bíblicas dentro de Introducción, Bosquejo/puntos y Conclusión.
-- Soporta inicialmente referencias disponibles en el corpus con formato `Libro capítulo:versículo` y rangos del mismo capítulo.
-- Cada referencia detectada ofrece vista rápida del pasaje sin abandonar la prédica.
-- `Abrir en Biblia` guarda primero la prédica y abre el pasaje exacto.
-- El lector muestra `Volver a prédica` y restaura la misma prédica, campo y posición aproximada de edición.
-- La validación automatizada móvil confirmó `Juan 1:1` y `Génesis 1:1-3`, vista rápida, apertura en Biblia, retorno seguro y ausencia de clipping evidente.
-- El build visible es `0.1.19`.
-- PR #36 fue fusionado a `main`; el CI de `main` pasó TypeScript, ESLint, build PWA y auditoría en verde.
-- GitHub Pages quedó habilitado y publicó correctamente `0.1.19` en `https://hnalvaradohn.github.io/biblia-pwa/`.
-- Vercel queda como respaldo y ya no es requisito para continuar el desarrollo.
-- El usuario confirmó físicamente que la referencia se detecta y se ve, pero pidió refinar la interacción: verla remarcada dentro del texto, tocarla allí mismo y usar una lectura bíblica enfocada con regreso exclusivo a la prédica.
-
-
-## Estado de gobernanza
-
-- Identidad secuencial obligatoria restaurada e integrada con v4.
-- Contador vigente: `CURRENT_SESSION: 3`, `NEXT_SESSION: 4`.
-- El chat actual trabaja oficialmente como `Ing. Bibia 📖 #3`.
-- La memoria oficial debe actualizarse durante el trabajo después de hitos significativos, manteniendo el orden real de implementación, validación y documentación.
-
-## Objetivo activo
-
-Rediseñar el editor de Prédicas sobre un modelo estructurado e incremental antes de seguir acumulando controles sobre el campo de texto actual.
-
-El usuario rechazó explícitamente la fila de cuatro ajustes rápidos introducida en `0.1.24` como solución insuficiente. La nueva dirección aprobada es un editor de notas/artículos con formato real y controles compactos, inspirado en patrones de Telegram/Joplin/Easy Notes, junto con persistencia local por bloques para no reescribir el documento completo en cada autosave.
-
-Orden obligatorio de implementación:
-
-1. modelo y migración de bloques;
-2. persistencia incremental local;
-3. editor estructurado;
-4. barra compacta con negrita, cursiva, subrayado, tachado, títulos, listas, tareas, cita, enlace, sangría, deshacer/rehacer y limpiar formato;
-5. adaptación de referencias bíblicas y Modo Predicación;
-6. validación integral antes de abrir sincronización/multidispositivo.
-
-La parte de retorno exacto de `0.1.24` sigue vigente y debe preservarse durante la migración. La barra rápida actual será sustituida, no ampliada.
-
-La base del versículo activo mantiene dos capas claramente distintas:
-
-1. `Versículo activo` por defecto para seguir visualmente la lectura.
-2. Acciones contextuales persistentes o utilitarias: `Favorito`, `Nota`, `Resaltar`, `Copiar` y `Compartir`.
-
-Reglas de alcance:
-
-- tocar un versículo lo convierte en el único versículo activo;
-- al tocar otro, el anterior deja de estar activo y el nuevo toma su lugar;
-- la marca activa debe ser suave, clara y distinta de un resaltado permanente;
-- la posición activa debe guardarse localmente para ayudar a retomar la lectura;
-- `Resaltar` debe persistirse como dato personal local, separado del corpus, y puede existir en varios versículos;
-- `Copiar` debe copiar referencia y texto de forma clara;
-- `Compartir` debe usar el mecanismo nativo del dispositivo cuando exista y un fallback razonable cuando no exista;
-- el panel contextual debe mantener el lector limpio y no cubrir innecesariamente el texto;
-- la personalización avanzada global, prédicas y sincronización siguen fuera de este objetivo; sí entran los fondos propios de la composición de compartir y el lector capítulo por capítulo ya aprobado.
-
-La decisión completa está registrada como D-029 en `DECISIONS.md`.
-
-## Decisiones de producto futuras ya registradas, pero no abiertas todavía
-
-- Diseño exacto de colores y personalización avanzada de resaltados.
-- Compartir versículos con imágenes/fondos y su flujo visual completo.
-- Fondos seleccionables dentro de la aplicación.
-- Temas adicionales además de día/noche.
-- Personalizaciones de lectura y apariencia.
-- Diseño exacto del indicador temporal al volver del lector capítulo por capítulo.
-- Implementación y controles definitivos del lector temporal capítulo por capítulo.
-- Editor de prédicas y posible escritura/dibujo con stylus cuando llegue su fase.
-
-No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspondiente.
-
-## Decisiones técnicas aún abiertas
-
-- Fuente y formato definitivo del corpus bíblico autorizado.
-- Diseño final de sincronización opcional con Google Drive.
-- Implementación concreta del editor estructurado de prédicas conforme a D-053; la arquitectura objetivo ya está definida.
-- Si se implementará o no la pantalla de congregación al final del proyecto.
-- GitHub Pages es el canal principal de publicación actual; Vercel queda como respaldo. La app debe conservar portabilidad y no depender arquitectónicamente de un host específico.
-- Si se añadirá protección obligatoria de `main` mediante ruleset/branch protection; la conexión actual de automatización no dispone de administración suficiente para configurarlo directamente.
-
-## Restricción de contenido para desarrollo
-
-Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja con datos ficticios o una fuente legal de prueba. Favoritos, notas y futuros resaltados guardan referencias estructuradas y datos personales en almacenamiento del usuario, no copias acopladas del corpus ni datos personales versionados en Git.
+- No perder contenido durante la migración del editor.
+- No acoplar el texto bíblico al documento de prédica; las referencias siguen siendo estructuradas/derivadas.
+- No añadir un editor pesado o una dependencia nueva sin justificar mantenimiento, licencia, seguridad y tamaño.
+- No abrir sincronización remota antes de estabilizar el modelo local por bloques.
+- No versionar prédicas reales, notas personales, favoritos, bases locales, dumps ni secretos.
 
 ## Siguiente paso inmediato
 
-1. Diseñar e implementar una nueva tabla/modelo de bloques de prédica con identificadores estables y migración desde `introduction`, `outline` y `conclusion`.
-2. Cambiar autosave para persistir únicamente bloques modificados mediante debounce local, manteniendo transacciones para operaciones estructurales.
-3. Sustituir la barra de cuatro botones de `0.1.24` por el editor estructurado y su barra de formato compacta.
-4. Adaptar referencias bíblicas, vista rápida y Modo Predicación al documento estructurado.
-5. Validar que las prédicas existentes no pierdan contenido y que crear/editar/duplicar/archivar/eliminar/offline sigan funcionando.
-6. Solo después de cerrar esta migración continuar con sincronización/multidispositivo.
+Implementar **paso 1 de D-053: modelo de bloques + migración segura**, con compatibilidad hacia las prédicas actuales. Después de ese hito, actualizar este archivo con el estado real antes de iniciar persistencia incremental.
 
-Estado de despliegue actual: producción sirve `v0.1.24`. Esa versión conserva el retorno semántico mejorado, pero su barra rápida de `Bosquejo y puntos` queda marcada como solución transitoria a reemplazar por D-053.
+## Después de D-053
 
-## Después de este objetivo
+Terminar los refinamientos pendientes de Modo Predicación sobre el documento estructurado. Luego abrir sincronización/multidispositivo.
 
-Después de completar y validar D-053, el siguiente objetivo oficial será terminar los refinamientos pendientes de Modo Predicación sobre el nuevo documento estructurado. Solo después de cerrar esa base se abrirá sincronización/multidispositivo.
+## Memoria histórica
 
-## Regla de actualización
+- Decisiones D-001 a D-043 completas: `docs/history/DECISIONS_D001_D043.md`.
+- Changelog anterior a 0.1.18: `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`.
+- Estado previo a compactación: `docs/history/PROJECT_STATE_2026-10-03_PRE_COMPACTION.md`.
 
-Este archivo describe únicamente el estado REAL. No marcar una función como terminada porque esté planeada o diseñada; solo cuando exista y haya sido verificada.
-
-Debe existir un solo objetivo activo principal. Cuando se complete, mover el siguiente paso a objetivo activo antes de iniciar trabajo nuevo.
+Consultar esos archivos solo cuando una tarea realmente necesite contexto histórico.
