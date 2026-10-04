@@ -15,6 +15,17 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Prioridad de Texto y deselección rápida 0.1.34
+
+- La barra visible cambia a `Aa → Texto → B → I → U → S → Listas → +`.
+- `Texto` sale del panel `Aa` y queda como segundo acceso directo.
+- `Aa` conserva H1, H2, Cita y sangría.
+- H1, H2 y Cita muestran estado activo dentro del panel.
+- Viñetas, Numerada y Verificación muestran estado activo dentro del panel de listas.
+- Tocar de nuevo H1/H2/Cita/lista/checklist cuando ya están activos los desactiva y regresa inmediatamente a `Texto`.
+- El botón de Listas permanece visualmente activo cuando el párrafo actual usa viñetas, numeración o checklist.
+- Build visible actualizado a `0.1.34`.
+
 ## 2026-10-04 — Formato activo y Galería 0.1.33
 
 - Negrita, Cursiva, Subrayado y Tachado pueden activarse sin selección para aplicar el formato a lo que se escriba a continuación.

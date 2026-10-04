@@ -315,15 +315,17 @@ La hoja de Prédicas usa una barra compacta inspirada en aplicaciones de notas. 
 
 Reglas iniciales:
 
-- la barra visible incluye tipo de texto, negrita, cursiva, subrayado, tachado, listas e inserción;
-- `Aa` agrupa párrafo, H1, H2, cita y sangría;
-- listas agrupa ninguna, viñetas, numeración y checklist;
+- el orden visible prioriza: `Aa → Texto → B → I → U → S → Listas → +`;
+- `Texto` es acceso directo de segundo nivel visible para volver inmediatamente a párrafo normal;
+- `Aa` agrupa H1, H2, cita y sangría; `Texto` deja de estar oculto dentro de ese panel;
+- listas agrupa viñetas, numeración y checklist;
 - `+` agrupa inserciones; la acción visible se denomina `Galería` y vive aquí, dejando de existir como botón independiente;
 - al seleccionar Galería, la PWA restringe el selector a imágenes; el navegador/sistema operativo conserva control sobre qué proveedor nativo (Fotos/Galería/Archivos) muestra, porque la web no puede forzar una app específica;
 - el formato inline se persiste mediante marks estructurados, no HTML;
 - Negrita, Cursiva, Subrayado y Tachado funcionan en dos modos: sobre selección existente o como modo activo para lo que se escribe a continuación;
 - cuando un formato inline está activo, su botón debe mostrar estado visual activo y permanecer así hasta desactivarlo o cambiar explícitamente ese estado;
 - la cursiva debe representarse con una `I` reconocible, no con un símbolo ambiguo;
+- H1, H2, Cita, viñetas, numeración y checklist deben mostrar estado activo y, si se toca de nuevo la opción ya activa, regresar inmediatamente a `Texto`;
 - el tipo de párrafo/lista se persiste en el bloque interno;
 - editar texto después de aplicar formato debe reajustar rangos de marks y no perderlos silenciosamente;
 - dividir/unir párrafos debe preservar y trasladar los marks correspondientes;

@@ -801,16 +801,36 @@ export function SermonEditorPage() {
     pendingFocusRef.current = { blockId: block.id, offset: end }
   }
 
+  function isActiveBlockType(
+    type: SermonBlockType,
+    headingLevel?: 1 | 2,
+  ) {
+    const block = getActiveTextBlock()
+    if (!block) return false
+    if (block.type !== type) return false
+    if (type !== 'heading') return true
+    return (block.headingLevel ?? 1) === (headingLevel ?? 1)
+  }
+
   async function setActiveBlockType(
     type: SermonBlockType,
     headingLevel?: 1 | 2,
   ) {
     const block = getActiveTextBlock()
     if (!block) return
+
+    const toggleToParagraph =
+      type !== 'paragraph' && isActiveBlockType(type, headingLevel)
+    const nextType: SermonBlockType = toggleToParagraph ? 'paragraph' : type
+
     await applyBlockFormatting(block.id, {
-      type,
-      headingLevel: type === 'heading' ? headingLevel ?? 1 : undefined,
-      checked: type === 'task' ? block.checked ?? false : undefined,
+      type: nextType,
+      headingLevel:
+        nextType === 'heading' ? headingLevel ?? 1 : undefined,
+      checked:
+        nextType === 'task'
+          ? block.checked ?? false
+          : undefined,
     })
     setToolMenu(undefined)
   }
@@ -1140,10 +1160,30 @@ export function SermonEditorPage() {
             <div className="sermon-tool-panel" role="dialog" aria-label="Herramientas de formato">
               {toolMenu === 'text' ? (
                 <>
-                  <button type="button" onClick={() => void setActiveBlockType('paragraph')}>Texto</button>
-                  <button type="button" onClick={() => void setActiveBlockType('heading', 1)}>H1</button>
-                  <button type="button" onClick={() => void setActiveBlockType('heading', 2)}>H2</button>
-                  <button type="button" onClick={() => void setActiveBlockType('quote')}>Cita</button>
+                  <button
+                    type="button"
+                    className={isActiveBlockType('heading', 1) ? 'active' : ''}
+                    aria-pressed={isActiveBlockType('heading', 1)}
+                    onClick={() => void setActiveBlockType('heading', 1)}
+                  >
+                    H1
+                  </button>
+                  <button
+                    type="button"
+                    className={isActiveBlockType('heading', 2) ? 'active' : ''}
+                    aria-pressed={isActiveBlockType('heading', 2)}
+                    onClick={() => void setActiveBlockType('heading', 2)}
+                  >
+                    H2
+                  </button>
+                  <button
+                    type="button"
+                    className={isActiveBlockType('quote') ? 'active' : ''}
+                    aria-pressed={isActiveBlockType('quote')}
+                    onClick={() => void setActiveBlockType('quote')}
+                  >
+                    Cita
+                  </button>
                   <button type="button" onClick={() => void changeActiveIndent(-1)}>← Sangría</button>
                   <button type="button" onClick={() => void changeActiveIndent(1)}>Sangría →</button>
                 </>
@@ -1151,10 +1191,30 @@ export function SermonEditorPage() {
 
               {toolMenu === 'list' ? (
                 <>
-                  <button type="button" onClick={() => void setActiveBlockType('paragraph')}>Ninguna</button>
-                  <button type="button" onClick={() => void setActiveBlockType('bullet')}>• Viñetas</button>
-                  <button type="button" onClick={() => void setActiveBlockType('numbered')}>1. Numerada</button>
-                  <button type="button" onClick={() => void setActiveBlockType('task')}>☑ Verificación</button>
+                  <button
+                    type="button"
+                    className={isActiveBlockType('bullet') ? 'active' : ''}
+                    aria-pressed={isActiveBlockType('bullet')}
+                    onClick={() => void setActiveBlockType('bullet')}
+                  >
+                    • Viñetas
+                  </button>
+                  <button
+                    type="button"
+                    className={isActiveBlockType('numbered') ? 'active' : ''}
+                    aria-pressed={isActiveBlockType('numbered')}
+                    onClick={() => void setActiveBlockType('numbered')}
+                  >
+                    1. Numerada
+                  </button>
+                  <button
+                    type="button"
+                    className={isActiveBlockType('task') ? 'active' : ''}
+                    aria-pressed={isActiveBlockType('task')}
+                    onClick={() => void setActiveBlockType('task')}
+                  >
+                    ☑ Verificación
+                  </button>
                 </>
               ) : null}
 
@@ -1180,9 +1240,19 @@ export function SermonEditorPage() {
               className={toolMenu === 'text' ? 'active' : ''}
               aria-pressed={toolMenu === 'text'}
               onClick={() => setToolMenu((current) => current === 'text' ? undefined : 'text')}
-              title="Tipo de texto"
+              title="Encabezados, cita y sangría"
             >
               Aa
+            </button>
+            <button
+              type="button"
+              className={`sermon-toolbar-text${isActiveBlockType('paragraph') ? ' active' : ''}`}
+              aria-pressed={isActiveBlockType('paragraph')}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => void setActiveBlockType('paragraph')}
+              title="Texto normal"
+            >
+              Texto
             </button>
             <button
               type="button"
@@ -1226,8 +1296,11 @@ export function SermonEditorPage() {
             </button>
             <button
               type="button"
-              className={toolMenu === 'list' ? 'active' : ''}
-              aria-pressed={toolMenu === 'list'}
+              className={`${toolMenu === 'list' ? 'active' : ''}${['bullet', 'numbered', 'task'].includes(getActiveTextBlock()?.type ?? '') ? ' active' : ''}`.trim()}
+              aria-pressed={
+                toolMenu === 'list' ||
+                ['bullet', 'numbered', 'task'].includes(getActiveTextBlock()?.type ?? '')
+              }
               onClick={() => setToolMenu((current) => current === 'list' ? undefined : 'list')}
               title="Listas"
             >

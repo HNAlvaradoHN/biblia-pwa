@@ -530,6 +530,13 @@
   outline: none;
 }
 
+.sermon-compose-toolbar .sermon-toolbar-text {
+  flex-basis: 54px;
+  min-width: 54px;
+  padding-inline: 7px;
+  font-size: 0.72rem;
+}
+
 .sermon-toolbar-italic {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.05rem;
@@ -565,9 +572,11 @@
 }
 
 .sermon-tool-panel button:hover,
-.sermon-tool-panel button:focus-visible {
+.sermon-tool-panel button:focus-visible,
+.sermon-tool-panel button.active {
   border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
   background: color-mix(in srgb, var(--accent-soft) 45%, transparent);
+  color: var(--accent);
   outline: none;
 }
 
