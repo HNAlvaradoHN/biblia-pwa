@@ -394,6 +394,49 @@ export function SermonEditorPage() {
   }, [referencePreview])
 
   useEffect(() => {
+    const root = document.documentElement
+    const visualViewport = window.visualViewport
+    let frame = 0
+
+    function updateToolbarViewportOffset() {
+      window.cancelAnimationFrame(frame)
+      frame = window.requestAnimationFrame(() => {
+        if (!visualViewport) {
+          root.style.setProperty('--sermon-toolbar-keyboard-offset', '0px')
+          return
+        }
+
+        const occludedBottom = Math.max(
+          0,
+          window.innerHeight -
+            visualViewport.height -
+            visualViewport.offsetTop,
+        )
+
+        root.style.setProperty(
+          '--sermon-toolbar-keyboard-offset',
+          `${Math.round(occludedBottom)}px`,
+        )
+      })
+    }
+
+    updateToolbarViewportOffset()
+    visualViewport?.addEventListener('resize', updateToolbarViewportOffset)
+    visualViewport?.addEventListener('scroll', updateToolbarViewportOffset)
+    window.addEventListener('resize', updateToolbarViewportOffset)
+    window.addEventListener('orientationchange', updateToolbarViewportOffset)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      visualViewport?.removeEventListener('resize', updateToolbarViewportOffset)
+      visualViewport?.removeEventListener('scroll', updateToolbarViewportOffset)
+      window.removeEventListener('resize', updateToolbarViewportOffset)
+      window.removeEventListener('orientationchange', updateToolbarViewportOffset)
+      root.style.removeProperty('--sermon-toolbar-keyboard-offset')
+    }
+  }, [])
+
+  useEffect(() => {
     function warnUnsaved(event: BeforeUnloadEvent) {
       if (!dirty) return
       event.preventDefault()

@@ -347,8 +347,11 @@ Reglas:
 - durante la edición se ocultan topbar global, navegación inferior y avisos generales que puedan cubrir el documento;
 - el editor mantiene su propio encabezado con volver a Mis prédicas, estado de guardado, Predicar y Guardar;
 - la hoja ocupa el espacio principal disponible y debe sentirse como una pantalla de trabajo independiente;
-- la barra de herramientas permanece flotante mediante posicionamiento `sticky` al borde inferior visible, respetando safe areas y el viewport reducido cuando aparece el teclado;
-- no debe fijarse al layout viewport de forma que pueda quedar debajo del teclado móvil;
-- los paneles de herramientas se abren sobre esa barra sin obligar a desplazarse al final de la nota;
+- la barra de herramientas debe permanecer fija y visible aunque el usuario haga scroll en cualquier dirección;
+- la implementación correcta usa `position: fixed` combinado con `window.visualViewport` para compensar dinámicamente el área ocupada por el teclado móvil;
+- el offset inferior se recalcula ante `resize`, `scroll` del VisualViewport, cambio de orientación y resize general;
+- `sticky` queda descartado para esta barra porque depende del flujo/scroll del documento y puede desaparecer al alejarse de su posición original;
+- un `fixed` sin compensación de VisualViewport también queda descartado porque el teclado puede cubrirlo;
+- los paneles de herramientas se mueven junto con la barra y se abren sobre ella sin obligar a desplazarse al final de la nota;
 - crear una nueva prédica debe continuar navegando directamente a esta pantalla dedicada;
 - el cambio es de experiencia/navegación, no altera el modelo local, autosave ni estructura del documento.
