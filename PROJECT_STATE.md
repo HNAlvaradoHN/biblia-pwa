@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.29**. `0.1.30` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.29`.
+- Producción confirmada: **v0.1.30**. `0.1.31` está en implementación.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -137,9 +137,20 @@ PUBLICADO en `0.1.29`, con división editorial de secciones en implementación c
 - la imagen se muestra compacta por defecto para no ocupar casi toda la pantalla;
 - referencias y autosave incremental deben seguir funcionando igual.
 
+### Paso 4 — barra compacta de formato
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-format-toolbar-0131`.
+
+- barra visible compacta: Aa, B, I, U, S, listas e inserción;
+- Aa: Texto, H1, H2, Cita y sangría;
+- listas: ninguna, viñetas, numeración y checklist;
+- Imagen fue movida al menú `+`;
+- marks inline persistentes para negrita/cursiva/subrayado/tachado;
+- división/unión y edición de texto preservan formato;
+- quedan para el siguiente subhito de la misma barra: Enlace, color/resaltado y deshacer/rehacer.
+
 ## Siguiente paso inmediato
 
-Esperar a que GitHub Pages publique `0.1.30` y validar que Introducción, Bosquejo y puntos, y Conclusión se distinguen claramente sin romper la apariencia de una sola hoja. Después implementar la **barra compacta completa de formato de bloc de notas** y adaptar Modo Predicación a texto estructurado + imágenes.
+Completar CI/merge/publicación de `0.1.31` y validar la barra compacta, persistencia de formato, listas/checklist, sangría e Imagen dentro de `+`. Luego completar Enlace + color/resaltado + deshacer/rehacer sin rediseñar nuevamente la barra. Después adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
