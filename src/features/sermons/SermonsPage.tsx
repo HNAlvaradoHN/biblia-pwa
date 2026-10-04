@@ -241,22 +241,6 @@ export function SermonEditorPage() {
       .join('\n')
   }
 
-  function findBlockAtFieldOffset(section: SermonSection, fieldOffset: number) {
-    const sectionBlocks = blocks
-      .filter((block) => block.section === section)
-      .sort((a, b) => a.order - b.order)
-    let offset = Math.max(0, fieldOffset)
-
-    for (const block of sectionBlocks) {
-      if (offset <= block.text.length) {
-        return { blockId: block.id, offset }
-      }
-      offset -= block.text.length + 1
-    }
-
-    const last = sectionBlocks.at(-1)
-    return last ? { blockId: last.id, offset: last.text.length } : undefined
-  }
 
   async function reloadBlocks() {
     const next = await getSermonBlocks(sermonId)
