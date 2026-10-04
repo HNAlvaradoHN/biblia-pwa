@@ -314,6 +314,7 @@ export function SermonEditorPage() {
   const [toolPanelOpen, setToolPanelOpen] = useState(false)
   const [toolPlacement, setToolPlacement] =
     useState<SermonToolPlacement>(loadSermonToolPlacement)
+  const toolPlacementRef = useRef(toolPlacement)
   const [toolViewport, setToolViewport] = useState(() => ({
     top: 0,
     height:
@@ -981,7 +982,9 @@ export function SermonEditorPage() {
       Math.min(0.88, (event.clientY - viewportTop) / viewportHeight),
     )
 
-    setToolPlacement({ side, topRatio })
+    const nextPlacement = { side, topRatio }
+    toolPlacementRef.current = nextPlacement
+    setToolPlacement(nextPlacement)
   }
 
   function handleToolTabPointerUp(
@@ -995,7 +998,7 @@ export function SermonEditorPage() {
     }
 
     if (drag.moved) {
-      persistToolPlacement(toolPlacement)
+      persistToolPlacement(toolPlacementRef.current)
     } else {
       setToolPanelOpen((current) => !current)
     }
