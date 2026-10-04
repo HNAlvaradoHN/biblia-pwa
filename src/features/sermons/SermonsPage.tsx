@@ -14,10 +14,14 @@ import {
   removeSermonImageBlock,
   saveSermon,
   saveSermonBlockDraft,
+  saveSermonBlockFormatting,
   saveSermonTitle,
   setSermonArchived,
   splitSermonBlock,
   type SermonBlockRecord,
+  type SermonBlockType,
+  type SermonInlineMark,
+  type SermonInlineMarkType,
   type SermonRecord,
   type SermonSection,
   type SermonStatus,
@@ -270,7 +274,10 @@ export function SermonEditorPage() {
     section: SermonSection
     blockId?: string
     offset?: number
+    selectionStart?: number
+    selectionEnd?: number
   }>({ section: 'outline' })
+  const [toolMenu, setToolMenu] = useState<'text' | 'list' | 'insert'>()
   const pendingFocusRef = useRef<{ blockId: string; offset: number } | undefined>(undefined)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
@@ -524,6 +531,103 @@ export function SermonEditorPage() {
     setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
   }
 
+  function getActiveTextBlock() {
+    if (!activePoint.blockId) return undefined
+    const block = blocks.find((item) => item.id === activePoint.blockId)
+    return block?.type === 'image' ? undefined : block
+  }
+
+  async function applyBlockFormatting(
+    blockId: string,
+    changes: Partial<
+      Pick<
+        SermonBlockRecord,
+        'type' | 'marks' | 'indent' | 'checked' | 'headingLevel'
+      >
+    >,
+  ) {
+    const saved = await saveSermonBlockFormatting(blockId, changes)
+    if (!saved) return
+
+    setBlocks((current) =>
+      current.map((block) => (block.id === blockId ? saved : block)),
+    )
+    setSavedAt(saved.updatedAt)
+  }
+
+  function subtractMark(
+    mark: SermonInlineMark,
+    start: number,
+    end: number,
+  ): SermonInlineMark[] {
+    if (mark.end <= start || mark.start >= end) return [mark]
+
+    const fragments: SermonInlineMark[] = []
+    if (mark.start < start) fragments.push({ ...mark, end: start })
+    if (mark.end > end) fragments.push({ ...mark, start: end })
+    return fragments
+  }
+
+  async function toggleInlineMark(type: SermonInlineMarkType) {
+    const block = getActiveTextBlock()
+    if (!block) return
+
+    const start = Math.max(
+      0,
+      Math.min(
+        activePoint.selectionStart ?? activePoint.offset ?? 0,
+        block.text.length,
+      ),
+    )
+    const end = Math.max(
+      start,
+      Math.min(
+        activePoint.selectionEnd ?? activePoint.offset ?? start,
+        block.text.length,
+      ),
+    )
+    if (end <= start) return
+
+    const covered = block.marks.some(
+      (mark) => mark.type === type && mark.start <= start && mark.end >= end,
+    )
+
+    const nextMarks = covered
+      ? block.marks.flatMap((mark) =>
+          mark.type === type ? subtractMark(mark, start, end) : [mark],
+        )
+      : [...block.marks, { type, start, end }]
+
+    await applyBlockFormatting(block.id, { marks: nextMarks })
+    pendingFocusRef.current = { blockId: block.id, offset: end }
+  }
+
+  async function setActiveBlockType(
+    type: SermonBlockType,
+    headingLevel?: 1 | 2,
+  ) {
+    const block = getActiveTextBlock()
+    if (!block) return
+    await applyBlockFormatting(block.id, {
+      type,
+      headingLevel: type === 'heading' ? headingLevel ?? 1 : undefined,
+      checked: type === 'task' ? block.checked ?? false : undefined,
+    })
+    setToolMenu(undefined)
+  }
+
+  async function changeActiveIndent(delta: number) {
+    const block = getActiveTextBlock()
+    if (!block) return
+    await applyBlockFormatting(block.id, {
+      indent: Math.max(0, Math.min(4, block.indent + delta)),
+    })
+  }
+
+  async function toggleTaskChecked(block: SermonBlockRecord) {
+    await applyBlockFormatting(block.id, { checked: !block.checked })
+  }
+
   async function handleImageSelected(files?: FileList | null) {
     if (!files || files.length === 0) return
 
@@ -682,13 +786,29 @@ export function SermonEditorPage() {
                 data-sermon-block-id={block.id}
                 key={block.id}
               >
+                {block.type === 'bullet' ? (
+                  <span className="sermon-block-prefix" aria-hidden="true">•</span>
+                ) : null}
+                {block.type === 'numbered' ? (
+                  <span className="sermon-block-prefix" aria-hidden="true">{index + 1}.</span>
+                ) : null}
+                {block.type === 'task' ? (
+                  <input
+                    className="sermon-task-checkbox"
+                    type="checkbox"
+                    checked={Boolean(block.checked)}
+                    aria-label={`Marcar tarea ${index + 1}`}
+                    onChange={() => void toggleTaskChecked(block)}
+                  />
+                ) : null}
                 <SermonRichTextField
                   ref={(handle) => {
                     if (handle) blockRefs.current.set(block.id, handle)
                     else blockRefs.current.delete(block.id)
                   }}
-                  className="sermon-block-editor"
+                  className={`sermon-block-editor sermon-block-editor-${block.type}${block.type === 'heading' ? ` heading-${block.headingLevel ?? 1}` : ''}`}
                   value={block.text}
+                  marks={block.marks}
                   references={detectedReferences.filter(
                     (reference) => reference.blockId === block.id,
                   )}
@@ -705,11 +825,22 @@ export function SermonEditorPage() {
                     }))
                   }
                   onCaretChange={(offset) =>
-                    setActivePoint({
+                    setActivePoint((current) => ({
+                      ...current,
                       section: block.section,
                       blockId: block.id,
                       offset,
-                    })
+                    }))
+                  }
+                  onSelectionChange={(start, end) =>
+                    setActivePoint((current) => ({
+                      ...current,
+                      section: block.section,
+                      blockId: block.id,
+                      offset: end,
+                      selectionStart: start,
+                      selectionEnd: end,
+                    }))
                   }
                   onSplit={(offset) => void handleSplit(block, offset)}
                   onMergeBackward={() => void handleMerge(block)}
@@ -800,15 +931,107 @@ export function SermonEditorPage() {
           'Cierre, llamado o idea final...',
         )}
 
-        <div className="sermon-compose-toolbar" aria-label="Herramientas de la prédica">
-          <button
-            type="button"
-            onClick={() => imageInputRef.current?.click()}
-            title="Insertar imagen"
-          >
-            <span aria-hidden="true">▧</span>
-            Imagen
-          </button>
+        <div className="sermon-compose-dock">
+          {toolMenu ? (
+            <div className="sermon-tool-panel" role="dialog" aria-label="Herramientas de formato">
+              {toolMenu === 'text' ? (
+                <>
+                  <button type="button" onClick={() => void setActiveBlockType('paragraph')}>Texto</button>
+                  <button type="button" onClick={() => void setActiveBlockType('heading', 1)}>H1</button>
+                  <button type="button" onClick={() => void setActiveBlockType('heading', 2)}>H2</button>
+                  <button type="button" onClick={() => void setActiveBlockType('quote')}>Cita</button>
+                  <button type="button" onClick={() => void changeActiveIndent(-1)}>← Sangría</button>
+                  <button type="button" onClick={() => void changeActiveIndent(1)}>Sangría →</button>
+                </>
+              ) : null}
+
+              {toolMenu === 'list' ? (
+                <>
+                  <button type="button" onClick={() => void setActiveBlockType('paragraph')}>Ninguna</button>
+                  <button type="button" onClick={() => void setActiveBlockType('bullet')}>• Viñetas</button>
+                  <button type="button" onClick={() => void setActiveBlockType('numbered')}>1. Numerada</button>
+                  <button type="button" onClick={() => void setActiveBlockType('task')}>☑ Verificación</button>
+                </>
+              ) : null}
+
+              {toolMenu === 'insert' ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setToolMenu(undefined)
+                      imageInputRef.current?.click()
+                    }}
+                  >
+                    ▧ Imagen
+                  </button>
+                </>
+              ) : null}
+            </div>
+          ) : null}
+
+          <div className="sermon-compose-toolbar" aria-label="Herramientas de la prédica">
+            <button
+              type="button"
+              className={toolMenu === 'text' ? 'active' : ''}
+              aria-pressed={toolMenu === 'text'}
+              onClick={() => setToolMenu((current) => current === 'text' ? undefined : 'text')}
+              title="Tipo de texto"
+            >
+              Aa
+            </button>
+            <button
+              type="button"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => void toggleInlineMark('bold')}
+              title="Negrita"
+            >
+              <strong>B</strong>
+            </button>
+            <button
+              type="button"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => void toggleInlineMark('italic')}
+              title="Cursiva"
+            >
+              <em>I</em>
+            </button>
+            <button
+              type="button"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => void toggleInlineMark('underline')}
+              title="Subrayado"
+            >
+              <u>U</u>
+            </button>
+            <button
+              type="button"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => void toggleInlineMark('strike')}
+              title="Tachado"
+            >
+              <s>S</s>
+            </button>
+            <button
+              type="button"
+              className={toolMenu === 'list' ? 'active' : ''}
+              aria-pressed={toolMenu === 'list'}
+              onClick={() => setToolMenu((current) => current === 'list' ? undefined : 'list')}
+              title="Listas"
+            >
+              ☷
+            </button>
+            <button
+              type="button"
+              className={toolMenu === 'insert' ? 'active' : ''}
+              aria-pressed={toolMenu === 'insert'}
+              onClick={() => setToolMenu((current) => current === 'insert' ? undefined : 'insert')}
+              title="Insertar"
+            >
+              ＋
+            </button>
+          </div>
+
           <input
             ref={imageInputRef}
             className="sermon-image-input"
@@ -819,9 +1042,6 @@ export function SermonEditorPage() {
               void handleImageSelected(event.target.files)
             }
           />
-          <span className="sermon-compose-hint">
-            Insertar imagen en el punto de escritura
-          </span>
         </div>
       </form>
 
