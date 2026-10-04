@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.24**.
+- Producción confirmada: **v0.1.26**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -122,13 +122,20 @@ VALIDADO FÍSICAMENTE en `0.1.26`.
 - GitHub Pages sirve `v0.1.26` y el usuario confirmó físicamente que un cambio autosalvado reaparece después de recargar sin presionar `Guardar`.
 
 ### Paso 3 — editor estructurado
-ACTIVO en la rama `feat/structured-sermon-editor-0127`.
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/structured-sermon-editor-0127`.
 
-Criterio obligatorio de continuidad: al abrir una referencia bíblica desde una prédica y volver desde Biblia, el retorno debe identificar `sermonId + blockId + posición/referencia dentro del bloque + modo de origen`. Debe restaurarse después de renderizar el bloque; el scroll por píxeles queda únicamente como fallback. Aplica tanto al editor como a Modo Predicación.
+- migración v7 convierte bloques legados en bloques independientes sin perder texto;
+- nuevas prédicas nacen directamente sobre bloques estructurados;
+- Enter divide, Backspace al inicio une y cada sección permite añadir bloques;
+- autosave incremental validado en 0.1.26 se conserva por bloque;
+- la barra rápida transitoria de 0.1.24 fue retirada;
+- referencias inline siguen detectándose dentro de cada bloque;
+- retorno Editor → Biblia → Editor usa `sermonId + blockId + posición local` y enfoca el bloque después de renderizar;
+- el retorno de Modo Predicación conserva todavía su mecanismo semántico anterior y se adaptará a `blockId` en el paso 5.
 
 ## Siguiente paso inmediato
 
-Sustituir el editor de texto plano por el editor estructurado sobre `sermonBlocks`, preservando el autosave incremental ya validado. Después implementar la barra compacta de formato y adaptar referencias/Modo Predicación al identificador estable de bloque.
+Completar CI/merge/publicación de `0.1.27` y validar creación/división/unión/autosave y retorno exacto desde Biblia al bloque. Después avanzar al **paso 4 de D-053: barra compacta de formato**.
 
 ## Después de D-053
 
