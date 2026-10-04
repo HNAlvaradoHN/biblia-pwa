@@ -50,6 +50,7 @@ export type SermonBlockType =
   | 'numbered'
   | 'task'
   | 'quote'
+  | 'image'
 
 export type SermonInlineMarkType =
   | 'bold'
@@ -90,6 +91,16 @@ export interface SermonRecord {
   updatedAt: number
 }
 
+export interface SermonAttachmentRecord {
+  id: string
+  sermonId: string
+  mimeType: string
+  name: string
+  blob: Blob
+  createdAt: number
+  updatedAt: number
+}
+
 export interface SermonBlockRecord {
   id: string
   sermonId: string
@@ -101,6 +112,8 @@ export interface SermonBlockRecord {
   indent: number
   checked?: boolean
   headingLevel?: 1 | 2
+  attachmentId?: string
+  altText?: string
   revision: number
   createdAt: number
   updatedAt: number
@@ -156,6 +169,7 @@ class BibliaDatabase extends Dexie {
   highlights!: Table<HighlightRecord, string>
   sermons!: Table<SermonRecord, string>
   sermonBlocks!: Table<SermonBlockRecord, string>
+  sermonAttachments!: Table<SermonAttachmentRecord, string>
 
   constructor() {
     super('biblia-pwa')
@@ -268,6 +282,18 @@ class BibliaDatabase extends Dexie {
           await blocksTable.bulkPut(structured)
         }
       })
+
+    this.version(8).stores({
+      readingProgress: 'id,bookId,chapter,updatedAt',
+      activeVerse: 'id,bookId,chapter,verse,updatedAt',
+      favorites: 'id,bookId,chapter,verse,updatedAt',
+      notes: 'id,bookId,chapter,verse,updatedAt',
+      highlights: 'id,bookId,chapter,verse,updatedAt',
+      sermons: 'id,status,updatedAt,title',
+      sermonBlocks:
+        'id,sermonId,[sermonId+section],[sermonId+section+order],section,order,updatedAt,attachmentId',
+      sermonAttachments: 'id,sermonId,updatedAt',
+    })
   }
 }
 
@@ -423,6 +449,16 @@ export async function toggleHighlight(location: BibleLocation) {
   return true
 }
 
+function makeSermonAttachmentId(sermonId: string) {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return `${sermonId}:attachment:${crypto.randomUUID()}`
+  }
+
+  return `${sermonId}:attachment:${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2, 10)}`
+}
+
 function makeSermonId() {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID()
@@ -527,6 +563,99 @@ export async function saveSermonBlockDraft(blockId: string, text: string) {
 
   await db.sermonBlocks.put(block)
   return block
+}
+
+export async function getSermonAttachment(id: string) {
+  return db.sermonAttachments.get(id)
+}
+
+export async function insertSermonImageBlock(
+  sermonId: string,
+  section: SermonSection,
+  file: File,
+  afterBlockId?: string,
+) {
+  const sermon = await db.sermons.get(sermonId)
+  if (!sermon || !file.type.startsWith('image/')) return undefined
+
+  const sectionBlocks = (await loadSermonBlocks(sermonId)).filter(
+    (block) => block.section === section,
+  )
+  const afterIndex = afterBlockId
+    ? sectionBlocks.findIndex((block) => block.id === afterBlockId)
+    : sectionBlocks.length - 1
+  const insertOrder =
+    afterIndex >= 0 ? sectionBlocks[afterIndex].order + 1 : sectionBlocks.length
+  const now = Date.now()
+  const attachment: SermonAttachmentRecord = {
+    id: makeSermonAttachmentId(sermonId),
+    sermonId,
+    mimeType: file.type,
+    name: file.name || 'Imagen',
+    blob: file,
+    createdAt: now,
+    updatedAt: now,
+  }
+  const block: SermonBlockRecord = {
+    id: makeSermonBlockId(sermonId),
+    sermonId,
+    section,
+    order: insertOrder,
+    type: 'image',
+    text: '',
+    marks: [],
+    indent: 0,
+    attachmentId: attachment.id,
+    altText: file.name || 'Imagen',
+    revision: 1,
+    createdAt: now,
+    updatedAt: now,
+  }
+
+  await db.transaction(
+    'rw',
+    db.sermonBlocks,
+    db.sermonAttachments,
+    async () => {
+      await db.sermonBlocks
+        .where('[sermonId+section]')
+        .equals([sermonId, section])
+        .filter((item) => item.order >= insertOrder)
+        .modify((item) => {
+          item.order += 1
+        })
+      await db.sermonAttachments.add(attachment)
+      await db.sermonBlocks.add(block)
+    },
+  )
+
+  return block
+}
+
+export async function removeSermonImageBlock(blockId: string) {
+  const block = await db.sermonBlocks.get(blockId)
+  if (!block || block.type !== 'image') return false
+
+  await db.transaction(
+    'rw',
+    db.sermonBlocks,
+    db.sermonAttachments,
+    async () => {
+      await db.sermonBlocks.delete(block.id)
+      if (block.attachmentId) {
+        await db.sermonAttachments.delete(block.attachmentId)
+      }
+      await db.sermonBlocks
+        .where('[sermonId+section]')
+        .equals([block.sermonId, block.section])
+        .filter((item) => item.order > block.order)
+        .modify((item) => {
+          item.order -= 1
+        })
+    },
+  )
+
+  return true
 }
 
 export async function appendSermonBlock(
@@ -706,6 +835,10 @@ export async function duplicateSermon(id: string) {
   if (!existing) return undefined
 
   const sourceBlocks = await loadSermonBlocks(id)
+  const sourceAttachments = await db.sermonAttachments
+    .where('sermonId')
+    .equals(id)
+    .toArray()
   const now = Date.now()
   const record: SermonRecord = {
     ...existing,
@@ -715,6 +848,22 @@ export async function duplicateSermon(id: string) {
     createdAt: now,
     updatedAt: now,
   }
+
+  const attachmentMap = new Map<string, string>()
+  const attachments = sourceAttachments.map(
+    (attachment): SermonAttachmentRecord => {
+      const nextId = makeSermonAttachmentId(record.id)
+      attachmentMap.set(attachment.id, nextId)
+      return {
+        ...attachment,
+        id: nextId,
+        sermonId: record.id,
+        createdAt: now,
+        updatedAt: now,
+      }
+    },
+  )
+
   const blocks =
     sourceBlocks.length > 0
       ? sourceBlocks.map(
@@ -722,6 +871,9 @@ export async function duplicateSermon(id: string) {
             ...block,
             id: makeSermonBlockId(record.id),
             sermonId: record.id,
+            attachmentId: block.attachmentId
+              ? attachmentMap.get(block.attachmentId)
+              : undefined,
             revision: 1,
             createdAt: now,
             updatedAt: now,
@@ -729,10 +881,19 @@ export async function duplicateSermon(id: string) {
         )
       : makeInitialSermonBlocks(record)
 
-  await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
-    await db.sermons.add(record)
-    await db.sermonBlocks.bulkPut(blocks)
-  })
+  await db.transaction(
+    'rw',
+    db.sermons,
+    db.sermonBlocks,
+    db.sermonAttachments,
+    async () => {
+      await db.sermons.add(record)
+      if (attachments.length > 0) {
+        await db.sermonAttachments.bulkAdd(attachments)
+      }
+      await db.sermonBlocks.bulkPut(blocks)
+    },
+  )
 
   return record
 }
@@ -755,10 +916,17 @@ export async function deleteSermon(id: string) {
   const existing = await db.sermons.get(id)
   if (!existing) return false
 
-  await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
-    await db.sermons.delete(id)
-    await db.sermonBlocks.where('sermonId').equals(id).delete()
-  })
+  await db.transaction(
+    'rw',
+    db.sermons,
+    db.sermonBlocks,
+    db.sermonAttachments,
+    async () => {
+      await db.sermons.delete(id)
+      await db.sermonBlocks.where('sermonId').equals(id).delete()
+      await db.sermonAttachments.where('sermonId').equals(id).delete()
+    },
+  )
 
   return true
 }
