@@ -22,6 +22,7 @@ type SermonRichTextFieldProps = {
   onChange: (value: string) => void
   onReferenceOpen: (reference: SermonBibleReference) => void
   onFocus?: () => void
+  onCaretChange?: (offset: number) => void
   onSplit?: (offset: number) => void
   onMergeBackward?: () => void
 }
@@ -94,6 +95,7 @@ export const SermonRichTextField = forwardRef<
     onChange,
     onReferenceOpen,
     onFocus,
+    onCaretChange,
     onSplit,
     onMergeBackward,
   },
@@ -163,10 +165,17 @@ export const SermonRichTextField = forwardRef<
     pendingCaretRef.current = null
   }, [referenceSignature, value])
 
+  function reportCaret() {
+    const editor = editorRef.current
+    if (!editor) return
+    onCaretChange?.(getCaretOffset(editor))
+  }
+
   function handleInput() {
     const editor = editorRef.current
     if (!editor) return
     pendingCaretRef.current = getCaretOffset(editor)
+    onCaretChange?.(pendingCaretRef.current)
     onChange(editor.textContent ?? '')
   }
 
@@ -241,9 +250,16 @@ export const SermonRichTextField = forwardRef<
       data-placeholder={placeholder}
       spellCheck
       onInput={handleInput}
-      onFocus={onFocus}
-      onClickCapture={handleClick}
+      onFocus={() => {
+        onFocus?.()
+        reportCaret()
+      }}
+      onClickCapture={(event) => {
+        handleClick(event)
+        reportCaret()
+      }}
       onKeyDown={handleKeyDown}
+      onKeyUp={reportCaret}
       onPaste={handlePaste}
     />
   )
