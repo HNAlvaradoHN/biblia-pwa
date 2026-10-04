@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.37**. `0.1.38` completa las herramientas iniciales del panel lateral.
+- Producción confirmada: **v0.1.37**. `0.1.38` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.37`.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -172,7 +172,7 @@ PUBLICADO en `0.1.37`; dirección física aceptada por el usuario.
 - mantiene Texto, H1/H2/Cita, B/I/U/S, listas/checklist, sangría y Galería.
 
 ### Paso 4.3 — herramientas complementarias
-IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-link-color-history-0138`.
+IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
 
 - Enlace estructurado sobre selección o escritura posterior;
 - color de texto y resaltado como marks estructurados;
@@ -183,7 +183,7 @@ IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-link-color-history-01
 
 ## Siguiente paso inmediato
 
-Completar CI/merge/publicación de `0.1.38` y validar Enlace, color, resaltado y Deshacer/Rehacer dentro del panel lateral. Después adaptar Modo Predicación para renderizar texto enriquecido + imágenes y mantener retorno exacto desde referencias bíblicas; luego ejecutar validación integral del editor.
+Esperar a que GitHub Pages publique `0.1.38` y validar Enlace, color, resaltado y Deshacer/Rehacer dentro del panel lateral. Después adaptar Modo Predicación para renderizar texto enriquecido + imágenes y mantener retorno exacto desde referencias bíblicas; luego ejecutar validación integral del editor.
 
 ## Después de D-053
 
