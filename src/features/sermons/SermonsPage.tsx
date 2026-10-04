@@ -1848,6 +1848,52 @@ export function SermonEditorPage() {
     syncDocumentInput()
   }
 
+  function handleDocumentBeforeInput(
+    event: ReactFormEvent<HTMLDivElement>,
+  ) {
+    const nativeEvent = event.nativeEvent as InputEvent
+    const inputType = nativeEvent.inputType
+    const selection = window.getSelection()
+    if (!selection || selection.rangeCount === 0) return
+
+    const range = selection.getRangeAt(0)
+    const entries = selectedTextBlocks(range)
+    const startInfo = textBlockFromNode(range.startContainer)
+    const endInfo = textBlockFromNode(range.endContainer)
+    const spansStructuredContent =
+      entries.length > 1 ||
+      !startInfo ||
+      !endInfo ||
+      startInfo.block.id !== endInfo.block.id
+
+    if (
+      !selection.isCollapsed &&
+      spansStructuredContent &&
+      (inputType.startsWith('delete') || inputType === 'historyUndo')
+    ) {
+      event.preventDefault()
+      void deleteDocumentSelection()
+      return
+    }
+
+    if (
+      selection.isCollapsed &&
+      (inputType === 'insertParagraph' || inputType === 'insertLineBreak')
+    ) {
+      const info = textBlockFromNode(selection.focusNode)
+      if (!info || !selection.focusNode) return
+
+      const offset = offsetInsideEditor(
+        info.editor,
+        selection.focusNode,
+        selection.focusOffset,
+        info.block.text.length,
+      )
+      event.preventDefault()
+      void handleSplit(info.block, offset)
+    }
+  }
+
   function handleDocumentKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
     if (event.defaultPrevented) return
 
@@ -2173,6 +2219,7 @@ export function SermonEditorPage() {
           aria-label="Contenido de la prédica"
           aria-multiline="true"
           spellCheck
+          onBeforeInput={handleDocumentBeforeInput}
           onInput={handleDocumentInput}
           onKeyDown={handleDocumentKeyDown}
           onKeyUp={reportDocumentSelection}
