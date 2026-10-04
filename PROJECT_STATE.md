@@ -143,7 +143,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.23`: añadir eliminación explícita de prédicas sin perder las validaciones físicas pendientes del flujo `0.1.22`.
+Publicar y validar físicamente `0.1.23`: la eliminación explícita de prédicas ya está fusionada en `main`, pero GitHub Pages aún sirve `v0.1.22`.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -197,7 +197,7 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 3. Mantener pendiente la validación de `0.1.22`: bloqueo del scroll detrás de la vista rápida, `Cerrar` + `Leer capítulo`, `Volver a Predicación` y retorno a la misma posición.
 4. Después de esas validaciones, continuar el refinamiento de Modo Predicación.
 
-Estado de despliegue actual: producción está en `0.1.22`. `0.1.23` está implementándose en la rama `feat/sermon-delete-0123` y no debe presentarse como lista para probar hasta completar CI, merge y publicación.
+Estado de despliegue actual: `0.1.23` fue fusionada mediante PR #46 y su CI pasó TypeScript, ESLint, build PWA y auditoría. GitHub Pages todavía sirve `v0.1.22`, por lo que `0.1.23` permanece PENDIENTE DE PUBLICACIÓN y no debe presentarse todavía como lista para probar.
 
 ## Después de este objetivo
 
