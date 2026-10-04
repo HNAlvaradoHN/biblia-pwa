@@ -1515,7 +1515,7 @@ export function SermonEditorPage() {
         blockId: paragraphAfterImages.id,
         offset: 0,
       })
-      setBlocks(nextBlocks)
+      replaceBlocks(nextBlocks)
     }
 
     if (latestUpdatedAt > 0) setSavedAt(latestUpdatedAt)
@@ -1866,10 +1866,22 @@ export function SermonEditorPage() {
       !endInfo ||
       startInfo.block.id !== endInfo.block.id
 
+    if (inputType === 'historyUndo') {
+      event.preventDefault()
+      void undoHistory()
+      return
+    }
+
+    if (inputType === 'historyRedo') {
+      event.preventDefault()
+      void redoHistory()
+      return
+    }
+
     if (
       !selection.isCollapsed &&
       spansStructuredContent &&
-      (inputType.startsWith('delete') || inputType === 'historyUndo')
+      inputType.startsWith('delete')
     ) {
       event.preventDefault()
       void deleteDocumentSelection()
@@ -1919,10 +1931,17 @@ export function SermonEditorPage() {
 
     const range = selection.getRangeAt(0)
     const entries = selectedTextBlocks(range)
+    const startInfo = textBlockFromNode(range.startContainer)
+    const endInfo = textBlockFromNode(range.endContainer)
+    const spansStructuredContent =
+      entries.length > 1 ||
+      !startInfo ||
+      !endInfo ||
+      startInfo.block.id !== endInfo.block.id
 
     if (
       !selection.isCollapsed &&
-      entries.length > 1 &&
+      spansStructuredContent &&
       (event.key === 'Backspace' || event.key === 'Delete')
     ) {
       event.preventDefault()
