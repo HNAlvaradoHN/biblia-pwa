@@ -711,3 +711,19 @@ Reglas:
 - antes del borrado debe mostrarse una confirmación explícita indicando que la acción no se puede deshacer;
 - la acción destructiva debe diferenciarse visualmente de Abrir, Duplicar, Archivar y Restaurar;
 - no se implementa papelera en esta etapa; si en el futuro se aprueba recuperación de borrados, será una función separada.
+
+
+## D-052 — Retorno semántico y herramientas rápidas de bosquejo
+Estado: APROBADA
+
+Modo Predicación debe regresar al contexto real desde el que se abrió una referencia y el editor de Bosquejo debe ofrecer operaciones rápidas sin abandonar el modelo de texto plano.
+
+Reglas:
+
+- el retorno desde Biblia a Modo Predicación debe identificar la referencia de origen por campo y posición, no depender únicamente de píxeles de scroll;
+- la restauración se ejecuta después de que la prédica esté cargada/renderizada;
+- al encontrar la referencia, se centra y se marca temporalmente para reorientar al predicador;
+- el scroll previo queda solo como respaldo si la referencia ya no existe;
+- `Bosquejo y puntos` ofrece acciones rápidas iniciales para numeración, viñetas, aumentar sangría y reducir sangría;
+- las acciones trabajan sobre línea/selección y mantienen el contenido persistido como texto plano;
+- no se introduce HTML persistido ni un editor enriquecido completo en esta etapa.
