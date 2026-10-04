@@ -424,7 +424,11 @@ export function SermonEditorPage() {
         for (const blockId of blockIds) {
           const block = blocks.find((item) => item.id === blockId)
           if (!block) continue
-          const savedBlock = await saveSermonBlockDraft(blockId, block.text)
+          const savedBlock = await saveSermonBlockDraft(
+            blockId,
+            block.text,
+            block.marks,
+          )
           if (savedBlock) {
             latestSavedAt = Math.max(latestSavedAt, savedBlock.updatedAt)
           }
@@ -449,10 +453,71 @@ export function SermonEditorPage() {
     setDirty(true)
   }
 
+  function adjustMarksForTextChange(
+    previousText: string,
+    nextText: string,
+    marks: SermonInlineMark[],
+  ) {
+    if (previousText === nextText || marks.length === 0) return marks
+
+    let prefix = 0
+    while (
+      prefix < previousText.length &&
+      prefix < nextText.length &&
+      previousText[prefix] === nextText[prefix]
+    ) {
+      prefix += 1
+    }
+
+    let suffix = 0
+    while (
+      suffix < previousText.length - prefix &&
+      suffix < nextText.length - prefix &&
+      previousText[previousText.length - 1 - suffix] ===
+        nextText[nextText.length - 1 - suffix]
+    ) {
+      suffix += 1
+    }
+
+    const oldChangedEnd = previousText.length - suffix
+    const newChangedEnd = nextText.length - suffix
+    const delta = newChangedEnd - oldChangedEnd
+
+    return marks
+      .map((mark) => {
+        if (mark.end <= prefix) return mark
+        if (mark.start >= oldChangedEnd) {
+          return {
+            ...mark,
+            start: Math.max(0, mark.start + delta),
+            end: Math.max(0, mark.end + delta),
+          }
+        }
+
+        return {
+          ...mark,
+          start: Math.min(mark.start, prefix),
+          end: Math.max(prefix, mark.end + delta),
+        }
+      })
+      .map((mark) => ({
+        ...mark,
+        start: Math.min(nextText.length, mark.start),
+        end: Math.min(nextText.length, mark.end),
+      }))
+      .filter((mark) => mark.end > mark.start)
+  }
+
   function markBlockDirty(blockId: string, value: string) {
     setBlocks((current) =>
       current.map((block) =>
-        block.id === blockId ? { ...block, text: value } : block,
+        block.id === blockId
+          ? {
+              ...block,
+              text: value,
+              marks: adjustMarksForTextChange(block.text, value, block.marks),
+            }
+          : block,
       ),
     )
     dirtyBlockIdsRef.current.add(blockId)
@@ -464,7 +529,9 @@ export function SermonEditorPage() {
     const ids = [...dirtyBlockIdsRef.current]
     for (const blockId of ids) {
       const block = blocks.find((item) => item.id === blockId)
-      if (block) await saveSermonBlockDraft(blockId, block.text)
+      if (block) {
+        await saveSermonBlockDraft(blockId, block.text, block.marks)
+      }
     }
     if (dirtyTitleRef.current) {
       await saveSermonTitle(sermonId, title)
@@ -514,7 +581,7 @@ export function SermonEditorPage() {
     if (previous.type === 'image') return
 
     if (dirtyBlockIdsRef.current.has(previous.id)) {
-      await saveSermonBlockDraft(previous.id, previous.text)
+      await saveSermonBlockDraft(previous.id, previous.text, previous.marks)
     }
 
     const merged = await mergeSermonBlockWithPrevious(block.id, block.text)
