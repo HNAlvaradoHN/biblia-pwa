@@ -1,64 +1,261 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router'
-import { getSermon, type SermonRecord } from '../../data/db'
 import {
-  detectAllSermonReferences,
+  Fragment,
+  useEffect,
+  useMemo,
+  useState,
+  type CSSProperties,
+} from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router'
+import {
+  getSermon,
+  getSermonAttachment,
+  getSermonBlocks,
+  type SermonBlockRecord,
+  type SermonInlineMark,
+  type SermonRecord,
+  type SermonSection,
+} from '../../data/db'
+import {
+  detectSermonBlockReferences,
   getReferencePassage,
   type SermonBibleReference,
-  type SermonFieldName,
 } from './sermonReferences'
 import './sermons.css'
 
-function PresentationText({
-  text,
-  field,
+const SECTION_LABELS: Record<SermonSection, string> = {
+  introduction: 'Introducción',
+  outline: 'Bosquejo y puntos',
+  conclusion: 'Conclusión',
+}
+
+function markClassNames(marks: SermonInlineMark[]) {
+  const classes: string[] = []
+
+  for (const mark of marks) {
+    if (mark.type === 'bold') classes.push('sermon-inline-bold')
+    if (mark.type === 'italic') classes.push('sermon-inline-italic')
+    if (mark.type === 'underline') classes.push('sermon-inline-underline')
+    if (mark.type === 'strike') classes.push('sermon-inline-strike')
+    if (mark.type === 'link') classes.push('sermon-inline-link')
+    if (mark.type === 'textColor' && mark.color) {
+      classes.push(`sermon-text-color-${mark.color}`)
+    }
+    if (mark.type === 'highlight' && mark.color) {
+      classes.push(`sermon-highlight-${mark.color}`)
+    }
+  }
+
+  return classes.join(' ')
+}
+
+function PresentationImage({ block }: { block: SermonBlockRecord }) {
+  const [src, setSrc] = useState<string>()
+
+  useEffect(() => {
+    let disposed = false
+    let objectUrl: string | undefined
+
+    if (!block.attachmentId) {
+      setSrc(undefined)
+      return
+    }
+
+    void getSermonAttachment(block.attachmentId).then((attachment) => {
+      if (disposed || !attachment) return
+      objectUrl = URL.createObjectURL(attachment.blob)
+      setSrc(objectUrl)
+    })
+
+    return () => {
+      disposed = true
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+    }
+  }, [block.attachmentId])
+
+  if (!src) {
+    return (
+      <div
+        className="sermon-presentation-image-loading"
+        data-sermon-block-id={block.id}
+      >
+        Cargando imagen…
+      </div>
+    )
+  }
+
+  return (
+    <figure
+      className="sermon-presentation-image"
+      data-sermon-block-id={block.id}
+    >
+      <img src={src} alt={block.altText || 'Imagen de la prédica'} />
+      {block.altText ? <figcaption>{block.altText}</figcaption> : null}
+    </figure>
+  )
+}
+
+function PresentationTextBlock({
+  block,
   references,
   onReferenceOpen,
 }: {
-  text: string
-  field: SermonFieldName
+  block: SermonBlockRecord
   references: SermonBibleReference[]
   onReferenceOpen: (reference: SermonBibleReference) => void
 }) {
-  const fieldReferences = references
-    .filter((reference) => reference.field === field)
+  const blockReferences = references
+    .filter((reference) => reference.blockId === block.id)
     .sort((a, b) => a.startIndex - b.startIndex)
 
-  if (!text.trim()) return <p className="sermon-presentation-empty">Sin contenido.</p>
-
-  const parts: Array<{ text: string; reference?: SermonBibleReference }> = []
-  let cursor = 0
-
-  for (const reference of fieldReferences) {
-    if (reference.startIndex < cursor || reference.endIndex > text.length) continue
-    if (reference.startIndex > cursor) {
-      parts.push({ text: text.slice(cursor, reference.startIndex) })
-    }
-    parts.push({ text: text.slice(reference.startIndex, reference.endIndex), reference })
-    cursor = reference.endIndex
+  const boundaries = new Set<number>([0, block.text.length])
+  for (const reference of blockReferences) {
+    boundaries.add(reference.startIndex)
+    boundaries.add(reference.endIndex)
+  }
+  for (const mark of block.marks) {
+    boundaries.add(Math.max(0, Math.min(block.text.length, mark.start)))
+    boundaries.add(Math.max(0, Math.min(block.text.length, mark.end)))
   }
 
-  if (cursor < text.length) parts.push({ text: text.slice(cursor) })
+  const sorted = [...boundaries].sort((a, b) => a - b)
+  const content = sorted.slice(0, -1).map((start, index) => {
+    const end = sorted[index + 1]
+    if (end <= start) return null
+
+    const text = block.text.slice(start, end)
+    const reference = blockReferences.find(
+      (item) => start >= item.startIndex && end <= item.endIndex,
+    )
+    const activeMarks = block.marks.filter(
+      (mark) => start >= mark.start && end <= mark.end,
+    )
+    const className = markClassNames(activeMarks)
+    const link = activeMarks.find(
+      (mark) => mark.type === 'link' && mark.href,
+    )
+
+    if (reference) {
+      return (
+        <button
+          className={['sermon-presentation-reference', className]
+            .filter(Boolean)
+            .join(' ')}
+          type="button"
+          key={`${block.id}:${start}:${end}`}
+          data-sermon-block-id={block.id}
+          data-sermon-field={block.section}
+          data-sermon-start-index={reference.startIndex}
+          onClick={() => onReferenceOpen(reference)}
+        >
+          {text}
+        </button>
+      )
+    }
+
+    if (link?.href) {
+      return (
+        <a
+          className={className}
+          href={link.href}
+          key={`${block.id}:${start}:${end}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          {text}
+        </a>
+      )
+    }
+
+    return className ? (
+      <span className={className} key={`${block.id}:${start}:${end}`}>
+        {text}
+      </span>
+    ) : (
+      <Fragment key={`${block.id}:${start}:${end}`}>{text}</Fragment>
+    )
+  })
+
+  const style: CSSProperties | undefined =
+    block.indent > 0
+      ? { paddingInlineStart: `${block.indent * 1.1}rem` }
+      : undefined
+
+  const className = [
+    'sermon-presentation-block',
+    `sermon-presentation-block-${block.type}`,
+    block.type === 'heading'
+      ? `heading-${block.headingLevel ?? 1}`
+      : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <p className="sermon-presentation-text">
-      {parts.map((part, index) =>
-        part.reference ? (
-          <button
-            className="sermon-presentation-reference"
-            type="button"
-            key={part.reference.id}
-            data-sermon-field={field}
-            data-sermon-start-index={part.reference.startIndex}
-            onClick={() => onReferenceOpen(part.reference!)}
-          >
-            {part.text}
-          </button>
-        ) : (
-          <Fragment key={index}>{part.text}</Fragment>
-        ),
+    <div
+      className={className}
+      data-sermon-block-id={block.id}
+      style={style}
+    >
+      {block.type === 'bullet' ? (
+        <span className="sermon-presentation-prefix" aria-hidden="true">
+          •
+        </span>
+      ) : null}
+      {block.type === 'numbered' ? (
+        <span className="sermon-presentation-prefix" aria-hidden="true">
+          1.
+        </span>
+      ) : null}
+      {block.type === 'task' ? (
+        <span className="sermon-presentation-prefix" aria-hidden="true">
+          {block.checked ? '☑' : '☐'}
+        </span>
+      ) : null}
+      <p>{content}</p>
+    </div>
+  )
+}
+
+function PresentationSection({
+  section,
+  blocks,
+  references,
+  onReferenceOpen,
+}: {
+  section: SermonSection
+  blocks: SermonBlockRecord[]
+  references: SermonBibleReference[]
+  onReferenceOpen: (reference: SermonBibleReference) => void
+}) {
+  const sectionBlocks = blocks
+    .filter((block) => block.section === section)
+    .sort((a, b) => a.order - b.order)
+  const hasContent = sectionBlocks.some(
+    (block) => block.type === 'image' || block.text.trim().length > 0,
+  )
+
+  return (
+    <section>
+      <h2>{SECTION_LABELS[section]}</h2>
+      {!hasContent ? (
+        <p className="sermon-presentation-empty">Sin contenido.</p>
+      ) : (
+        <div className="sermon-presentation-blocks">
+          {sectionBlocks.map((block) =>
+            block.type === 'image' ? (
+              <PresentationImage block={block} key={block.id} />
+            ) : (
+              <PresentationTextBlock
+                block={block}
+                key={block.id}
+                references={references}
+                onReferenceOpen={onReferenceOpen}
+              />
+            ),
+          )}
+        </div>
       )}
-    </p>
+    </section>
   )
 }
 
@@ -67,28 +264,30 @@ export function SermonPresentationPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [sermon, setSermon] = useState<SermonRecord>()
-  const [referencePreview, setReferencePreview] = useState<SermonBibleReference>()
+  const [blocks, setBlocks] = useState<SermonBlockRecord[]>([])
+  const [referencePreview, setReferencePreview] =
+    useState<SermonBibleReference>()
 
   useEffect(() => {
     let cancelled = false
-    void getSermon(sermonId).then((record) => {
-      if (!cancelled && record) setSermon(record)
+
+    void Promise.all([
+      getSermon(sermonId),
+      getSermonBlocks(sermonId),
+    ]).then(([record, storedBlocks]) => {
+      if (cancelled || !record) return
+      setSermon(record)
+      setBlocks(storedBlocks)
     })
+
     return () => {
       cancelled = true
     }
   }, [sermonId])
 
   const references = useMemo(
-    () =>
-      sermon
-        ? detectAllSermonReferences({
-            introduction: sermon.introduction,
-            outline: sermon.outline,
-            conclusion: sermon.conclusion,
-          })
-        : [],
-    [sermon],
+    () => detectSermonBlockReferences(blocks),
+    [blocks],
   )
 
   const previewPassage = useMemo(
@@ -108,30 +307,44 @@ export function SermonPresentationPage() {
   }, [referencePreview])
 
   useEffect(() => {
-    if (!sermon) return
+    if (!sermon || blocks.length === 0) return
 
     const params = new URLSearchParams(location.search)
-    const returnField = params.get('returnField') as SermonFieldName | null
+    const returnBlock = params.get('returnBlock')
+    const returnField = params.get('returnField')
     const returnAt = Number(params.get('returnAt'))
     const returnScroll = Number(params.get('returnScroll'))
-    if (!returnField && !Number.isFinite(returnScroll)) return
+
+    if (!returnBlock && !returnField && !Number.isFinite(returnScroll)) {
+      return
+    }
 
     let highlightTimer: number | undefined
     const frame = window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         const target =
-          returnField && Number.isFinite(returnAt)
+          returnBlock && Number.isFinite(returnAt)
             ? document.querySelector<HTMLElement>(
-                `[data-sermon-field="${returnField}"][data-sermon-start-index="${returnAt}"]`,
+                `[data-sermon-block-id="${returnBlock}"][data-sermon-start-index="${returnAt}"]`,
               )
-            : null
+            : returnField && Number.isFinite(returnAt)
+              ? document.querySelector<HTMLElement>(
+                  `[data-sermon-field="${returnField}"][data-sermon-start-index="${returnAt}"]`,
+                )
+              : null
 
         if (target) {
           target.scrollIntoView({ block: 'center', behavior: 'auto' })
           target.classList.add('return-focus')
-          highlightTimer = window.setTimeout(() => target.classList.remove('return-focus'), 2000)
+          highlightTimer = window.setTimeout(
+            () => target.classList.remove('return-focus'),
+            2000,
+          )
         } else if (Number.isFinite(returnScroll)) {
-          window.scrollTo({ top: Math.max(0, returnScroll), behavior: 'auto' })
+          window.scrollTo({
+            top: Math.max(0, returnScroll),
+            behavior: 'auto',
+          })
         }
 
         navigate(`/predicas/${sermonId}/presentar`, { replace: true })
@@ -142,7 +355,7 @@ export function SermonPresentationPage() {
       window.cancelAnimationFrame(frame)
       if (highlightTimer) window.clearTimeout(highlightTimer)
     }
-  }, [location.search, navigate, sermon, sermonId])
+  }, [blocks, location.search, navigate, sermon, sermonId])
 
   useEffect(() => {
     type WakeLockSentinelLike = {
@@ -187,7 +400,10 @@ export function SermonPresentationPage() {
 
     return () => {
       cancelled = true
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      document.removeEventListener(
+        'visibilitychange',
+        handleVisibilityChange,
+      )
       if (sentinel && !sentinel.released) {
         void sentinel.release()
       }
@@ -200,13 +416,15 @@ export function SermonPresentationPage() {
       JSON.stringify({
         sermonId,
         field: reference.field,
+        blockId: reference.blockId,
         startIndex: reference.startIndex,
         mode: 'presentation',
         scrollY: window.scrollY,
       }),
     )
 
-    const anchor = `verse-${reference.bookId}-${reference.chapter}-${reference.verseStart}`
+    const anchor =
+      `verse-${reference.bookId}-${reference.chapter}-${reference.verseStart}`
     navigate(
       `/biblia/${reference.bookId}/${reference.chapter}?fromSermon=1#${anchor}`,
     )
@@ -246,35 +464,17 @@ export function SermonPresentationPage() {
       </header>
 
       <article className="sermon-presentation-card">
-        <section>
-          <h2>Introducción</h2>
-          <PresentationText
-            text={sermon.introduction}
-            field="introduction"
-            references={references}
-            onReferenceOpen={setReferencePreview}
-          />
-        </section>
-
-        <section>
-          <h2>Bosquejo y puntos</h2>
-          <PresentationText
-            text={sermon.outline}
-            field="outline"
-            references={references}
-            onReferenceOpen={setReferencePreview}
-          />
-        </section>
-
-        <section>
-          <h2>Conclusión</h2>
-          <PresentationText
-            text={sermon.conclusion}
-            field="conclusion"
-            references={references}
-            onReferenceOpen={setReferencePreview}
-          />
-        </section>
+        {(['introduction', 'outline', 'conclusion'] as SermonSection[]).map(
+          (section) => (
+            <PresentationSection
+              blocks={blocks}
+              key={section}
+              onReferenceOpen={setReferencePreview}
+              references={references}
+              section={section}
+            />
+          ),
+        )}
       </article>
 
       {referencePreview ? (
