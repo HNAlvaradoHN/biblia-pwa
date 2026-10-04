@@ -96,10 +96,12 @@ function PresentationImage({ block }: { block: SermonBlockRecord }) {
 
 function PresentationTextBlock({
   block,
+  listNumber,
   references,
   onReferenceOpen,
 }: {
   block: SermonBlockRecord
+  listNumber?: number
   references: SermonBibleReference[]
   onReferenceOpen: (reference: SermonBibleReference) => void
 }) {
@@ -203,7 +205,7 @@ function PresentationTextBlock({
       ) : null}
       {block.type === 'numbered' ? (
         <span className="sermon-presentation-prefix" aria-hidden="true">
-          1.
+          {listNumber ?? 1}.
         </span>
       ) : null}
       {block.type === 'task' ? (
@@ -241,13 +243,20 @@ function PresentationSection({
         <p className="sermon-presentation-empty">Sin contenido.</p>
       ) : (
         <div className="sermon-presentation-blocks">
-          {sectionBlocks.map((block) =>
+          {sectionBlocks.map((block, index) =>
             block.type === 'image' ? (
               <PresentationImage block={block} key={block.id} />
             ) : (
               <PresentationTextBlock
                 block={block}
                 key={block.id}
+                listNumber={
+                  block.type === 'numbered'
+                    ? sectionBlocks
+                        .slice(0, index + 1)
+                        .filter((item) => item.type === 'numbered').length
+                    : undefined
+                }
                 references={references}
                 onReferenceOpen={onReferenceOpen}
               />
