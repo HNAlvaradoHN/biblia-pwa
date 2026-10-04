@@ -191,18 +191,20 @@ PUBLICADO en `0.1.39`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - no cambia la apariencia ni la pestaña lateral.
 
 ### Paso 5 — Modo Predicación sobre documento estructurado
-PUBLICADO en `0.1.40`, PENDIENTE DE VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.40`, VALIDACIÓN FÍSICA PARCIAL.
 
 - Modo Predicación consume bloques estructurados;
 - imágenes aparecen en el mismo flujo de la prédica;
 - renderiza encabezados, citas, listas/checklist, sangría y marks inline;
 - referencias usan `blockId` para retorno exacto;
 - retorno desde Biblia prioriza bloque/referencia y conserva scroll como fallback;
-- borrar imagen en edición exige confirmación irreversible.
+- borrar imagen en edición exige confirmación irreversible;
+- VALIDADO FÍSICAMENTE por el usuario: las imágenes insertadas aparecen en Modo Predicación;
+- VALIDADO FÍSICAMENTE por el usuario: eliminar una imagen pide confirmación antes de borrar.
 
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.40`: imagen visible al predicar, orden correcto, formato enriquecido, referencia bíblica → Leer capítulo → Volver a Predicación al mismo punto, y confirmación obligatoria antes de eliminar una imagen. Después ejecutar validación integral del editor y Modo Predicación.
+Completar la validación física restante de `0.1.40`: orden de imágenes/contenido, formato enriquecido y referencia bíblica → Leer capítulo → Volver a Predicación al mismo punto. Después ejecutar validación integral del editor y Modo Predicación.
 
 ## Después de D-053
 
