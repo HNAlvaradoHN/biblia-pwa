@@ -288,11 +288,6 @@
 
 .sermon-block-list {
   display: grid;
-  gap: 6px;
-}
-
-.sermon-block-list {
-  display: grid;
   gap: 0;
   padding: 8px 12px;
   border: 1px solid var(--line);
