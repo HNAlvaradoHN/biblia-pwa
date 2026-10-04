@@ -116,6 +116,22 @@ function makeLegacySermonBlockId(sermonId: string, section: SermonSection) {
   return `${sermonId}:legacy:${section}`
 }
 
+function makeSermonBlockId(sermonId: string) {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return `${sermonId}:block:${crypto.randomUUID()}`
+  }
+
+  return `${sermonId}:block:${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+function makeStructuredMigrationBlockId(
+  sermonId: string,
+  section: SermonSection,
+  index: number,
+) {
+  return `${sermonId}:block:${section}:${index}`
+}
+
 function makeLegacySermonBlocks(sermon: SermonRecord): SermonBlockRecord[] {
   return SERMON_SECTIONS.map((section) => ({
     id: makeLegacySermonBlockId(sermon.id, section),
@@ -212,6 +228,44 @@ class BibliaDatabase extends Dexie {
           await transaction
             .table<SermonBlockRecord, string>('sermonBlocks')
             .bulkPut(blocks)
+        }
+      })
+
+    this.version(7)
+      .stores({
+        readingProgress: 'id,bookId,chapter,updatedAt',
+        activeVerse: 'id,bookId,chapter,verse,updatedAt',
+        favorites: 'id,bookId,chapter,verse,updatedAt',
+        notes: 'id,bookId,chapter,verse,updatedAt',
+        highlights: 'id,bookId,chapter,verse,updatedAt',
+        sermons: 'id,status,updatedAt,title',
+        sermonBlocks:
+          'id,sermonId,[sermonId+section],[sermonId+section+order],section,order,updatedAt',
+      })
+      .upgrade(async (transaction) => {
+        const blocksTable =
+          transaction.table<SermonBlockRecord, string>('sermonBlocks')
+        const legacyBlocks = await blocksTable
+          .filter((block) => block.id.includes(':legacy:'))
+          .toArray()
+
+        for (const legacy of legacyBlocks) {
+          const lines = legacy.text.split('\n')
+          const structured = (lines.length > 0 ? lines : ['']).map(
+            (text, index): SermonBlockRecord => ({
+              ...legacy,
+              id: makeStructuredMigrationBlockId(
+                legacy.sermonId,
+                legacy.section,
+                index,
+              ),
+              order: index,
+              text,
+            }),
+          )
+
+          await blocksTable.delete(legacy.id)
+          await blocksTable.bulkPut(structured)
         }
       })
   }
@@ -377,14 +431,10 @@ function makeSermonId() {
   return `sermon-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
 }
 
-async function writeLegacySermonBlocks(record: SermonRecord) {
-  const blocks: SermonBlockRecord[] = []
-
-  for (const section of SERMON_SECTIONS) {
-    const id = makeLegacySermonBlockId(record.id, section)
-    const existing = await db.sermonBlocks.get(id)
-    blocks.push({
-      id,
+function makeInitialSermonBlocks(record: SermonRecord) {
+  return SERMON_SECTIONS.map(
+    (section): SermonBlockRecord => ({
+      id: makeSermonBlockId(record.id),
       sermonId: record.id,
       section,
       order: 0,
@@ -392,13 +442,11 @@ async function writeLegacySermonBlocks(record: SermonRecord) {
       text: record[section],
       marks: [],
       indent: 0,
-      revision: (existing?.revision ?? 0) + 1,
-      createdAt: existing?.createdAt ?? record.createdAt,
+      revision: 1,
+      createdAt: record.createdAt,
       updatedAt: record.updatedAt,
-    })
-  }
-
-  await db.sermonBlocks.bulkPut(blocks)
+    }),
+  )
 }
 
 async function loadSermonBlocks(id: string) {
@@ -466,35 +514,134 @@ export async function getSermonBlocks(id: string) {
   return loadSermonBlocks(id)
 }
 
-export async function saveSermonSectionDraft(
-  id: string,
-  section: SermonSection,
-  text: string,
-) {
-  const sermon = await db.sermons.get(id)
-  if (!sermon) return undefined
-
-  const blockId = makeLegacySermonBlockId(id, section)
+export async function saveSermonBlockDraft(blockId: string, text: string) {
   const existing = await db.sermonBlocks.get(blockId)
-  const now = Date.now()
+  if (!existing) return undefined
+
   const block: SermonBlockRecord = {
-    id: blockId,
-    sermonId: id,
-    section,
-    order: 0,
-    type: 'paragraph',
+    ...existing,
     text,
-    marks: existing?.marks ?? [],
-    indent: existing?.indent ?? 0,
-    checked: existing?.checked,
-    headingLevel: existing?.headingLevel,
-    revision: (existing?.revision ?? 0) + 1,
-    createdAt: existing?.createdAt ?? sermon.createdAt,
-    updatedAt: now,
+    revision: existing.revision + 1,
+    updatedAt: Date.now(),
   }
 
   await db.sermonBlocks.put(block)
   return block
+}
+
+export async function appendSermonBlock(
+  sermonId: string,
+  section: SermonSection,
+) {
+  const sermon = await db.sermons.get(sermonId)
+  if (!sermon) return undefined
+
+  const sectionBlocks = (await loadSermonBlocks(sermonId)).filter(
+    (block) => block.section === section,
+  )
+  const now = Date.now()
+  const block: SermonBlockRecord = {
+    id: makeSermonBlockId(sermonId),
+    sermonId,
+    section,
+    order:
+      sectionBlocks.length === 0
+        ? 0
+        : Math.max(...sectionBlocks.map((item) => item.order)) + 1,
+    type: 'paragraph',
+    text: '',
+    marks: [],
+    indent: 0,
+    revision: 1,
+    createdAt: now,
+    updatedAt: now,
+  }
+
+  await db.sermonBlocks.add(block)
+  return block
+}
+
+export async function splitSermonBlock(
+  blockId: string,
+  text: string,
+  offset: number,
+) {
+  const existing = await db.sermonBlocks.get(blockId)
+  if (!existing) return undefined
+
+  const safeOffset = Math.max(0, Math.min(offset, text.length))
+  const now = Date.now()
+  const before = text.slice(0, safeOffset)
+  const after = text.slice(safeOffset)
+  const nextBlock: SermonBlockRecord = {
+    ...existing,
+    id: makeSermonBlockId(existing.sermonId),
+    order: existing.order + 1,
+    type: existing.type === 'heading' ? 'paragraph' : existing.type,
+    text: after,
+    marks: [],
+    revision: 1,
+    createdAt: now,
+    updatedAt: now,
+  }
+
+  await db.transaction('rw', db.sermonBlocks, async () => {
+    await db.sermonBlocks
+      .where('[sermonId+section]')
+      .equals([existing.sermonId, existing.section])
+      .filter((block) => block.order > existing.order)
+      .modify((block) => {
+        block.order += 1
+      })
+
+    await db.sermonBlocks.put({
+      ...existing,
+      text: before,
+      revision: existing.revision + 1,
+      updatedAt: now,
+    })
+    await db.sermonBlocks.add(nextBlock)
+  })
+
+  return nextBlock
+}
+
+export async function mergeSermonBlockWithPrevious(
+  blockId: string,
+  currentText: string,
+) {
+  const current = await db.sermonBlocks.get(blockId)
+  if (!current) return undefined
+
+  const sectionBlocks = (await loadSermonBlocks(current.sermonId)).filter(
+    (block) => block.section === current.section,
+  )
+  const index = sectionBlocks.findIndex((block) => block.id === blockId)
+  if (index <= 0) return undefined
+
+  const previous = sectionBlocks[index - 1]
+  const now = Date.now()
+  const previousLength = previous.text.length
+  const merged: SermonBlockRecord = {
+    ...previous,
+    text: previous.text + currentText,
+    revision: previous.revision + 1,
+    updatedAt: now,
+  }
+
+  await db.transaction('rw', db.sermonBlocks, async () => {
+    await db.sermonBlocks.put(merged)
+    await db.sermonBlocks.delete(current.id)
+    await db.sermonBlocks
+      .where('[sermonId+section]')
+      .equals([current.sermonId, current.section])
+      .filter((block) => block.order > current.order)
+      .modify((block) => {
+        block.order -= 1
+      })
+  })
+
+  return { block: merged, caretOffset: previousLength }
 }
 
 export async function saveSermonTitle(id: string, title: string) {
@@ -524,7 +671,7 @@ export async function createSermon() {
 
   await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
     await db.sermons.add(record)
-    await writeLegacySermonBlocks(record)
+    await db.sermonBlocks.bulkPut(makeInitialSermonBlocks(record))
   })
 
   return record
@@ -550,18 +697,15 @@ export async function saveSermon(
     updatedAt: Date.now(),
   }
 
-  await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
-    await db.sermons.put(record)
-    await writeLegacySermonBlocks(record)
-  })
-
-  return record
+  await db.sermons.put(record)
+  return hydrateSermon(record)
 }
 
 export async function duplicateSermon(id: string) {
   const existing = await getSermon(id)
   if (!existing) return undefined
 
+  const sourceBlocks = await loadSermonBlocks(id)
   const now = Date.now()
   const record: SermonRecord = {
     ...existing,
@@ -571,10 +715,23 @@ export async function duplicateSermon(id: string) {
     createdAt: now,
     updatedAt: now,
   }
+  const blocks =
+    sourceBlocks.length > 0
+      ? sourceBlocks.map(
+          (block): SermonBlockRecord => ({
+            ...block,
+            id: makeSermonBlockId(record.id),
+            sermonId: record.id,
+            revision: 1,
+            createdAt: now,
+            updatedAt: now,
+          }),
+        )
+      : makeInitialSermonBlocks(record)
 
   await db.transaction('rw', db.sermons, db.sermonBlocks, async () => {
     await db.sermons.add(record)
-    await writeLegacySermonBlocks(record)
+    await db.sermonBlocks.bulkPut(blocks)
   })
 
   return record
