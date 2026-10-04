@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.34**.
+- Producción confirmada: **v0.1.34**. `0.1.35` corrige la regresión de posición de la barra.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -158,13 +158,13 @@ PUBLICADO en `0.1.32`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - abrir/crear prédica usa una pantalla enfocada sin navegación general;
 - encabezado propio del editor conserva Volver, Guardar, Predicar y estado de autosave;
 - la hoja ocupa el área de trabajo;
-- la barra de formato queda fija abajo y siempre al alcance;
+- la barra de formato debe quedar flotante (`sticky`) en el borde inferior visible y subir con el teclado; `fixed` al layout viewport queda descartado;
 - los paneles de herramientas aparecen sobre la barra;
 - no cambia persistencia, autosave ni estructura de datos.
 
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.34`: `Texto` como segundo acceso directo; B/I/U/S con encendido/apagado; H1/H2/Cita/listas/checklist con segundo toque para regresar a `Texto`. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
+Completar CI/merge/publicación de `0.1.35` y validar físicamente que, al escribir con el teclado abierto, la barra permanece flotando encima del teclado sin perderse de vista. Conservar el orden y toggles de `0.1.34`. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
