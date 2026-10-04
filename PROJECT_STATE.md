@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.31**. `0.1.32` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.31`.
+- Producción confirmada: **v0.1.32**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -149,7 +149,7 @@ PUBLICADO en `0.1.31`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - quedan para el siguiente subhito de la misma barra: Enlace, color/resaltado y deshacer/rehacer.
 
 ### Paso 4.1 — pantalla de edición dedicada
-IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.32`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 - abrir/crear prédica usa una pantalla enfocada sin navegación general;
 - encabezado propio del editor conserva Volver, Guardar, Predicar y estado de autosave;
@@ -160,7 +160,7 @@ IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Esperar a que GitHub Pages publique `0.1.32` y validar físicamente que abrir/crear una prédica entra al editor dedicado y que la barra inferior permanece accesible durante toda la edición. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
+Validar físicamente `0.1.32`: abrir/crear una prédica debe entrar al editor dedicado y la barra inferior debe permanecer accesible durante toda la edición. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
