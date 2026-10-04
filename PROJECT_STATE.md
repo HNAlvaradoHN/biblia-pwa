@@ -143,7 +143,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.23`: añadir eliminación explícita de prédicas sin perder las validaciones físicas pendientes del flujo `0.1.22`.
+Completar `0.1.24`: corregir el retorno exacto desde Biblia hacia Modo Predicación y añadir herramientas rápidas de trabajo en `Bosquejo y puntos`, manteniendo pendiente la validación física de eliminación de prédicas.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -192,16 +192,17 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI/PR/merge/publicación de `0.1.23`.
-2. Validar físicamente `Eliminar` en una prédica de prueba: confirmar, borrar y comprobar que desaparece de la lista tras recargar.
-3. Mantener pendiente la validación de `0.1.22`: bloqueo del scroll detrás de la vista rápida, `Cerrar` + `Leer capítulo`, `Volver a Predicación` y retorno a la misma posición.
-4. Después de esas validaciones, continuar el refinamiento de Modo Predicación.
+1. Completar CI/PR/merge/publicación de `0.1.24`.
+2. Validar físicamente el flujo `Predicar → referencia → Leer capítulo → Volver a Predicación` y confirmar que regresa a la referencia exacta, centrada y marcada temporalmente.
+3. Validar numeración, viñetas, aumentar sangría y reducir sangría dentro de `Bosquejo y puntos`, tanto en una línea como sobre varias líneas seleccionadas.
+4. Validar `Eliminar` en una prédica de prueba y comprobar persistencia del borrado tras recargar.
+5. Con esas validaciones, continuar el refinamiento de Modo Predicación sin acumular fallos de navegación/editor.
 
-Estado de despliegue actual: producción está en `0.1.22`. `0.1.23` está implementándose en la rama `feat/sermon-delete-0123` y no debe presentarse como lista para probar hasta completar CI, merge y publicación.
+Estado de despliegue actual: `0.1.23` ya fue fusionada a `main` mediante PR #46 y pasó CI del PR. `0.1.24` está implementándose en la rama `fix/presentation-return-outline-tools-0124` y no debe presentarse como lista para probar hasta completar CI, merge y publicación.
 
 ## Después de este objetivo
 
-Después de estabilizar `0.1.22`, el siguiente objetivo oficial será continuar refinando Modo Predicación sobre la base ya validada de referencias rápidas, lectura enfocada, retorno exacto y pantalla activa cuando sea posible.
+Después de estabilizar `0.1.24`, el siguiente objetivo oficial será continuar refinando Modo Predicación sobre una base ya validada de referencias rápidas, retorno exacto y herramientas de bosquejo, antes de abrir sincronización/multidispositivo.
 
 ## Regla de actualización
 
