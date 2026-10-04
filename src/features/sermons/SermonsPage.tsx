@@ -327,7 +327,7 @@ export function SermonEditorPage() {
     startX: number
     startY: number
     moved: boolean
-  }>()
+  } | undefined>(undefined)
   const [typingMarkOverrides, setTypingMarkOverrides] = useState<
     Partial<Record<SermonInlineMarkType, boolean>>
   >({})
