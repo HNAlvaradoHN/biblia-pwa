@@ -567,6 +567,29 @@ export async function saveSermonBlockDraft(blockId: string, text: string) {
   return block
 }
 
+export async function saveSermonBlockFormatting(
+  blockId: string,
+  changes: Partial<
+    Pick<
+      SermonBlockRecord,
+      'type' | 'marks' | 'indent' | 'checked' | 'headingLevel'
+    >
+  >,
+) {
+  const existing = await db.sermonBlocks.get(blockId)
+  if (!existing) return undefined
+
+  const block: SermonBlockRecord = {
+    ...existing,
+    ...changes,
+    revision: existing.revision + 1,
+    updatedAt: Date.now(),
+  }
+
+  await db.sermonBlocks.put(block)
+  return block
+}
+
 export async function getSermonAttachment(id: string) {
   return db.sermonAttachments.get(id)
 }
