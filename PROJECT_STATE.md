@@ -127,7 +127,7 @@ CORREGIDO POR D-054.
 La arquitectura por bloques de `0.1.27` se conserva internamente, pero su representación visual como cajitas/numeración/`+ Bloque` fue rechazada por el usuario. Esa UI es transitoria y se sustituye en `0.1.28` por una experiencia de documento continuo.
 
 ### Paso 3.1 — documento continuo + imágenes
-PUBLICADO en `0.1.28`; CORRECCIÓN `0.1.29` EN IMPLEMENTACIÓN.
+PUBLICADO en `0.1.28`; CORRECCIÓN `0.1.29` IMPLEMENTADA EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
 
 - `0.1.28` añadió adjuntos de imagen locales e hizo invisible la numeración/cajas de bloques.
 - `0.1.29` simplifica todavía más la hoja: sin bordes de campo alrededor del contenido normal.
@@ -139,7 +139,7 @@ PUBLICADO en `0.1.28`; CORRECCIÓN `0.1.29` EN IMPLEMENTACIÓN.
 
 ## Siguiente paso inmediato
 
-Completar CI/merge/publicación de `0.1.29` y validar físicamente: escribir texto → insertar imagen en medio → continuar escribiendo debajo → recargar sin pérdida. Después implementar la **barra compacta completa de formato de bloc de notas** y adaptar Modo Predicación a texto estructurado + imágenes.
+Esperar a que GitHub Pages publique `0.1.29` y validar físicamente: escribir texto → insertar imagen en medio → continuar escribiendo debajo → recargar sin pérdida. Después implementar la **barra compacta completa de formato de bloc de notas** y adaptar Modo Predicación a texto estructurado + imágenes.
 
 ## Después de D-053
 
