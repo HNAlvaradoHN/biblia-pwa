@@ -1,4 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ClipboardEvent as ReactClipboardEvent,
+  type FormEvent as ReactFormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+} from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
   appendSermonBlock,
@@ -329,6 +338,7 @@ function SermonImageBlock({
     <figure
       className="sermon-inline-image"
       data-sermon-block-id={block.id}
+      contentEditable={false}
       onClick={onActivate}
     >
       {src ? (
@@ -351,6 +361,7 @@ export function SermonEditorPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const blockRefs = useRef(new Map<string, SermonRichTextFieldHandle>())
+  const documentEditorRef = useRef<HTMLDivElement | null>(null)
   const imageInputRef = useRef<HTMLInputElement | null>(null)
   const [activePoint, setActivePoint] = useState<{
     section: SermonSection
@@ -1504,7 +1515,7 @@ export function SermonEditorPage() {
         blockId: paragraphAfterImages.id,
         offset: 0,
       })
-      setBlocks(nextBlocks)
+      replaceBlocks(nextBlocks)
     }
 
     if (latestUpdatedAt > 0) setSavedAt(latestUpdatedAt)
@@ -1549,6 +1560,490 @@ export function SermonEditorPage() {
     )
   }
 
+  function elementFromNode(node: Node | null) {
+    if (!node) return null
+    return node instanceof Element ? node : node.parentElement
+  }
+
+  function textBlockFromNode(node: Node | null) {
+    const row = elementFromNode(node)?.closest<HTMLElement>(
+      '[data-sermon-block-id]',
+    )
+    const blockId = row?.dataset.sermonBlockId
+    if (!row || !blockId) return undefined
+
+    const block = blocksRef.current.find((item) => item.id === blockId)
+    const editor = row.querySelector<HTMLElement>('.sermon-block-editor')
+    if (!block || block.type === 'image' || !editor) return undefined
+
+    return { block, editor }
+  }
+
+  function offsetInsideEditor(
+    editor: HTMLElement,
+    container: Node,
+    offset: number,
+    fallback: number,
+  ) {
+    if (container !== editor && !editor.contains(container)) return fallback
+
+    try {
+      const range = document.createRange()
+      range.selectNodeContents(editor)
+      range.setEnd(container, offset)
+      return Math.max(
+        0,
+        Math.min(range.toString().length, editor.textContent?.length ?? 0),
+      )
+    } catch {
+      return fallback
+    }
+  }
+
+  function selectedTextBlocks(range: Range) {
+    const root = documentEditorRef.current
+    if (!root) return []
+
+    return [...root.querySelectorAll<HTMLElement>('.sermon-block-editor')]
+      .filter((editor) => {
+        try {
+          return range.intersectsNode(editor)
+        } catch {
+          return false
+        }
+      })
+      .map((editor) => {
+        const row = editor.closest<HTMLElement>('[data-sermon-block-id]')
+        const blockId = row?.dataset.sermonBlockId
+        const block = blockId
+          ? blocksRef.current.find((item) => item.id === blockId)
+          : undefined
+        return block && block.type !== 'image'
+          ? { block, editor }
+          : undefined
+      })
+      .filter(
+        (
+          item,
+        ): item is {
+          block: SermonBlockRecord
+          editor: HTMLElement
+        } => Boolean(item),
+      )
+  }
+
+  function reportDocumentSelection() {
+    const selection = window.getSelection()
+    if (!selection || selection.rangeCount === 0) return
+
+    const range = selection.getRangeAt(0)
+    const startInfo = textBlockFromNode(range.startContainer)
+    const endInfo = textBlockFromNode(range.endContainer)
+    const focusInfo = textBlockFromNode(selection.focusNode)
+
+    if (
+      startInfo &&
+      endInfo &&
+      startInfo.block.id === endInfo.block.id
+    ) {
+      const start = offsetInsideEditor(
+        startInfo.editor,
+        range.startContainer,
+        range.startOffset,
+        0,
+      )
+      const end = offsetInsideEditor(
+        endInfo.editor,
+        range.endContainer,
+        range.endOffset,
+        endInfo.block.text.length,
+      )
+
+      setActivePoint({
+        section: startInfo.block.section,
+        blockId: startInfo.block.id,
+        offset: end,
+        selectionStart: start,
+        selectionEnd: end,
+      })
+      return
+    }
+
+    if (focusInfo && selection.focusNode) {
+      const offset = offsetInsideEditor(
+        focusInfo.editor,
+        selection.focusNode,
+        selection.focusOffset,
+        focusInfo.block.text.length,
+      )
+      setActivePoint({
+        section: focusInfo.block.section,
+        blockId: focusInfo.block.id,
+        offset,
+        selectionStart: offset,
+        selectionEnd: offset,
+      })
+    }
+  }
+
+  function syncDocumentInput() {
+    const root = documentEditorRef.current
+    if (!root) return
+
+    const changed = [...root.querySelectorAll<HTMLElement>('.sermon-block-editor')]
+      .map((editor) => {
+        const row = editor.closest<HTMLElement>('[data-sermon-block-id]')
+        const blockId = row?.dataset.sermonBlockId
+        const block = blockId
+          ? blocksRef.current.find((item) => item.id === blockId)
+          : undefined
+        if (!block || block.type === 'image') return undefined
+
+        const text = editor.textContent ?? ''
+        return text !== block.text ? { blockId: block.id, text } : undefined
+      })
+      .filter(
+        (item): item is { blockId: string; text: string } => Boolean(item),
+      )
+
+    for (const item of changed) {
+      markBlockDirty(item.blockId, item.text)
+    }
+    reportDocumentSelection()
+  }
+
+  async function collapseSelectedRuns(selectedIds: Set<string>) {
+    const stored = await getSermonBlocks(sermonId)
+
+    for (const section of ['introduction', 'outline', 'conclusion'] as SermonSection[]) {
+      const sectionBlocks = stored
+        .filter((block) => block.section === section)
+        .sort((a, b) => a.order - b.order)
+
+      let run: SermonBlockRecord[] = []
+
+      async function collapseRun() {
+        if (run.length <= 1) {
+          run = []
+          return
+        }
+
+        for (let index = 1; index < run.length; index += 1) {
+          const current = run[index]
+          await mergeSermonBlockWithPrevious(current.id, current.text)
+        }
+        run = []
+      }
+
+      for (const block of sectionBlocks) {
+        if (block.type !== 'image' && selectedIds.has(block.id)) {
+          run.push(block)
+        } else {
+          await collapseRun()
+        }
+      }
+      await collapseRun()
+    }
+  }
+
+  async function deleteDocumentSelection() {
+    const selection = window.getSelection()
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+      return undefined
+    }
+
+    const range = selection.getRangeAt(0)
+    const entries = selectedTextBlocks(range)
+    if (entries.length === 0) return undefined
+
+    const selectedIds = new Set(entries.map(({ block }) => block.id))
+    const first = entries[0]
+    const last = entries.at(-1) ?? first
+    let focusOffset = 0
+    let latestUpdatedAt = 0
+
+    for (const { block, editor } of entries) {
+      const start =
+        block.id === first.block.id
+          ? offsetInsideEditor(
+              editor,
+              range.startContainer,
+              range.startOffset,
+              0,
+            )
+          : 0
+      const end =
+        block.id === last.block.id
+          ? offsetInsideEditor(
+              editor,
+              range.endContainer,
+              range.endOffset,
+              block.text.length,
+            )
+          : block.text.length
+      const safeStart = Math.max(0, Math.min(start, block.text.length))
+      const safeEnd = Math.max(
+        safeStart,
+        Math.min(end, block.text.length),
+      )
+      const nextText =
+        block.text.slice(0, safeStart) + block.text.slice(safeEnd)
+      const nextMarks = adjustMarksForTextChange(
+        block.text,
+        nextText,
+        block.marks,
+      )
+      const saved = await saveSermonBlockDraft(
+        block.id,
+        nextText,
+        nextMarks,
+      )
+      if (saved) {
+        latestUpdatedAt = Math.max(latestUpdatedAt, saved.updatedAt)
+      }
+
+      if (block.id === first.block.id) {
+        focusOffset = safeStart
+      }
+      dirtyBlockIdsRef.current.delete(block.id)
+    }
+
+    clearHistory()
+    await collapseSelectedRuns(selectedIds)
+    const nextBlocks = await reloadBlocks()
+    const focusBlock =
+      nextBlocks.find((block) => block.id === first.block.id) ??
+      nextBlocks.find(
+        (block) =>
+          block.section === first.block.section && block.type !== 'image',
+      )
+
+    if (focusBlock) {
+      const offset = Math.min(focusOffset, focusBlock.text.length)
+      setActivePoint({
+        section: focusBlock.section,
+        blockId: focusBlock.id,
+        offset,
+        selectionStart: offset,
+        selectionEnd: offset,
+      })
+      pendingFocusRef.current = {
+        blockId: focusBlock.id,
+        offset,
+      }
+    }
+
+    if (latestUpdatedAt > 0) setSavedAt(latestUpdatedAt)
+    setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
+
+    return focusBlock
+      ? {
+          blockId: focusBlock.id,
+          offset: Math.min(focusOffset, focusBlock.text.length),
+        }
+      : undefined
+  }
+
+  function handleDocumentInput() {
+    syncDocumentInput()
+  }
+
+  function handleDocumentBeforeInput(
+    event: ReactFormEvent<HTMLDivElement>,
+  ) {
+    const nativeEvent = event.nativeEvent as InputEvent
+    const inputType = nativeEvent.inputType
+    const selection = window.getSelection()
+    if (!selection || selection.rangeCount === 0) return
+
+    const range = selection.getRangeAt(0)
+    const entries = selectedTextBlocks(range)
+    const startInfo = textBlockFromNode(range.startContainer)
+    const endInfo = textBlockFromNode(range.endContainer)
+    const spansStructuredContent =
+      entries.length > 1 ||
+      !startInfo ||
+      !endInfo ||
+      startInfo.block.id !== endInfo.block.id
+
+    if (inputType === 'historyUndo') {
+      event.preventDefault()
+      void undoHistory()
+      return
+    }
+
+    if (inputType === 'historyRedo') {
+      event.preventDefault()
+      void redoHistory()
+      return
+    }
+
+    if (
+      !selection.isCollapsed &&
+      spansStructuredContent &&
+      inputType.startsWith('delete')
+    ) {
+      event.preventDefault()
+      void deleteDocumentSelection()
+      return
+    }
+
+    if (
+      selection.isCollapsed &&
+      (inputType === 'insertParagraph' || inputType === 'insertLineBreak')
+    ) {
+      const info = textBlockFromNode(selection.focusNode)
+      if (!info || !selection.focusNode) return
+
+      const offset = offsetInsideEditor(
+        info.editor,
+        selection.focusNode,
+        selection.focusOffset,
+        info.block.text.length,
+      )
+      event.preventDefault()
+      void handleSplit(info.block, offset)
+    }
+  }
+
+  function handleDocumentKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.defaultPrevented) return
+
+    const selection = window.getSelection()
+    if (!selection || selection.rangeCount === 0) return
+
+    const modifier = event.ctrlKey || event.metaKey
+    if (modifier && event.key.toLowerCase() === 'z') {
+      event.preventDefault()
+      if (event.shiftKey) {
+        void redoHistory()
+      } else {
+        void undoHistory()
+      }
+      return
+    }
+
+    if (modifier && event.key.toLowerCase() === 'y') {
+      event.preventDefault()
+      void redoHistory()
+      return
+    }
+
+    const range = selection.getRangeAt(0)
+    const entries = selectedTextBlocks(range)
+    const startInfo = textBlockFromNode(range.startContainer)
+    const endInfo = textBlockFromNode(range.endContainer)
+    const spansStructuredContent =
+      entries.length > 1 ||
+      !startInfo ||
+      !endInfo ||
+      startInfo.block.id !== endInfo.block.id
+
+    if (
+      !selection.isCollapsed &&
+      spansStructuredContent &&
+      (event.key === 'Backspace' || event.key === 'Delete')
+    ) {
+      event.preventDefault()
+      void deleteDocumentSelection()
+      return
+    }
+
+    const info = textBlockFromNode(selection.focusNode)
+    if (!info || !selection.focusNode) return
+
+    const offset = offsetInsideEditor(
+      info.editor,
+      selection.focusNode,
+      selection.focusOffset,
+      info.block.text.length,
+    )
+
+    if (event.key === 'Enter' && selection.isCollapsed) {
+      event.preventDefault()
+      void handleSplit(info.block, offset)
+      return
+    }
+
+    if (
+      event.key === 'Backspace' &&
+      selection.isCollapsed &&
+      offset === 0
+    ) {
+      event.preventDefault()
+      void handleMerge(info.block)
+    }
+  }
+
+  function handleDocumentPaste(
+    event: ReactClipboardEvent<HTMLDivElement>,
+  ) {
+    const text = event.clipboardData.getData('text/plain')
+    const selection = window.getSelection()
+    if (!selection || selection.rangeCount === 0) return
+
+    const range = selection.getRangeAt(0)
+    const entries = selectedTextBlocks(range)
+    if (entries.length === 0) return
+
+    event.preventDefault()
+
+    void (async () => {
+      let block = entries[0].block
+      let start = offsetInsideEditor(
+        entries[0].editor,
+        range.startContainer,
+        range.startOffset,
+        0,
+      )
+      let end =
+        entries.length === 1
+          ? offsetInsideEditor(
+              entries[0].editor,
+              range.endContainer,
+              range.endOffset,
+              block.text.length,
+            )
+          : start
+
+      if (entries.length > 1) {
+        const target = await deleteDocumentSelection()
+        if (!target) return
+        const updated = blocksRef.current.find(
+          (item) => item.id === target.blockId,
+        )
+        if (!updated || updated.type === 'image') return
+        block = updated
+        start = target.offset
+        end = target.offset
+      }
+
+      const safeStart = Math.max(0, Math.min(start, block.text.length))
+      const safeEnd = Math.max(
+        safeStart,
+        Math.min(end, block.text.length),
+      )
+      const nextText =
+        block.text.slice(0, safeStart) +
+        text +
+        block.text.slice(safeEnd)
+
+      markBlockDirty(block.id, nextText)
+      const nextOffset = safeStart + text.length
+      setActivePoint({
+        section: block.section,
+        blockId: block.id,
+        offset: nextOffset,
+        selectionStart: nextOffset,
+        selectionEnd: nextOffset,
+      })
+      pendingFocusRef.current = {
+        blockId: block.id,
+        offset: nextOffset,
+      }
+    })()
+  }
+
   function renderSection(
     section: SermonSection,
     label: string,
@@ -1563,7 +2058,10 @@ export function SermonEditorPage() {
         className="sermon-block-section"
         aria-labelledby={`sermon-section-${section}`}
       >
-        <header className="sermon-block-section-header">
+        <header
+          className="sermon-block-section-header"
+          contentEditable={false}
+        >
           <h2 id={`sermon-section-${section}`}>{label}</h2>
         </header>
 
@@ -1591,16 +2089,27 @@ export function SermonEditorPage() {
                 }}
               >
                 {block.type === 'bullet' ? (
-                  <span className="sermon-block-prefix" aria-hidden="true">•</span>
+                  <span
+                    className="sermon-block-prefix"
+                    contentEditable={false}
+                    aria-hidden="true"
+                  >
+                    •
+                  </span>
                 ) : null}
                 {block.type === 'numbered' ? (
-                  <span className="sermon-block-prefix" aria-hidden="true">
+                  <span
+                    className="sermon-block-prefix"
+                    contentEditable={false}
+                    aria-hidden="true"
+                  >
                     {sectionBlocks.slice(0, index + 1).filter((item) => item.type === 'numbered').length}.
                   </span>
                 ) : null}
                 {block.type === 'task' ? (
                   <input
                     className="sermon-task-checkbox"
+                    contentEditable={false}
                     type="checkbox"
                     checked={Boolean(block.checked)}
                     aria-label={`Marcar tarea ${index + 1}`}
@@ -1719,23 +2228,42 @@ export function SermonEditorPage() {
           />
         </label>
 
-        {renderSection(
-          'introduction',
-          'Introducción',
-          'Idea de apertura, contexto o propósito...',
-        )}
+        <div
+          ref={documentEditorRef}
+          className="sermon-document-editor"
+          data-sermon-document-editor
+          contentEditable
+          suppressContentEditableWarning
+          role="textbox"
+          aria-label="Contenido de la prédica"
+          aria-multiline="true"
+          spellCheck
+          onBeforeInput={handleDocumentBeforeInput}
+          onInput={handleDocumentInput}
+          onKeyDown={handleDocumentKeyDown}
+          onKeyUp={reportDocumentSelection}
+          onPointerUp={reportDocumentSelection}
+          onSelect={reportDocumentSelection}
+          onPaste={handleDocumentPaste}
+        >
+          {renderSection(
+            'introduction',
+            'Introducción',
+            'Idea de apertura, contexto o propósito...',
+          )}
 
-        {renderSection(
-          'outline',
-          'Bosquejo y puntos',
-          'Punto principal, desarrollo o aplicación...',
-        )}
+          {renderSection(
+            'outline',
+            'Bosquejo y puntos',
+            'Punto principal, desarrollo o aplicación...',
+          )}
 
-        {renderSection(
-          'conclusion',
-          'Conclusión',
-          'Cierre, llamado o idea final...',
-        )}
+          {renderSection(
+            'conclusion',
+            'Conclusión',
+            'Cierre, llamado o idea final...',
+          )}
+        </div>
 
         {toolPanelOpen ? (
           <button

@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.38**.
+- Producción confirmada: **v0.1.38**. `0.1.39` corrige la selección continua del cuerpo de la prédica.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -172,7 +172,7 @@ PUBLICADO en `0.1.37`; dirección física aceptada por el usuario.
 - mantiene Texto, H1/H2/Cita, B/I/U/S, listas/checklist, sangría y Galería.
 
 ### Paso 4.3 — herramientas complementarias
-PUBLICADO en `0.1.38`, PENDIENTE DE VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.38`; el usuario reportó el resto de la experiencia como correcta y detectó un límite independiente de selección por renglón.
 
 - Enlace estructurado sobre selección o escritura posterior;
 - color de texto y resaltado como marks estructurados;
@@ -181,9 +181,18 @@ PUBLICADO en `0.1.38`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - historial coalescido durante escritura y persistido al restaurar;
 - operaciones estructurales reinician historial para mantener integridad.
 
+### Paso 4.4 — selección continua
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `fix/sermon-document-selection-0139`.
+
+- un único host editable cubre Introducción/Bosquejo/Conclusión;
+- seleccionar todo deja de estar limitado al párrafo activo;
+- borrado multi-bloque es estructurado y compatible con teclado virtual;
+- encabezados editoriales, imágenes y controles quedan protegidos;
+- no cambia la apariencia ni la pestaña lateral.
+
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.38`: Enlace, color, resaltado y Deshacer/Rehacer dentro del panel lateral. Después adaptar Modo Predicación para renderizar texto enriquecido + imágenes y mantener retorno exacto desde referencias bíblicas; luego ejecutar validación integral del editor.
+Completar CI/merge/publicación de `0.1.39` y validar físicamente `Seleccionar todo → borrar` tanto con teclado móvil como con teclado físico si está disponible. Después adaptar Modo Predicación para renderizar texto enriquecido + imágenes y mantener retorno exacto desde referencias bíblicas; luego ejecutar validación integral del editor.
 
 ## Después de D-053
 
