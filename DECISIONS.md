@@ -327,3 +327,21 @@ Reglas iniciales:
 - enlace, color/resaltado y deshacer/rehacer completarán la misma barra en el siguiente subhito, sin rediseñarla otra vez.
 
 La barra no debe contener controles sin comportamiento real.
+
+
+## D-056 — Editor de Prédicas en pantalla dedicada
+Estado: APROBADA
+
+Abrir o crear una prédica debe llevar a una pantalla dedicada exclusivamente a edición, separada visualmente de la navegación general de la aplicación.
+
+Reglas:
+
+- `Mis prédicas` conserva la función de lista, búsqueda y gestión;
+- `/predicas/:sermonId` entra en modo de edición dedicado;
+- durante la edición se ocultan topbar global, navegación inferior y avisos generales que puedan cubrir el documento;
+- el editor mantiene su propio encabezado con volver a Mis prédicas, estado de guardado, Predicar y Guardar;
+- la hoja ocupa el espacio principal disponible y debe sentirse como una pantalla de trabajo independiente;
+- la barra de herramientas permanece fija al alcance en la parte inferior, respetando safe areas;
+- los paneles de herramientas se abren sobre esa barra sin obligar a desplazarse al final de la nota;
+- crear una nueva prédica debe continuar navegando directamente a esta pantalla dedicada;
+- el cambio es de experiencia/navegación, no altera el modelo local, autosave ni estructura del documento.

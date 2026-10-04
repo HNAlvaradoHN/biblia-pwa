@@ -55,11 +55,18 @@ export function AppShell() {
     location.pathname.startsWith('/biblia/') &&
     new URLSearchParams(location.search).get('fromSermon') === '1' &&
     Boolean(window.sessionStorage.getItem('biblia-sermon-return-v1'))
+  const sermonEditorMode = /^\/predicas\/[^/]+$/.test(location.pathname)
   const sermonPresentationMode = /^\/predicas\/[^/]+\/presentar$/.test(location.pathname)
-  const focusedSermonMode = sermonReadingMode || sermonPresentationMode
+  const focusedSermonMode =
+    sermonReadingMode || sermonEditorMode || sermonPresentationMode
+  const shellClassName = sermonEditorMode
+    ? 'app-shell sermon-reader-shell sermon-editor-shell'
+    : focusedSermonMode
+      ? 'app-shell sermon-reader-shell'
+      : 'app-shell'
 
   return (
-    <div className={focusedSermonMode ? 'app-shell sermon-reader-shell' : 'app-shell'}>
+    <div className={shellClassName}>
       {!focusedSermonMode ? <header className="topbar">
         <NavLink className="brand" to="/" aria-label="Ir al inicio">
           <span className="brand-mark" aria-hidden="true">B</span>

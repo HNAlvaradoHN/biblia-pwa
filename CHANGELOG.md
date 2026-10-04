@@ -15,6 +15,17 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Editor dedicado de Prédicas 0.1.32
+
+- Abrir o crear una prédica entra en una pantalla de edición dedicada.
+- Durante edición se ocultan topbar general, navegación inferior y UpdatePrompt.
+- El editor conserva encabezado propio con regreso a Mis prédicas, estado de guardado, Predicar y Guardar.
+- La hoja aprovecha casi toda la pantalla y deja de sentirse incrustada dentro de la navegación general.
+- La barra compacta de herramientas pasa a posición fija inferior, siempre al alcance durante escritura.
+- Los paneles de herramientas se abren encima de la barra sin exigir desplazarse al final del documento.
+- Se respetan safe areas en móvil.
+- Build visible actualizado a `0.1.32`.
+
 ## 2026-10-03 — Barra compacta de formato 0.1.31
 
 - Añadida barra compacta de edición para la hoja de Prédicas.

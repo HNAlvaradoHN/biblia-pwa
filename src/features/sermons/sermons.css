@@ -196,7 +196,7 @@
 
 .sermon-editor-toolbar {
   position: sticky;
-  top: 76px;
+  top: max(0px, env(safe-area-inset-top));
   z-index: 15;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -214,13 +214,20 @@
   font-weight: 750;
 }
 
+.sermon-editor-page {
+  min-height: calc(100dvh - env(safe-area-inset-top));
+  gap: 10px;
+}
+
 .sermon-editor-sheet {
   display: grid;
   gap: 18px;
-  padding: clamp(18px, 4vw, 30px);
-  border: 1px solid var(--line);
+  min-height: calc(100dvh - 76px);
+  padding: clamp(18px, 4vw, 30px) clamp(14px, 4vw, 30px) 108px;
+  border: 0;
+  border-radius: 0;
   background: var(--reader-surface);
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 
 .sermon-field {
@@ -468,10 +475,14 @@
 
 
 .sermon-compose-dock {
-  position: sticky;
+  position: fixed;
+  right: max(12px, env(safe-area-inset-right));
   bottom: max(8px, env(safe-area-inset-bottom));
-  z-index: 12;
+  left: max(12px, env(safe-area-inset-left));
+  z-index: 30;
   display: grid;
+  width: min(calc(100% - 24px), 760px);
+  margin-inline: auto;
   gap: 7px;
 }
 
@@ -605,7 +616,7 @@
   }
 
   .sermon-editor-toolbar {
-    top: 68px;
+    top: max(0px, env(safe-area-inset-top));
     grid-template-columns: auto 1fr auto;
   }
 

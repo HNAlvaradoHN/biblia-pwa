@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.31**.
+- Producción confirmada: **v0.1.31**. `0.1.32` implementa el editor dedicado.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -148,9 +148,19 @@ PUBLICADO en `0.1.31`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - división/unión y edición de texto preservan formato;
 - quedan para el siguiente subhito de la misma barra: Enlace, color/resaltado y deshacer/rehacer.
 
+### Paso 4.1 — pantalla de edición dedicada
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/dedicated-sermon-editor-0132`.
+
+- abrir/crear prédica usa una pantalla enfocada sin navegación general;
+- encabezado propio del editor conserva Volver, Guardar, Predicar y estado de autosave;
+- la hoja ocupa el área de trabajo;
+- la barra de formato queda fija abajo y siempre al alcance;
+- los paneles de herramientas aparecen sobre la barra;
+- no cambia persistencia, autosave ni estructura de datos.
+
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.31`: barra compacta, persistencia de formato, listas/checklist, sangría e Imagen dentro de `+`. Luego completar Enlace + color/resaltado + deshacer/rehacer sin rediseñar nuevamente la barra. Después adaptar Modo Predicación a texto enriquecido + imágenes.
+Completar CI/merge/publicación de `0.1.32` y validar físicamente que abrir/crear una prédica entra al editor dedicado y que la barra inferior permanece accesible durante toda la edición. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
