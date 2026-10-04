@@ -110,17 +110,20 @@ IMPLEMENTADO Y PUBLICADO en `0.1.25`.
 - compatibilidad temporal con el modelo legado.
 
 ### Paso 2 — persistencia incremental
-IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/incremental-sermon-autosave-0126`.
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en `main`.
 
+- PR #53 fusionado;
+- TypeScript, ESLint, build PWA y auditoría pasaron en verde;
 - el autosave de contenido escribe solo la sección/bloque modificado;
 - el título se guarda separadamente como metadato;
 - la lectura de prédicas se hidrata desde bloques;
 - acciones explícitas de seguridad siguen consolidando el snapshot legado durante la transición;
-- una versión de edición evita carreras entre autosaves viejos y cambios nuevos.
+- una versión de edición evita carreras entre autosaves viejos y cambios nuevos;
+- GitHub Pages todavía sirve `v0.1.25` en la última comprobación, por lo que `0.1.26` aún no está lista para validación física.
 
 ## Siguiente paso inmediato
 
-Completar CI/merge/publicación de `0.1.26` y verificar que una edición autosalvada reaparece correctamente después de recargar. Después avanzar al **paso 3 de D-053: sustituir el editor de texto plano por el editor estructurado**.
+Esperar/publicar `0.1.26` y verificar en dispositivo que un cambio autosalvado reaparece después de recargar la prédica. Si pasa esa prueba, avanzar al **paso 3 de D-053: sustituir el editor de texto plano por el editor estructurado**.
 
 ## Después de D-053
 
