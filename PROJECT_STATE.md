@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.36**.
+- Producción confirmada: **v0.1.36**. `0.1.37` sustituye la barra inferior por pestaña lateral móvil.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -153,18 +153,27 @@ PUBLICADO en `0.1.33`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - quedan para el siguiente subhito de la misma barra: Enlace, color/resaltado y deshacer/rehacer.
 
 ### Paso 4.1 — pantalla de edición dedicada
-PUBLICADO en `0.1.32`, PENDIENTE DE VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.32`.
 
 - abrir/crear prédica usa una pantalla enfocada sin navegación general;
 - encabezado propio del editor conserva Volver, Guardar, Predicar y estado de autosave;
 - la hoja ocupa el área de trabajo;
-- la barra de formato debe permanecer `fixed` y visible durante cualquier scroll; su posición inferior se corrige con `window.visualViewport` para quedar encima del teclado;
-- los paneles de herramientas aparecen sobre la barra;
+- la presentación de herramientas inferiores usada entre 0.1.32–0.1.36 queda sustituida por D-057;
 - no cambia persistencia, autosave ni estructura de datos.
+
+### Paso 4.2 — pestaña lateral de herramientas
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-side-tool-tab-0137`.
+
+- no hay barra inferior;
+- pestaña lateral móvil con lado y altura persistentes;
+- toque abre herramientas; arrastre mueve la pestaña;
+- elegir herramienta o tocar fuera cierra el panel;
+- el panel abre hacia el interior de la pantalla;
+- mantiene Texto, H1/H2/Cita, B/I/U/S, listas/checklist, sangría y Galería.
 
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.36` en dos recorridos: (1) teclado cerrado + scroll arriba/abajo: barra siempre visible; (2) teclado abierto + scroll arriba/abajo: barra fija inmediatamente encima del teclado. Conservar sin cambios el orden y toggles actuales. Después completar Enlace + color/resaltado + deshacer/rehacer y adaptar Modo Predicación a texto enriquecido + imágenes.
+Completar CI/merge/publicación de `0.1.37` y validar físicamente: mover la pestaña a izquierda/derecha y distintas alturas; abrir/cerrar; seleccionar una herramienta y confirmar cierre automático; tocar fuera y confirmar cierre; hacer scroll y usar teclado sin que la pestaña dependa de la zona inferior. Después completar Enlace + color/resaltado + deshacer/rehacer dentro del mismo panel lateral y adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
