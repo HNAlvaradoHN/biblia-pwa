@@ -200,11 +200,12 @@ PUBLICADO en `0.1.40`, VALIDACIÓN FÍSICA PARCIAL.
 - retorno desde Biblia prioriza bloque/referencia y conserva scroll como fallback;
 - borrar imagen en edición exige confirmación irreversible;
 - VALIDADO FÍSICAMENTE por el usuario: las imágenes insertadas aparecen en Modo Predicación;
-- VALIDADO FÍSICAMENTE por el usuario: eliminar una imagen pide confirmación antes de borrar.
+- VALIDADO FÍSICAMENTE por el usuario: eliminar una imagen pide confirmación antes de borrar;
+- VALIDADO FÍSICAMENTE por el usuario: referencia bíblica → Leer capítulo → Volver a Predicación regresa al mismo punto.
 
 ## Siguiente paso inmediato
 
-Completar la validación física restante de `0.1.40`: orden de imágenes/contenido, formato enriquecido y referencia bíblica → Leer capítulo → Volver a Predicación al mismo punto. Después ejecutar validación integral del editor y Modo Predicación.
+Ejecutar validación integral del editor y Modo Predicación: edición continua, autosave, selección/borrado, formatos, listas, imágenes, referencias, regreso exacto y representación en presentación. Si no aparecen regresiones, cerrar D-053 y abrir sincronización/multidispositivo.
 
 ## Después de D-053
 
