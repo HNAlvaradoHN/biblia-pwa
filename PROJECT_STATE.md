@@ -194,7 +194,7 @@ No hacer preguntas detalladas sobre estos puntos hasta llegar a su fase correspo
 
 - Fuente y formato definitivo del corpus bíblico autorizado.
 - Diseño final de sincronización opcional con Google Drive.
-- Editor definitivo de prédicas cuando llegue esa fase.
+- Implementación concreta del editor estructurado de prédicas conforme a D-053; la arquitectura objetivo ya está definida.
 - Si se implementará o no la pantalla de congregación al final del proyecto.
 - GitHub Pages es el canal principal de publicación actual; Vercel queda como respaldo. La app debe conservar portabilidad y no depender arquitectónicamente de un host específico.
 - Si se añadirá protección obligatoria de `main` mediante ruleset/branch protection; la conexión actual de automatización no dispone de administración suficiente para configurarlo directamente.
@@ -216,7 +216,7 @@ Estado de despliegue actual: producción sirve `v0.1.24`. Esa versión conserva 
 
 ## Después de este objetivo
 
-Después de estabilizar `0.1.24`, el siguiente objetivo oficial será continuar refinando Modo Predicación sobre una base ya validada de referencias rápidas, retorno exacto y herramientas de bosquejo, antes de abrir sincronización/multidispositivo.
+Después de completar y validar D-053, el siguiente objetivo oficial será terminar los refinamientos pendientes de Modo Predicación sobre el nuevo documento estructurado. Solo después de cerrar esa base se abrirá sincronización/multidispositivo.
 
 ## Regla de actualización
 
