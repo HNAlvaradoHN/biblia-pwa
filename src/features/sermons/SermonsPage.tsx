@@ -526,6 +526,7 @@ export function SermonEditorPage() {
     if (!files || files.length === 0) return
 
     let afterBlockId = activePoint.blockId
+    let focusBlockId: string | undefined
     let latestUpdatedAt = 0
 
     for (const file of Array.from(files)) {
@@ -537,16 +538,23 @@ export function SermonEditorPage() {
         afterBlockId,
       )
       if (!inserted) continue
-      afterBlockId = inserted.id
-      latestUpdatedAt = Math.max(latestUpdatedAt, inserted.updatedAt)
+
+      afterBlockId = inserted.followingBlock.id
+      focusBlockId = inserted.followingBlock.id
+      latestUpdatedAt = Math.max(
+        latestUpdatedAt,
+        inserted.imageBlock.updatedAt,
+      )
     }
 
-    if (afterBlockId) {
+    if (focusBlockId) {
       setActivePoint({
         section: activePoint.section,
-        blockId: afterBlockId,
+        blockId: focusBlockId,
       })
+      pendingFocusRef.current = { blockId: focusBlockId, offset: 0 }
     }
+
     await reloadBlocks()
     if (latestUpdatedAt > 0) setSavedAt(latestUpdatedAt)
     if (imageInputRef.current) imageInputRef.current.value = ''
@@ -727,14 +735,16 @@ export function SermonEditorPage() {
           'Cierre, llamado o idea final...',
         )}
 
-        <div className="sermon-compose-toolbar" aria-label="Herramientas de la prédica">
+        <div className="sermon-compose-toolbar" aria-label="Herramientas de la nota">
           <button
+            className="sermon-tool-button"
             type="button"
             onClick={() => imageInputRef.current?.click()}
             title="Insertar imagen"
+            aria-label="Insertar imagen"
           >
-            <span aria-hidden="true">▧</span>
-            Imagen
+            <span aria-hidden="true">▧+</span>
+            <span>Imagen</span>
           </button>
           <input
             ref={imageInputRef}
@@ -746,19 +756,7 @@ export function SermonEditorPage() {
               void handleImageSelected(event.target.files)
             }
           />
-          <span className="sermon-compose-hint">
-            La imagen se inserta en la sección donde estás escribiendo.
-          </span>
         </div>
-
-        <aside className="sermon-editor-note">
-          <strong>Documento continuo</strong>
-          <p>
-            Escribí como en una nota normal. La estructura por bloques queda
-            oculta y se usa únicamente para autosave, retorno exacto y futura
-            sincronización.
-          </p>
-        </aside>
       </form>
 
       {referencePreview ? (
