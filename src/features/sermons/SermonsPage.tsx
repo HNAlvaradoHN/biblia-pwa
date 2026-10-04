@@ -15,11 +15,13 @@ import {
   saveSermon,
   saveSermonBlockDraft,
   saveSermonBlockFormatting,
+  saveSermonBlockState,
   saveSermonTitle,
   setSermonArchived,
   splitSermonBlock,
   type SermonBlockRecord,
   type SermonBlockType,
+  type SermonInlineColor,
   type SermonInlineMark,
   type SermonInlineMarkType,
   type SermonRecord,
@@ -48,6 +50,52 @@ type SermonToolSide = 'left' | 'right'
 type SermonToolPlacement = {
   side: SermonToolSide
   topRatio: number
+}
+
+type SermonBlockEditableState = Pick<
+  SermonBlockRecord,
+  'type' | 'text' | 'marks' | 'indent' | 'checked' | 'headingLevel'
+>
+
+type SermonHistoryEntry = {
+  blockId: string
+  before: SermonBlockEditableState
+  after: SermonBlockEditableState
+  kind: 'typing' | 'format'
+  at: number
+}
+
+const SERMON_TEXT_COLORS: SermonInlineColor[] = [
+  'accent',
+  'red',
+  'blue',
+  'green',
+]
+
+const SERMON_HIGHLIGHT_COLORS: SermonInlineColor[] = [
+  'amber',
+  'sage',
+  'sky',
+  'rose',
+  'lavender',
+]
+
+function editableBlockState(block: SermonBlockRecord): SermonBlockEditableState {
+  return {
+    type: block.type,
+    text: block.text,
+    marks: block.marks.map((mark) => ({ ...mark })),
+    indent: block.indent,
+    checked: block.checked,
+    headingLevel: block.headingLevel,
+  }
+}
+
+function sameEditableBlockState(
+  left: SermonBlockEditableState,
+  right: SermonBlockEditableState,
+) {
+  return JSON.stringify(left) === JSON.stringify(right)
 }
 
 const SERMON_TOOL_PLACEMENT_KEY = 'biblia-sermon-tool-placement-v1'
@@ -331,10 +379,21 @@ export function SermonEditorPage() {
   const [typingMarkOverrides, setTypingMarkOverrides] = useState<
     Partial<Record<SermonInlineMarkType, boolean>>
   >({})
+  const [typingTextColor, setTypingTextColor] = useState<
+    SermonInlineColor | null | undefined
+  >()
+  const [typingHighlight, setTypingHighlight] = useState<
+    SermonInlineColor | null | undefined
+  >()
+  const [typingLinkHref, setTypingLinkHref] = useState<string | null>()
   const pendingFocusRef = useRef<{ blockId: string; offset: number } | undefined>(undefined)
   const [sermon, setSermon] = useState<SermonRecord>()
   const [title, setTitle] = useState('')
   const [blocks, setBlocks] = useState<SermonBlockRecord[]>([])
+  const blocksRef = useRef<SermonBlockRecord[]>([])
+  const undoStackRef = useRef<SermonHistoryEntry[]>([])
+  const redoStackRef = useRef<SermonHistoryEntry[]>([])
+  const [historyVersion, setHistoryVersion] = useState(0)
   const [savedAt, setSavedAt] = useState<number>()
   const [dirty, setDirty] = useState(false)
   const dirtyBlockIdsRef = useRef<Set<string>>(new Set())
@@ -351,6 +410,14 @@ export function SermonEditorPage() {
     () => (referencePreview ? getReferencePassage(referencePreview) : []),
     [referencePreview],
   )
+  const canUndo = useMemo(
+    () => undoStackRef.current.length > 0,
+    [historyVersion],
+  )
+  const canRedo = useMemo(
+    () => redoStackRef.current.length > 0,
+    [historyVersion],
+  )
 
   function sectionText(section: SermonSection) {
     return blocks
@@ -362,9 +429,14 @@ export function SermonEditorPage() {
   }
 
 
+  function replaceBlocks(next: SermonBlockRecord[]) {
+    blocksRef.current = next
+    setBlocks(next)
+  }
+
   async function reloadBlocks() {
     const next = await getSermonBlocks(sermonId)
-    setBlocks(next)
+    replaceBlocks(next)
     return next
   }
 
@@ -376,7 +448,7 @@ export function SermonEditorPage() {
         if (cancelled || !record) return
         setSermon(record)
         setTitle(record.title)
-        setBlocks(storedBlocks)
+        replaceBlocks(storedBlocks)
         setSavedAt(record.updatedAt)
 
         const params = new URLSearchParams(location.search)
@@ -570,6 +642,8 @@ export function SermonEditorPage() {
         if (typeDifference !== 0) return typeDifference
         const hrefDifference = (a.href ?? '').localeCompare(b.href ?? '')
         if (hrefDifference !== 0) return hrefDifference
+        const colorDifference = (a.color ?? '').localeCompare(b.color ?? '')
+        if (colorDifference !== 0) return colorDifference
         return a.start - b.start || a.end - b.end
       })
 
@@ -580,6 +654,7 @@ export function SermonEditorPage() {
         previous &&
         previous.type === mark.type &&
         previous.href === mark.href &&
+        previous.color === mark.color &&
         mark.start <= previous.end
       ) {
         previous.end = Math.max(previous.end, mark.end)
@@ -626,58 +701,186 @@ export function SermonEditorPage() {
       .filter((mark) => mark.end > mark.start)
   }
 
-  function markBlockDirty(blockId: string, value: string) {
-    setBlocks((current) =>
-      current.map((block) => {
-        if (block.id !== blockId) return block
-
-        const change = getTextChangeRange(block.text, value)
-        let nextMarks = adjustMarksForTextChange(
-          block.text,
-          value,
-          block.marks,
-        )
-
-        if (change.newEnd > change.start) {
-          const inlineTypes: SermonInlineMarkType[] = [
-            'bold',
-            'italic',
-            'underline',
-            'strike',
-          ]
-
-          for (const type of inlineTypes) {
-            const inherited = block.marks.some(
-              (mark) =>
-                mark.type === type &&
-                mark.start <= change.start &&
-                mark.end >= change.start,
-            )
-            const enabled = typingMarkOverrides[type] ?? inherited
-
-            if (enabled) {
-              nextMarks.push({
-                type,
-                start: change.start,
-                end: change.newEnd,
-              })
-            } else {
-              nextMarks = nextMarks.flatMap((mark) =>
-                mark.type === type
-                  ? subtractMark(mark, change.start, change.newEnd)
-                  : [mark],
-              )
-            }
-          }
-        }
-
-        return {
-          ...block,
-          text: value,
-          marks: normalizeMarks(nextMarks),
-        }
-      }),
+  function replaceBlockLocal(block: SermonBlockRecord) {
+    const next = blocksRef.current.map((item) =>
+      item.id === block.id ? block : item,
     )
+    blocksRef.current = next
+    setBlocks(next)
+  }
+
+  function clearHistory() {
+    undoStackRef.current = []
+    redoStackRef.current = []
+    setHistoryVersion((version) => version + 1)
+  }
+
+  function recordHistory(
+    blockId: string,
+    before: SermonBlockEditableState,
+    after: SermonBlockEditableState,
+    kind: SermonHistoryEntry['kind'],
+  ) {
+    if (sameEditableBlockState(before, after)) return
+
+    const now = Date.now()
+    const previous = undoStackRef.current.at(-1)
+
+    if (
+      kind === 'typing' &&
+      previous?.kind === 'typing' &&
+      previous.blockId === blockId &&
+      now - previous.at <= 900
+    ) {
+      previous.after = after
+      previous.at = now
+    } else {
+      undoStackRef.current.push({
+        blockId,
+        before,
+        after,
+        kind,
+        at: now,
+      })
+      if (undoStackRef.current.length > 80) {
+        undoStackRef.current.shift()
+      }
+    }
+
+    redoStackRef.current = []
+    setHistoryVersion((version) => version + 1)
+  }
+
+  function markBlockDirty(blockId: string, value: string) {
+    const block = blocksRef.current.find((item) => item.id === blockId)
+    if (!block) return
+
+    const change = getTextChangeRange(block.text, value)
+    let nextMarks = adjustMarksForTextChange(
+      block.text,
+      value,
+      block.marks,
+    )
+
+    if (change.newEnd > change.start) {
+      const inlineTypes: SermonInlineMarkType[] = [
+        'bold',
+        'italic',
+        'underline',
+        'strike',
+      ]
+
+      for (const type of inlineTypes) {
+        const inherited = block.marks.some(
+          (mark) =>
+            mark.type === type &&
+            mark.start <= change.start &&
+            mark.end >= change.start,
+        )
+        const enabled = typingMarkOverrides[type] ?? inherited
+
+        if (enabled) {
+          nextMarks.push({
+            type,
+            start: change.start,
+            end: change.newEnd,
+          })
+        } else {
+          nextMarks = nextMarks.flatMap((mark) =>
+            mark.type === type
+              ? subtractMark(mark, change.start, change.newEnd)
+              : [mark],
+          )
+        }
+      }
+
+      const inheritedTextColor = block.marks.find(
+        (mark) =>
+          mark.type === 'textColor' &&
+          mark.start <= change.start &&
+          mark.end >= change.start,
+      )?.color
+      const nextTextColor =
+        typingTextColor === undefined
+          ? inheritedTextColor
+          : typingTextColor
+
+      nextMarks = nextMarks.flatMap((mark) =>
+        mark.type === 'textColor'
+          ? subtractMark(mark, change.start, change.newEnd)
+          : [mark],
+      )
+      if (nextTextColor) {
+        nextMarks.push({
+          type: 'textColor',
+          color: nextTextColor,
+          start: change.start,
+          end: change.newEnd,
+        })
+      }
+
+      const inheritedHighlight = block.marks.find(
+        (mark) =>
+          mark.type === 'highlight' &&
+          mark.start <= change.start &&
+          mark.end >= change.start,
+      )?.color
+      const nextHighlight =
+        typingHighlight === undefined
+          ? inheritedHighlight
+          : typingHighlight
+
+      nextMarks = nextMarks.flatMap((mark) =>
+        mark.type === 'highlight'
+          ? subtractMark(mark, change.start, change.newEnd)
+          : [mark],
+      )
+      if (nextHighlight) {
+        nextMarks.push({
+          type: 'highlight',
+          color: nextHighlight,
+          start: change.start,
+          end: change.newEnd,
+        })
+      }
+
+      const inheritedHref = block.marks.find(
+        (mark) =>
+          mark.type === 'link' &&
+          mark.start <= change.start &&
+          mark.end >= change.start,
+      )?.href
+      const nextHref =
+        typingLinkHref === undefined ? inheritedHref : typingLinkHref
+
+      nextMarks = nextMarks.flatMap((mark) =>
+        mark.type === 'link'
+          ? subtractMark(mark, change.start, change.newEnd)
+          : [mark],
+      )
+      if (nextHref) {
+        nextMarks.push({
+          type: 'link',
+          href: nextHref,
+          start: change.start,
+          end: change.newEnd,
+        })
+      }
+    }
+
+    const nextBlock: SermonBlockRecord = {
+      ...block,
+      text: value,
+      marks: normalizeMarks(nextMarks),
+    }
+
+    recordHistory(
+      blockId,
+      editableBlockState(block),
+      editableBlockState(nextBlock),
+      'typing',
+    )
+    replaceBlockLocal(nextBlock)
     dirtyBlockIdsRef.current.add(blockId)
     editVersionRef.current += 1
     setDirty(true)
@@ -723,6 +926,7 @@ export function SermonEditorPage() {
     if (!next) return
     dirtyBlockIdsRef.current.delete(block.id)
     pendingFocusRef.current = { blockId: next.id, offset: 0 }
+    clearHistory()
     await reloadBlocks()
     setSavedAt(next.updatedAt)
     setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
@@ -751,6 +955,7 @@ export function SermonEditorPage() {
       blockId: merged.block.id,
       offset: merged.caretOffset,
     }
+    clearHistory()
     await reloadBlocks()
     setSavedAt(merged.block.updatedAt)
     setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
@@ -758,8 +963,28 @@ export function SermonEditorPage() {
 
   function getActiveTextBlock() {
     if (!activePoint.blockId) return undefined
-    const block = blocks.find((item) => item.id === activePoint.blockId)
+    const block = blocksRef.current.find(
+      (item) => item.id === activePoint.blockId,
+    )
     return block?.type === 'image' ? undefined : block
+  }
+
+  function getActiveSelection(block: SermonBlockRecord) {
+    const start = Math.max(
+      0,
+      Math.min(
+        activePoint.selectionStart ?? activePoint.offset ?? 0,
+        block.text.length,
+      ),
+    )
+    const end = Math.max(
+      start,
+      Math.min(
+        activePoint.selectionEnd ?? activePoint.offset ?? start,
+        block.text.length,
+      ),
+    )
+    return { start, end }
   }
 
   async function applyBlockFormatting(
@@ -771,12 +996,19 @@ export function SermonEditorPage() {
       >
     >,
   ) {
+    const beforeBlock = blocksRef.current.find((item) => item.id === blockId)
+    if (!beforeBlock) return
+
     const saved = await saveSermonBlockFormatting(blockId, changes)
     if (!saved) return
 
-    setBlocks((current) =>
-      current.map((block) => (block.id === blockId ? saved : block)),
+    recordHistory(
+      blockId,
+      editableBlockState(beforeBlock),
+      editableBlockState(saved),
+      'format',
     )
+    replaceBlockLocal(saved)
     setSavedAt(saved.updatedAt)
   }
 
@@ -878,6 +1110,195 @@ export function SermonEditorPage() {
       [type]: !covered,
     }))
     pendingFocusRef.current = { blockId: block.id, offset: end }
+  }
+
+  function activeColorFor(
+    type: 'textColor' | 'highlight',
+  ): SermonInlineColor | undefined {
+    const block = getActiveTextBlock()
+    if (!block) {
+      return type === 'textColor'
+        ? typingTextColor ?? undefined
+        : typingHighlight ?? undefined
+    }
+
+    const { start, end } = getActiveSelection(block)
+    const typingValue =
+      type === 'textColor' ? typingTextColor : typingHighlight
+
+    if (end === start && typingValue !== undefined) {
+      return typingValue ?? undefined
+    }
+
+    return block.marks.find(
+      (mark) =>
+        mark.type === type &&
+        mark.start <= start &&
+        mark.end >= (end > start ? end : start),
+    )?.color
+  }
+
+  async function applyColorMark(
+    type: 'textColor' | 'highlight',
+    color: SermonInlineColor | null,
+  ) {
+    const block = getActiveTextBlock()
+    if (!block) return
+    const { start, end } = getActiveSelection(block)
+
+    if (type === 'textColor') {
+      setTypingTextColor(color)
+    } else {
+      setTypingHighlight(color)
+    }
+
+    if (end <= start) {
+      pendingFocusRef.current = { blockId: block.id, offset: start }
+      return
+    }
+
+    let nextMarks = block.marks.flatMap((mark) =>
+      mark.type === type ? subtractMark(mark, start, end) : [mark],
+    )
+    if (color) {
+      nextMarks = [
+        ...nextMarks,
+        {
+          type,
+          color,
+          start,
+          end,
+        },
+      ]
+    }
+
+    await applyBlockFormatting(block.id, {
+      marks: normalizeMarks(nextMarks),
+    })
+    pendingFocusRef.current = { blockId: block.id, offset: end }
+  }
+
+  function activeLinkHref() {
+    const block = getActiveTextBlock()
+    if (!block) return typingLinkHref ?? undefined
+
+    const { start, end } = getActiveSelection(block)
+    if (end === start && typingLinkHref !== undefined) {
+      return typingLinkHref ?? undefined
+    }
+
+    return block.marks.find(
+      (mark) =>
+        mark.type === 'link' &&
+        mark.start <= start &&
+        mark.end >= (end > start ? end : start),
+    )?.href
+  }
+
+  function normalizeLinkHref(value: string) {
+    const trimmed = value.trim()
+    if (!trimmed) return undefined
+    if (/^(https?:\/\/|mailto:|tel:)/i.test(trimmed)) return trimmed
+    return `https://${trimmed}`
+  }
+
+  async function toggleLinkMark() {
+    const block = getActiveTextBlock()
+    if (!block) return
+    const { start, end } = getActiveSelection(block)
+    const currentHref = activeLinkHref()
+
+    if (currentHref) {
+      setTypingLinkHref(null)
+      if (end > start) {
+        const nextMarks = block.marks.flatMap((mark) =>
+          mark.type === 'link' ? subtractMark(mark, start, end) : [mark],
+        )
+        await applyBlockFormatting(block.id, {
+          marks: normalizeMarks(nextMarks),
+        })
+      }
+      pendingFocusRef.current = {
+        blockId: block.id,
+        offset: end > start ? end : start,
+      }
+      return
+    }
+
+    const rawHref = window.prompt('Enlace', 'https://')
+    if (rawHref === null) return
+    const href = normalizeLinkHref(rawHref)
+    if (!href) return
+
+    setTypingLinkHref(href)
+
+    if (end > start) {
+      const withoutLinks = block.marks.flatMap((mark) =>
+        mark.type === 'link' ? subtractMark(mark, start, end) : [mark],
+      )
+      await applyBlockFormatting(block.id, {
+        marks: normalizeMarks([
+          ...withoutLinks,
+          { type: 'link', href, start, end },
+        ]),
+      })
+    }
+
+    pendingFocusRef.current = {
+      blockId: block.id,
+      offset: end > start ? end : start,
+    }
+  }
+
+  async function restoreHistoryEntry(
+    entry: SermonHistoryEntry,
+    state: SermonBlockEditableState,
+  ) {
+    const saved = await saveSermonBlockState(entry.blockId, state)
+    if (!saved) return false
+
+    replaceBlockLocal(saved)
+    dirtyBlockIdsRef.current.delete(entry.blockId)
+    setSavedAt(saved.updatedAt)
+    setDirty(dirtyTitleRef.current || dirtyBlockIdsRef.current.size > 0)
+
+    const currentOffset =
+      activePoint.blockId === entry.blockId
+        ? activePoint.offset ?? state.text.length
+        : state.text.length
+    pendingFocusRef.current = {
+      blockId: entry.blockId,
+      offset: Math.min(currentOffset, state.text.length),
+    }
+    return true
+  }
+
+  async function undoHistory() {
+    const entry = undoStackRef.current.pop()
+    if (!entry) return
+
+    const restored = await restoreHistoryEntry(entry, entry.before)
+    if (!restored) {
+      undoStackRef.current.push(entry)
+      return
+    }
+
+    redoStackRef.current.push(entry)
+    setHistoryVersion((version) => version + 1)
+  }
+
+  async function redoHistory() {
+    const entry = redoStackRef.current.pop()
+    if (!entry) return
+
+    const restored = await restoreHistoryEntry(entry, entry.after)
+    if (!restored) {
+      redoStackRef.current.push(entry)
+      return
+    }
+
+    undoStackRef.current.push(entry)
+    setHistoryVersion((version) => version + 1)
   }
 
   function isActiveBlockType(
@@ -1043,6 +1464,7 @@ export function SermonEditorPage() {
       latestUpdatedAt = Math.max(latestUpdatedAt, inserted.updatedAt)
     }
 
+    clearHistory()
     let nextBlocks = await reloadBlocks()
 
     if (!paragraphAfterImages) {
@@ -1093,6 +1515,7 @@ export function SermonEditorPage() {
   async function handleRemoveImage(block: SermonBlockRecord) {
     const removed = await removeSermonImageBlock(block.id)
     if (!removed) return
+    clearHistory()
     await reloadBlocks()
     if (activePoint.blockId === block.id) {
       setActivePoint({ section: block.section })
@@ -1342,6 +1765,28 @@ export function SermonEditorPage() {
               aria-label="Herramientas de edición"
             >
               <div className="sermon-side-tool-group">
+                <span>Historial</span>
+                <div>
+                  <button
+                    type="button"
+                    disabled={!canUndo}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() => runToolAction(undoHistory)}
+                  >
+                    ↶ Deshacer
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!canRedo}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() => runToolAction(redoHistory)}
+                  >
+                    ↷ Rehacer
+                  </button>
+                </div>
+              </div>
+
+              <div className="sermon-side-tool-group">
                 <span>Texto</span>
                 <div>
                   <button
@@ -1438,6 +1883,93 @@ export function SermonEditorPage() {
                   >
                     <s>S</s>
                   </button>
+                  <button
+                    type="button"
+                    className={activeLinkHref() ? 'active' : ''}
+                    aria-pressed={Boolean(activeLinkHref())}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() => runToolAction(toggleLinkMark)}
+                  >
+                    Enlace
+                  </button>
+                </div>
+              </div>
+
+              <div className="sermon-side-tool-group">
+                <span>Color de texto</span>
+                <div className="sermon-color-options">
+                  <button
+                    type="button"
+                    className={!activeColorFor('textColor') ? 'active' : ''}
+                    aria-pressed={!activeColorFor('textColor')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => applyColorMark('textColor', null))
+                    }
+                  >
+                    Normal
+                  </button>
+                  {SERMON_TEXT_COLORS.map((color) => (
+                    <button
+                      type="button"
+                      className={
+                        activeColorFor('textColor') === color ? 'active' : ''
+                      }
+                      aria-label={`Color de texto ${color}`}
+                      aria-pressed={activeColorFor('textColor') === color}
+                      key={`text-${color}`}
+                      onPointerDown={(event) => event.preventDefault()}
+                      onClick={() =>
+                        runToolAction(() =>
+                          applyColorMark('textColor', color),
+                        )
+                      }
+                    >
+                      <span
+                        className={`sermon-color-swatch sermon-color-swatch-${color}`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sermon-side-tool-group">
+                <span>Resaltado</span>
+                <div className="sermon-color-options">
+                  <button
+                    type="button"
+                    className={!activeColorFor('highlight') ? 'active' : ''}
+                    aria-pressed={!activeColorFor('highlight')}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() =>
+                      runToolAction(() => applyColorMark('highlight', null))
+                    }
+                  >
+                    Sin
+                  </button>
+                  {SERMON_HIGHLIGHT_COLORS.map((color) => (
+                    <button
+                      type="button"
+                      className={
+                        activeColorFor('highlight') === color ? 'active' : ''
+                      }
+                      aria-label={`Resaltado ${color}`}
+                      aria-pressed={activeColorFor('highlight') === color}
+                      key={`highlight-${color}`}
+                      onPointerDown={(event) => event.preventDefault()}
+                      onClick={() =>
+                        runToolAction(() =>
+                          applyColorMark('highlight', color),
+                        )
+                      }
+                    >
+                      <span
+                        className={`sermon-highlight-swatch sermon-highlight-swatch-${color}`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  ))}
                 </div>
               </div>
 

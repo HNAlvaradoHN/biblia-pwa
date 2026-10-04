@@ -15,6 +15,20 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Enlace, color, resaltado e historial 0.1.38
+
+- El panel lateral añade Deshacer y Rehacer.
+- El historial local agrupa escritura continua por bloque y restaura texto + formato persistiendo el resultado en IndexedDB.
+- Las operaciones estructurales (dividir/unir párrafos e insertar/eliminar imágenes) reinician el historial para evitar restauraciones inválidas.
+- Añadida herramienta Enlace sobre selección o como modo activo para escritura posterior.
+- Tocar Enlace sobre una selección ya enlazada elimina el enlace.
+- URLs sin esquema reciben `https://`; se conservan `mailto:` y `tel:`.
+- Añadidos colores de texto: acento, rojo, azul y verde, además de `Normal`.
+- Añadidos resaltados: ámbar, salvia, celeste, rosa y lavanda, además de `Sin`.
+- Color/resaltado se guardan como marks estructurados y se combinan con B/I/U/S y enlaces.
+- Elegir cualquiera de estas herramientas mantiene la regla de cerrar automáticamente el panel lateral.
+- Build visible actualizado a `0.1.38`.
+
 ## 2026-10-04 — Pestaña lateral móvil de herramientas 0.1.37
 
 - Retirada la barra inferior de herramientas.

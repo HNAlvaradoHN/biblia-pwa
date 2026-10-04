@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.37**.
+- Producción confirmada: **v0.1.37**. `0.1.38` completa las herramientas iniciales del panel lateral.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -162,7 +162,7 @@ PUBLICADO en `0.1.32`.
 - no cambia persistencia, autosave ni estructura de datos.
 
 ### Paso 4.2 — pestaña lateral de herramientas
-PUBLICADO en `0.1.37`, PENDIENTE DE VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.37`; dirección física aceptada por el usuario.
 
 - no hay barra inferior;
 - pestaña lateral móvil con lado y altura persistentes;
@@ -171,9 +171,19 @@ PUBLICADO en `0.1.37`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - el panel abre hacia el interior de la pantalla;
 - mantiene Texto, H1/H2/Cita, B/I/U/S, listas/checklist, sangría y Galería.
 
+### Paso 4.3 — herramientas complementarias
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/sermon-link-color-history-0138`.
+
+- Enlace estructurado sobre selección o escritura posterior;
+- color de texto y resaltado como marks estructurados;
+- Normal/Sin para volver rápidamente al formato base;
+- Deshacer/Rehacer local para texto y formato;
+- historial coalescido durante escritura y persistido al restaurar;
+- operaciones estructurales reinician historial para mantener integridad.
+
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.37`: mover la pestaña a izquierda/derecha y distintas alturas; abrir/cerrar; seleccionar una herramienta y confirmar cierre automático; tocar fuera y confirmar cierre; hacer scroll y usar teclado sin que la pestaña dependa de la zona inferior. Después completar Enlace + color/resaltado + deshacer/rehacer dentro del mismo panel lateral y adaptar Modo Predicación a texto enriquecido + imágenes.
+Completar CI/merge/publicación de `0.1.38` y validar Enlace, color, resaltado y Deshacer/Rehacer dentro del panel lateral. Después adaptar Modo Predicación para renderizar texto enriquecido + imágenes y mantener retorno exacto desde referencias bíblicas; luego ejecutar validación integral del editor.
 
 ## Después de D-053
 
