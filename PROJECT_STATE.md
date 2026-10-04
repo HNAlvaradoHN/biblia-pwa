@@ -14,7 +14,7 @@ La versión `0.1.21` está integrada en `main`, pasó CI y se publicó correctam
 
 El 2026-10-02 se incorporó el paquete maestro general v4. El 2026-10-03 el dueño aclaró que nunca autorizó eliminar la identidad secuencial. La gobernanza queda corregida: todo chat nuevo inicia en `LOCKED_READ_ONLY`, completa lectura/sincronización, reserva y verifica `Ing. Bibia 📖 #N`, emite `LOCKED_READ_ONLY_REPORT` y solo modifica producto con una tarea autorizada. `SECURITY.md`, `UI_RULES.md` y `RELEASE_RULES.md` siguen vigentes.
 
-El objetivo funcional activo es completar `0.1.22`: corregir el scroll de fondo de la vista rápida, permitir `Cerrar` + `Leer capítulo` dentro de Modo Predicación, regresar al mismo punto después de leer y avanzar con el refinamiento oficial de mantener la pantalla activa cuando la plataforma lo permita.
+El objetivo funcional activo es validar físicamente `0.1.22` ya publicada: bloqueo del scroll de fondo, `Cerrar` + `Leer capítulo` dentro de Modo Predicación, retorno al mismo punto y mantenimiento de pantalla activa cuando la plataforma lo permita.
 
 ## Completado
 
@@ -143,7 +143,7 @@ Pendiente específico:
 
 ## Objetivo activo
 
-Completar `0.1.22`: corregir el bloqueo modal de referencias y la continuidad Biblia ↔ Modo Predicación, manteniendo el refinamiento de pantalla activa como siguiente paso aprobado dentro del mismo objetivo.
+Validar físicamente `0.1.22`: bloqueo modal de referencias, continuidad Biblia ↔ Modo Predicación y pantalla activa cuando sea posible.
 
 La base del versículo activo mantiene dos capas claramente distintas:
 
@@ -192,14 +192,13 @@ Hasta contar con una fuente autorizada para el contenido definitivo, se trabaja 
 
 ## Siguiente paso inmediato
 
-1. Completar CI/PR/merge/publicación de `0.1.22`.
-2. Validar físicamente que la vista rápida bloquee completamente el scroll del contenido de fondo.
-3. En Modo Predicación, confirmar `Cerrar` + `Leer capítulo`.
-4. Confirmar que `Volver a Predicación` regrese a la misma prédica y posición vertical.
-5. Confirmar que Modo Predicación siga funcionando aunque Screen Wake Lock no esté disponible y que, cuando sí esté disponible, intente mantener la pantalla activa.
-6. Con esa validación, cerrar el defecto detectado en `0.1.21` y continuar el refinamiento de Modo Predicación.
+1. Validar físicamente que la vista rápida bloquee completamente el scroll del contenido de fondo.
+2. En Modo Predicación, confirmar `Cerrar` + `Leer capítulo`.
+3. Confirmar que `Volver a Predicación` regrese a la misma prédica y posición vertical.
+4. Confirmar que Modo Predicación siga funcionando aunque Screen Wake Lock no esté disponible y que, cuando sí esté disponible, intente mantener la pantalla activa.
+5. Con esa validación, cerrar el defecto detectado en `0.1.21` y continuar el refinamiento de Modo Predicación.
 
-Estado de despliegue actual: producción sigue en `0.1.21` sobre GitHub Pages. `0.1.22` está implementándose en la rama `fix/presentation-reference-flow-0122` y todavía no debe considerarse lista para probar hasta completar PR/CI, merge, CI de `main` y publicación.
+Estado de despliegue actual: `0.1.22` fue fusionada mediante PR #44. El CI del PR pasó instalación, TypeScript, ESLint, build PWA y auditoría de dependencias. GitHub Pages publica actualmente `v0.1.22`, verificado mediante el identificador visible de la aplicación. La validación física del flujo táctil y del retorno exacto sigue pendiente del usuario.
 
 ## Después de este objetivo
 
