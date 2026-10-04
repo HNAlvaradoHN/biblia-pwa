@@ -1246,7 +1246,7 @@ export function SermonEditorPage() {
             </button>
             <button
               type="button"
-              className={\`sermon-toolbar-text\${isActiveBlockType('paragraph') ? ' active' : ''}\`}
+              className={`sermon-toolbar-text${isActiveBlockType('paragraph') ? ' active' : ''}`}
               aria-pressed={isActiveBlockType('paragraph')}
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => void setActiveBlockType('paragraph')}
@@ -1296,7 +1296,7 @@ export function SermonEditorPage() {
             </button>
             <button
               type="button"
-              className={\`\${toolMenu === 'list' ? 'active' : ''}\${['bullet', 'numbered', 'task'].includes(getActiveTextBlock()?.type ?? '') ? ' active' : ''}\`.trim()}
+              className={`${toolMenu === 'list' ? 'active' : ''}${['bullet', 'numbered', 'task'].includes(getActiveTextBlock()?.type ?? '') ? ' active' : ''}`.trim()}
               aria-pressed={
                 toolMenu === 'list' ||
                 ['bullet', 'numbered', 'task'].includes(getActiveTextBlock()?.type ?? '')
