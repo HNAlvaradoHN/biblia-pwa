@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.27**.
+- Producción confirmada: **v0.1.27**. `0.1.28` está en implementación.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -122,20 +122,25 @@ VALIDADO FÍSICAMENTE en `0.1.26`.
 - GitHub Pages sirve `v0.1.26` y el usuario confirmó físicamente que un cambio autosalvado reaparece después de recargar sin presionar `Guardar`.
 
 ### Paso 3 — editor estructurado
-IMPLEMENTADO_PENDIENTE_VALIDACIÓN FÍSICA en `main` y publicado como `0.1.27`.
+CORREGIDO POR D-054.
 
-- migración v7 convierte bloques legados en bloques independientes sin perder texto;
-- nuevas prédicas nacen directamente sobre bloques estructurados;
-- Enter divide, Backspace al inicio une y cada sección permite añadir bloques;
-- autosave incremental validado en 0.1.26 se conserva por bloque;
-- la barra rápida transitoria de 0.1.24 fue retirada;
-- referencias inline siguen detectándose dentro de cada bloque;
-- retorno Editor → Biblia → Editor usa `sermonId + blockId + posición local` y enfoca el bloque después de renderizar;
-- el retorno de Modo Predicación conserva todavía su mecanismo semántico anterior y se adaptará a `blockId` en el paso 5.
+La arquitectura por bloques de `0.1.27` se conserva internamente, pero su representación visual como cajitas/numeración/`+ Bloque` fue rechazada por el usuario. Esa UI es transitoria y se sustituye en `0.1.28` por una experiencia de documento continuo.
+
+### Paso 3.1 — documento continuo + imágenes
+IMPLEMENTADO_PENDIENTE_VALIDACIÓN en la rama `feat/continuous-sermon-editor-images-0128`.
+
+- los bloques internos dejan de exponerse visualmente;
+- las tres secciones editables se presentan como superficies continuas;
+- nueva tabla local `sermonAttachments` separa imágenes del texto;
+- se pueden insertar una o varias imágenes desde el dispositivo dentro de la sección activa;
+- las imágenes se guardan offline como adjuntos independientes y se renderizan dentro de la nota;
+- duplicar/eliminar conserva integridad de bloques y adjuntos;
+- referencias bíblicas y texto legado ignoran bloques de imagen al calcular offsets;
+- Modo Predicación todavía no renderiza imágenes; se adaptará junto con el documento estructurado.
 
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.27`: Enter divide bloques, Backspace al inicio une con el anterior, `+ Bloque` agrega contenido, autosave sobrevive recarga y Editor → Biblia → Editor regresa al bloque exacto. Con esa validación, avanzar al **paso 4 de D-053: barra compacta de formato**.
+Completar CI/merge/publicación de `0.1.28` y validar físicamente que la edición se siente continua, que las imágenes se insertan/recargan/eliminan sin pérdida y que el retorno desde Biblia sigue llegando al punto correcto. Después implementar la **barra compacta completa de formato** y adaptar Modo Predicación a texto estructurado + imágenes.
 
 ## Después de D-053
 
