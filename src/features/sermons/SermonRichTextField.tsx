@@ -9,8 +9,11 @@ import {
 } from 'react'
 import type { SermonBibleReference } from './sermonReferences'
 
+export type SermonLineAction = 'number' | 'bullet' | 'indent' | 'outdent'
+
 export type SermonRichTextFieldHandle = {
   focusAt: (offset: number) => void
+  applyLineAction: (action: SermonLineAction) => void
 }
 
 type SermonRichTextFieldProps = {
@@ -34,6 +37,30 @@ function getCaretOffset(root: HTMLElement) {
   prefix.selectNodeContents(root)
   prefix.setEnd(range.startContainer, range.startOffset)
   return prefix.toString().length
+}
+
+function getSelectionOffsets(root: HTMLElement) {
+  const selection = window.getSelection()
+  const fallback = root.textContent?.length ?? 0
+  if (!selection || selection.rangeCount === 0) return { start: fallback, end: fallback }
+
+  const range = selection.getRangeAt(0)
+  if (!root.contains(range.startContainer) || !root.contains(range.endContainer)) {
+    return { start: fallback, end: fallback }
+  }
+
+  const startRange = document.createRange()
+  startRange.selectNodeContents(root)
+  startRange.setEnd(range.startContainer, range.startOffset)
+
+  const endRange = document.createRange()
+  endRange.selectNodeContents(root)
+  endRange.setEnd(range.endContainer, range.endOffset)
+
+  return {
+    start: startRange.toString().length,
+    end: endRange.toString().length,
+  }
 }
 
 function setCaretOffset(root: HTMLElement, requestedOffset: number) {
@@ -111,8 +138,38 @@ export const SermonRichTextField = forwardRef<
         setCaretOffset(editor, offset)
         editor.scrollIntoView({ block: 'center' })
       },
+      applyLineAction(action: SermonLineAction) {
+        const editor = editorRef.current
+        if (!editor) return
+
+        const selection = getSelectionOffsets(editor)
+        const lineStart = value.lastIndexOf('\n', Math.max(0, selection.start - 1)) + 1
+        const nextBreak = value.indexOf('\n', selection.end)
+        const lineEnd = nextBreak === -1 ? value.length : nextBreak
+        const block = value.slice(lineStart, lineEnd)
+        const lines = block.split('\n')
+
+        const transformed = lines
+          .map((line, index) => {
+            if (action === 'indent') return `  ${line}`
+            if (action === 'outdent') return line.replace(/^(?: {1,2}|\t)/, '')
+
+            const indentation = line.match(/^\s*/)?.[0] ?? ''
+            const content = line
+              .slice(indentation.length)
+              .replace(/^(?:\d+\.\s+|[-•]\s+)/, '')
+
+            if (action === 'number') return `${indentation}${index + 1}. ${content}`
+            return `${indentation}• ${content}`
+          })
+          .join('\n')
+
+        const nextValue = value.slice(0, lineStart) + transformed + value.slice(lineEnd)
+        pendingCaretRef.current = lineStart + transformed.length
+        onChange(nextValue)
+      },
     }),
-    [],
+    [onChange, value],
   )
 
   useLayoutEffect(() => {
@@ -149,7 +206,7 @@ export const SermonRichTextField = forwardRef<
       editor.append(document.createTextNode(value.slice(cursor)))
     }
 
-    if (hadFocus && caretOffset !== null) {
+    if ((hadFocus || caretOffset !== null) && caretOffset !== null) {
       editor.focus()
       setCaretOffset(editor, caretOffset)
     }
