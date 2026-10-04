@@ -381,3 +381,28 @@ Reglas:
 - la antigua combinación de barra inferior `sticky`/`fixed` con compensación del teclado queda retirada de la experiencia activa.
 
 La estructura de datos, autosave, formatos y pantalla dedicada no cambian por esta decisión.
+
+
+## D-058 — Enlace, color, resaltado e historial local
+Estado: APROBADA
+
+El panel lateral de D-057 completa su conjunto inicial de edición con Enlace, color de texto, resaltado y deshacer/rehacer sin cambiar nuevamente la mecánica de la pestaña lateral.
+
+Reglas:
+
+- Enlace funciona sobre texto seleccionado o como modo activo para texto que se escriba después;
+- si la selección ya tiene enlace, tocar Enlace lo quita rápidamente;
+- las URLs sin esquema reciben `https://` por defecto; también se aceptan `mailto:` y `tel:`;
+- color de texto y resaltado se guardan como marks estructurados, no como HTML;
+- los colores pueden aplicarse a selección existente o quedar activos para escritura posterior;
+- `Normal` elimina color de texto sobre una selección o desactiva color futuro;
+- `Sin` elimina resaltado sobre una selección o desactiva resaltado futuro;
+- el render del editor debe combinar color/resaltado con B/I/U/S, enlaces y referencias sin destruir otros marks;
+- deshacer/rehacer usa historial local en memoria y persiste inmediatamente el estado restaurado en IndexedDB;
+- el historial agrupa escritura continua del mismo bloque en ventanas cortas para evitar un paso por carácter;
+- el historial inicial cubre texto y formato del bloque actual;
+- operaciones estructurales como dividir/unir párrafos o insertar/eliminar imágenes reinician el historial para evitar referencias a bloques/adjuntos ya modificados;
+- el historial no pretende restaurar adjuntos eliminados ni sustituye el autosave;
+- elegir cualquiera de estas herramientas cierra el panel lateral, según D-057.
+
+Después de este hito, el siguiente trabajo es adaptar Modo Predicación al documento enriquecido completo y ejecutar validación integral.
