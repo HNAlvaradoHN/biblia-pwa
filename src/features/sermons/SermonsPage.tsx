@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import {
-  appendSermonBlock,
   createSermon,
   deleteSermon,
   duplicateSermon,
