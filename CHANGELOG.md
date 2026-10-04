@@ -15,6 +15,22 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-04 — Pestaña lateral móvil de herramientas 0.1.37
+
+- Retirada la barra inferior de herramientas.
+- Añadida una pestaña lateral compacta e independiente del scroll del documento.
+- La pestaña puede arrastrarse hacia la izquierda o derecha y también cambiar su altura.
+- La posición lateral/vertical se guarda localmente.
+- La posición se reajusta al viewport visible para no quedar fuera de alcance cuando cambia el tamaño disponible.
+- Tocar la pestaña abre todas las herramientas de edición en un panel lateral.
+- Elegir una herramienta cierra automáticamente el panel.
+- Tocar fuera del panel también lo cierra.
+- Arrastrar la pestaña cierra el panel abierto.
+- El panel conserva estado activo de Texto, encabezados, B/I/U/S, listas y checklist.
+- Galería permanece disponible dentro del grupo de inserción.
+- Se elimina la lógica de compensación inferior del teclado usada por la barra fija anterior.
+- Build visible actualizado a `0.1.37`.
+
 ## 2026-10-04 — Barra fija con VisualViewport 0.1.36
 
 - Corregida definitivamente la posición de la barra del editor: vuelve a `position: fixed`.
