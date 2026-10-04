@@ -379,6 +379,47 @@
   text-decoration: underline;
 }
 
+.sermon-text-color-accent {
+  color: var(--accent);
+}
+
+.sermon-text-color-red {
+  color: color-mix(in srgb, #b42318 82%, var(--ink));
+}
+
+.sermon-text-color-blue {
+  color: color-mix(in srgb, #2457a6 82%, var(--ink));
+}
+
+.sermon-text-color-green {
+  color: color-mix(in srgb, #1f6f4a 82%, var(--ink));
+}
+
+.sermon-highlight-amber {
+  background: color-mix(in srgb, #e6b94a 42%, transparent);
+  border-radius: 0.22em;
+}
+
+.sermon-highlight-sage {
+  background: color-mix(in srgb, #8fb39a 42%, transparent);
+  border-radius: 0.22em;
+}
+
+.sermon-highlight-sky {
+  background: color-mix(in srgb, #8eb8e8 42%, transparent);
+  border-radius: 0.22em;
+}
+
+.sermon-highlight-rose {
+  background: color-mix(in srgb, #e7a3ad 42%, transparent);
+  border-radius: 0.22em;
+}
+
+.sermon-highlight-lavender {
+  background: color-mix(in srgb, #b8a4df 42%, transparent);
+  border-radius: 0.22em;
+}
+
 .sermon-block-editor {
   min-height: 1.6em;
   padding: 2px 0;
@@ -615,6 +656,63 @@
   background: color-mix(in srgb, var(--accent-soft) 48%, transparent);
   color: var(--accent);
   outline: none;
+}
+
+.sermon-side-tool-group button:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.sermon-color-options button {
+  display: grid;
+  min-width: 38px;
+  padding-inline: 8px;
+  place-items: center;
+}
+
+.sermon-color-swatch,
+.sermon-highlight-swatch {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+  border-radius: 999px;
+}
+
+.sermon-color-swatch-accent {
+  background: var(--accent);
+}
+
+.sermon-color-swatch-red {
+  background: #b42318;
+}
+
+.sermon-color-swatch-blue {
+  background: #2457a6;
+}
+
+.sermon-color-swatch-green {
+  background: #1f6f4a;
+}
+
+.sermon-highlight-swatch-amber {
+  background: #e6b94a;
+}
+
+.sermon-highlight-swatch-sage {
+  background: #8fb39a;
+}
+
+.sermon-highlight-swatch-sky {
+  background: #8eb8e8;
+}
+
+.sermon-highlight-swatch-rose {
+  background: #e7a3ad;
+}
+
+.sermon-highlight-swatch-lavender {
+  background: #b8a4df;
 }
 
 .sermon-toolbar-italic {
