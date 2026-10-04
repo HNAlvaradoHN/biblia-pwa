@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.27**. `0.1.28` ya fue fusionada a `main`, pero GitHub Pages todavía sirve `v0.1.27`.
+- Producción confirmada: **v0.1.28**.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -127,7 +127,7 @@ CORREGIDO POR D-054.
 La arquitectura por bloques de `0.1.27` se conserva internamente, pero su representación visual como cajitas/numeración/`+ Bloque` fue rechazada por el usuario. Esa UI es transitoria y se sustituye en `0.1.28` por una experiencia de documento continuo.
 
 ### Paso 3.1 — documento continuo + imágenes
-IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.28`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 - los bloques internos dejan de exponerse visualmente;
 - las tres secciones editables se presentan como superficies continuas;
@@ -140,7 +140,7 @@ IMPLEMENTADO EN `main`, PENDIENTE DE PUBLICACIÓN/VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Esperar a que GitHub Pages publique `0.1.28` y validar físicamente que la edición se siente continua, que las imágenes se insertan/recargan/eliminan sin pérdida y que el retorno desde Biblia sigue llegando al punto correcto. Después implementar la **barra compacta completa de formato** y adaptar Modo Predicación a texto estructurado + imágenes.
+Validar físicamente `0.1.28`: que la edición se siente continua, que las imágenes se insertan/recargan/eliminan sin pérdida y que el retorno desde Biblia sigue llegando al punto correcto. Después implementar la **barra compacta completa de formato** y adaptar Modo Predicación a texto estructurado + imágenes.
 
 ## Después de D-053
 
