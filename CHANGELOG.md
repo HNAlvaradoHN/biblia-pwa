@@ -15,6 +15,21 @@ Registrar únicamente cambios relevantes del proyecto. No usar este archivo como
 
 El historial anterior a `0.1.18` fue movido sin pérdida a `docs/history/CHANGELOG_ARCHIVE_THROUGH_0.1.17.md`. Este archivo mantiene únicamente cambios recientes y relevantes para continuidad.
 
+## 2026-10-03 — Documento continuo e imágenes 0.1.28
+
+- Corregida la interpretación visual del editor estructurado: los bloques permanecen como arquitectura interna pero dejan de mostrarse como cajitas, números o controles `+ Bloque`.
+- Introducción, Bosquejo/puntos y Conclusión vuelven a sentirse como superficies continuas de escritura.
+- Enter/Backspace conservan la estructura interna necesaria para autosave y retorno exacto sin exponerla visualmente.
+- Añadida tabla IndexedDB `sermonAttachments` en esquema v8 para adjuntos locales independientes del texto.
+- Añadido bloque de tipo `image` que referencia un adjunto mediante ID estable.
+- El editor permite seleccionar una o varias imágenes del dispositivo e insertarlas dentro de la sección activa.
+- Las imágenes se muestran dentro de la nota, funcionan offline y pueden eliminarse individualmente.
+- Duplicar una prédica duplica también sus adjuntos para que la copia sea autónoma.
+- Eliminar una prédica elimina sus bloques y adjuntos asociados dentro de la misma operación local.
+- El texto legado y los offsets de referencias bíblicas no cuentan los bloques de imagen, evitando desplazar referencias posteriores.
+- Esta versión prepara la barra completa de formato; todavía no adapta imágenes a Modo Predicación.
+- Build visible actualizado a `0.1.28`.
+
 ## 2026-10-03 — Editor estructurado por bloques 0.1.27
 
 - Añadida migración IndexedDB v7 que convierte los tres bloques legados de cada prédica en bloques estructurados independientes por línea, conservando el texto.

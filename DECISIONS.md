@@ -265,3 +265,41 @@ Plan de implementación obligatorio:
 6. validar autosave, edición, referencias, retorno exacto, duplicar, archivar, eliminar y modo offline antes de cerrar la migración.
 
 No se considerará terminada esta migración mediante una colección parcial de botones sobre el editor de texto plano actual.
+
+
+## D-054 — Documento continuo e imágenes en Prédicas
+Estado: APROBADA
+
+La arquitectura interna por bloques de D-053 no debe imponerse visualmente al usuario. La experiencia de Prédicas debe sentirse como un documento continuo de notas/artículo, no como una colección de cajas o tarjetas editables.
+
+Esta decisión corrige la interpretación visual introducida en 0.1.27 y complementa D-053 sin eliminar su arquitectura interna.
+
+Reglas de experiencia:
+
+- los bloques internos no muestran numeración, bordes de tarjeta, handles ni botones `+ Bloque` en la experiencia normal;
+- Enter y Backspace deben sentirse como edición normal de párrafos, aunque internamente creen, dividan o unan bloques;
+- Introducción, Bosquejo/puntos y Conclusión pueden conservarse como secciones lógicas, pero el área editable dentro de cada sección debe leerse como una hoja continua;
+- la barra de herramientas debe inspirarse en patrones de editores de artículos/notas: formato de texto, tipo de párrafo/lista, adjuntos e inserciones, con controles compactos;
+- la estructura interna nunca debe convertirse en ruido visual para el usuario.
+
+Imágenes:
+
+- Prédicas debe permitir insertar imágenes dentro del documento;
+- las imágenes se almacenan como adjuntos independientes en IndexedDB, no embebidas como base64 dentro del texto ni dentro del registro completo de la prédica;
+- un bloque de imagen referencia un adjunto mediante identificador estable;
+- insertar una imagen debe respetar la posición de trabajo actual cuando sea posible;
+- eliminar una prédica elimina también sus adjuntos huérfanos asociados;
+- duplicar una prédica debe duplicar también los adjuntos necesarios para que la copia sea autónoma;
+- las imágenes deben funcionar offline y mostrarse también en Modo Predicación cuando ese flujo se adapte al documento estructurado;
+- la futura sincronización debe poder transferir adjuntos separadamente del texto;
+- no se suben imágenes a servicios externos en esta etapa.
+
+Orden corregido:
+
+1. ocultar la estructura visual de bloques y recuperar una experiencia continua;
+2. añadir modelo local de adjuntos e inserción de imágenes;
+3. implementar la barra compacta de formato;
+4. adaptar Modo Predicación y referencias al documento continuo estructurado;
+5. validar integridad, autosave, retorno exacto, imágenes, duplicado, borrado y offline.
+
+La versión 0.1.27 se considera una etapa técnica transitoria de la arquitectura, no la experiencia visual definitiva.

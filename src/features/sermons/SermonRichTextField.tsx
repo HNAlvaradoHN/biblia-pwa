@@ -21,6 +21,7 @@ type SermonRichTextFieldProps = {
   className?: string
   onChange: (value: string) => void
   onReferenceOpen: (reference: SermonBibleReference) => void
+  onFocus?: () => void
   onSplit?: (offset: number) => void
   onMergeBackward?: () => void
 }
@@ -92,6 +93,7 @@ export const SermonRichTextField = forwardRef<
     className = '',
     onChange,
     onReferenceOpen,
+    onFocus,
     onSplit,
     onMergeBackward,
   },
@@ -239,6 +241,7 @@ export const SermonRichTextField = forwardRef<
       data-placeholder={placeholder}
       spellCheck
       onInput={handleInput}
+      onFocus={onFocus}
       onClickCapture={handleClick}
       onKeyDown={handleKeyDown}
       onPaste={handlePaste}
