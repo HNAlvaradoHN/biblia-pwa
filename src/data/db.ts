@@ -58,12 +58,26 @@ export type SermonInlineMarkType =
   | 'underline'
   | 'strike'
   | 'link'
+  | 'textColor'
+  | 'highlight'
+
+export type SermonInlineColor =
+  | 'accent'
+  | 'red'
+  | 'blue'
+  | 'green'
+  | 'amber'
+  | 'sage'
+  | 'sky'
+  | 'rose'
+  | 'lavender'
 
 export interface SermonInlineMark {
   type: SermonInlineMarkType
   start: number
   end: number
   href?: string
+  color?: SermonInlineColor
 }
 
 export interface SermonReferenceRecord {
@@ -587,6 +601,27 @@ export async function saveSermonBlockFormatting(
   const block: SermonBlockRecord = {
     ...existing,
     ...changes,
+    revision: existing.revision + 1,
+    updatedAt: Date.now(),
+  }
+
+  await db.sermonBlocks.put(block)
+  return block
+}
+
+export async function saveSermonBlockState(
+  blockId: string,
+  state: Pick<
+    SermonBlockRecord,
+    'type' | 'text' | 'marks' | 'indent' | 'checked' | 'headingLevel'
+  >,
+) {
+  const existing = await db.sermonBlocks.get(blockId)
+  if (!existing) return undefined
+
+  const block: SermonBlockRecord = {
+    ...existing,
+    ...state,
     revision: existing.revision + 1,
     updatedAt: Date.now(),
   }
