@@ -680,3 +680,19 @@ Reglas:
 - El contador válido restaurado queda en `CURRENT_SESSION: 2` y `NEXT_SESSION: 3`; no se asignan identidades retroactivas a chats que no completaron correctamente el handshake.
 - Durante cada tarea autorizada, la memoria oficial afectada debe mantenerse actualizada después de hitos significativos y no reconstruirse únicamente al final.
 - Ninguna decisión aprobada de gobernanza puede considerarse sustituida por una edición documental posterior sin autorización explícita del dueño.
+
+
+## D-050 — Referencias y continuidad en Modo Predicación
+Estado: APROBADA
+
+El refinamiento de Modo Predicación debe permitir consultar una referencia sin que el contenido de fondo siga desplazándose y debe conservar el contexto cuando el usuario decide leer el capítulo completo.
+
+Reglas:
+
+- al abrir una vista rápida de referencia, el contenido detrás del modal queda bloqueado y no responde al scroll hasta cerrarlo;
+- dentro de Modo Predicación la vista rápida ofrece `Cerrar` y `Leer capítulo`;
+- `Leer capítulo` abre la lectura bíblica enfocada sin navegación general ni acciones ajenas al flujo de prédica;
+- el retorno desde Biblia distingue si la referencia se abrió desde el editor o desde Modo Predicación;
+- si se abrió desde Modo Predicación, `Volver a Predicación` restaura la misma prédica y la posición vertical previa;
+- durante Modo Predicación la aplicación intentará mantener la pantalla activa cuando la plataforma ofrezca Screen Wake Lock, sin convertir esa API en requisito para usar la función;
+- si el navegador no admite Wake Lock o rechaza la solicitud, Modo Predicación debe seguir funcionando normalmente.
