@@ -15,7 +15,7 @@ Repositorio oficial: `HNAlvaradoHN/biblia-pwa`, público por autorización expl�
 - Plataforma: PWA offline-first.
 - Stack vigente: React + TypeScript + Vite, React Router, IndexedDB/Dexie, `vite-plugin-pwa`, ESLint y GitHub Actions.
 - Publicación principal: GitHub Pages. Vercel es respaldo opcional.
-- Producción confirmada: **v0.1.32**.
+- Producción confirmada: **v0.1.32**. `0.1.33` corrige interacción de formato y Galería.
 - Corpus definitivo: **pendiente de fuente/licencia autorizada**. RVR60 sigue siendo la traducción deseada, pero no se redistribuye sin derechos verificables.
 - Datos personales: locales al dispositivo; no se versionan ni publican.
 - Sincronización remota/multidispositivo: todavía no implementada.
@@ -138,7 +138,7 @@ PUBLICADO en `0.1.29`, con división editorial de secciones en implementación c
 - referencias y autosave incremental deben seguir funcionando igual.
 
 ### Paso 4 — barra compacta de formato
-PUBLICADO en `0.1.31`, PENDIENTE DE VALIDACIÓN FÍSICA.
+PUBLICADO en `0.1.31`; corrección de interacción implementada en `0.1.33`, pendiente de CI/publicación.
 
 - barra visible compacta: Aa, B, I, U, S, listas e inserción;
 - Aa: Texto, H1, H2, Cita y sangría;
@@ -146,6 +146,8 @@ PUBLICADO en `0.1.31`, PENDIENTE DE VALIDACIÓN FÍSICA.
 - Imagen fue movida al menú `+`;
 - marks inline persistentes para negrita/cursiva/subrayado/tachado;
 - división/unión y edición de texto preservan formato;
+- `0.1.33`: B/I/U/S pueden quedar activos para escritura futura y muestran estado visual activo;
+- `0.1.33`: Imagen pasa a llamarse Galería dentro de `+`; la PWA restringe a imágenes pero no puede imponer una app nativa específica;
 - quedan para el siguiente subhito de la misma barra: Enlace, color/resaltado y deshacer/rehacer.
 
 ### Paso 4.1 — pantalla de edición dedicada
@@ -160,7 +162,7 @@ PUBLICADO en `0.1.32`, PENDIENTE DE VALIDACIÓN FÍSICA.
 
 ## Siguiente paso inmediato
 
-Validar físicamente `0.1.32`: abrir/crear una prédica debe entrar al editor dedicado y la barra inferior debe permanecer accesible durante toda la edición. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
+Completar CI/merge/publicación de `0.1.33` y validar: activar B/I/U/S sin selección, escribir, comprobar estado activo, desactivar y continuar en texto normal; además confirmar que `+` muestra Galería. Después completar Enlace + color/resaltado + deshacer/rehacer sobre la misma barra y, a continuación, adaptar Modo Predicación a texto enriquecido + imágenes.
 
 ## Después de D-053
 
