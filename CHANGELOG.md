@@ -13,6 +13,16 @@
 
 Registrar únicamente cambios relevantes del proyecto. No usar este archivo como transcripción de conversaciones.
 
+## 2026-10-03 — Flujo de referencias en Modo Predicación 0.1.22
+
+- Corregido el modal de referencias para impedir que el contenido de fondo siga desplazándose mientras la vista rápida está abierta, tanto en el editor como en Modo Predicación.
+- En Modo Predicación, la vista rápida ahora ofrece `Cerrar` y `Leer capítulo`.
+- Abrir un capítulo desde Modo Predicación conserva el origen y la posición vertical; `Volver a Predicación` regresa al mismo punto del bosquejo.
+- El lector distingue si la referencia provino del editor o de Modo Predicación y adapta el mensaje/retorno correspondiente.
+- Añadido intento automático de mantener la pantalla activa durante Modo Predicación mediante Screen Wake Lock cuando el navegador lo soporta; si no está disponible, la función falla de forma silenciosa sin romper el modo.
+- El feedback físico sobre `0.1.21` confirmó un defecto real de scroll de fondo en la vista rápida; esta versión lo corrige antes de considerar cerrado el flujo.
+- Build visible actualizado a `0.1.22`.
+
 
 ## 2026-10-03 — Toque directo y base de Modo Predicación 0.1.21
 

@@ -246,6 +246,17 @@ export function SermonEditorPage() {
   }, [location.search, navigate, sermonId])
 
   useEffect(() => {
+    if (!referencePreview) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [referencePreview])
+
+  useEffect(() => {
     function warnUnsaved(event: BeforeUnloadEvent) {
       if (!dirty) return
       event.preventDefault()
@@ -319,6 +330,7 @@ export function SermonEditorPage() {
         sermonId,
         field: reference.field,
         startIndex: reference.startIndex,
+        mode: 'editor',
       }),
     )
 

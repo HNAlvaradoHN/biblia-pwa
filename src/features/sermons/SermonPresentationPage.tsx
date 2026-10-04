@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { getSermon, type SermonRecord } from '../../data/db'
 import {
   detectAllSermonReferences,
@@ -63,6 +63,7 @@ function PresentationText({
 export function SermonPresentationPage() {
   const { sermonId = '' } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const [sermon, setSermon] = useState<SermonRecord>()
   const [referencePreview, setReferencePreview] = useState<SermonBibleReference>()
 
@@ -92,6 +93,96 @@ export function SermonPresentationPage() {
     () => (referencePreview ? getReferencePassage(referencePreview) : []),
     [referencePreview],
   )
+
+  useEffect(() => {
+    if (!referencePreview) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [referencePreview])
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const returnScroll = Number(params.get('returnScroll'))
+    if (!Number.isFinite(returnScroll)) return
+
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: Math.max(0, returnScroll), behavior: 'auto' })
+      navigate(`/predicas/${sermonId}/presentar`, { replace: true })
+    })
+  }, [location.search, navigate, sermonId])
+
+  useEffect(() => {
+    type WakeLockSentinelLike = {
+      released: boolean
+      release: () => Promise<void>
+    }
+    type NavigatorWithWakeLock = Navigator & {
+      wakeLock?: {
+        request: (type: 'screen') => Promise<WakeLockSentinelLike>
+      }
+    }
+
+    let cancelled = false
+    let sentinel: WakeLockSentinelLike | undefined
+    const navigatorWithWakeLock = navigator as NavigatorWithWakeLock
+
+    async function requestWakeLock() {
+      if (
+        cancelled ||
+        document.visibilityState !== 'visible' ||
+        !navigatorWithWakeLock.wakeLock ||
+        (sentinel && !sentinel.released)
+      ) {
+        return
+      }
+
+      try {
+        sentinel = await navigatorWithWakeLock.wakeLock.request('screen')
+      } catch {
+        sentinel = undefined
+      }
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        void requestWakeLock()
+      }
+    }
+
+    void requestWakeLock()
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      cancelled = true
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      if (sentinel && !sentinel.released) {
+        void sentinel.release()
+      }
+    }
+  }, [])
+
+  function openReferenceInBible(reference: SermonBibleReference) {
+    window.sessionStorage.setItem(
+      'biblia-sermon-return-v1',
+      JSON.stringify({
+        sermonId,
+        field: reference.field,
+        startIndex: reference.startIndex,
+        mode: 'presentation',
+        scrollY: window.scrollY,
+      }),
+    )
+
+    const anchor = `verse-${reference.bookId}-${reference.chapter}-${reference.verseStart}`
+    navigate(
+      `/biblia/${reference.bookId}/${reference.chapter}?fromSermon=1#${anchor}`,
+    )
+  }
 
   if (!sermon) {
     return (
@@ -203,6 +294,13 @@ export function SermonPresentationPage() {
                 onClick={() => setReferencePreview(undefined)}
               >
                 Cerrar
+              </button>
+              <button
+                className="sermon-reference-action-link accent"
+                type="button"
+                onClick={() => openReferenceInBible(referencePreview)}
+              >
+                Leer capítulo
               </button>
             </div>
           </section>

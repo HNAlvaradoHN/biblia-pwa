@@ -38,6 +38,8 @@ type SermonReturnPoint = {
   sermonId: string
   field: 'introduction' | 'outline' | 'conclusion'
   startIndex: number
+  mode?: 'editor' | 'presentation'
+  scrollY?: number
 }
 
 function readSermonReturnPoint(): SermonReturnPoint | undefined {
@@ -48,7 +50,8 @@ function readSermonReturnPoint(): SermonReturnPoint | undefined {
     if (
       typeof parsed.sermonId !== 'string' ||
       !['introduction', 'outline', 'conclusion'].includes(parsed.field ?? '') ||
-      typeof parsed.startIndex !== 'number'
+      typeof parsed.startIndex !== 'number' ||
+      (parsed.mode !== undefined && !['editor', 'presentation'].includes(parsed.mode))
     ) {
       return undefined
     }
@@ -871,6 +874,18 @@ export function ReaderPage() {
   function returnToSermon() {
     if (!sermonReturnPoint) return
     window.sessionStorage.removeItem('biblia-sermon-return-v1')
+
+    if (sermonReturnPoint.mode === 'presentation') {
+      const returnScroll =
+        typeof sermonReturnPoint.scrollY === 'number' && Number.isFinite(sermonReturnPoint.scrollY)
+          ? Math.max(0, Math.round(sermonReturnPoint.scrollY))
+          : 0
+      navigate(
+        `/predicas/${sermonReturnPoint.sermonId}/presentar?returnScroll=${returnScroll}`,
+      )
+      return
+    }
+
     navigate(
       `/predicas/${sermonReturnPoint.sermonId}?returnField=${sermonReturnPoint.field}&returnAt=${sermonReturnPoint.startIndex}`,
     )
@@ -918,10 +933,16 @@ export function ReaderPage() {
         <div className="sermon-return-bar glass-panel">
           <div>
             <span>Referencia abierta desde una prédica</span>
-            <strong>Podés volver exactamente al punto donde estabas escribiendo.</strong>
+            <strong>
+              {sermonReturnPoint.mode === 'presentation'
+                ? 'Podés volver al mismo punto del Modo Predicación.'
+                : 'Podés volver exactamente al punto donde estabas escribiendo.'}
+            </strong>
           </div>
           <button className="button primary" type="button" onClick={returnToSermon}>
-            Volver a prédica
+            {sermonReturnPoint.mode === 'presentation'
+              ? 'Volver a Predicación'
+              : 'Volver a prédica'}
           </button>
         </div>
       ) : null}
